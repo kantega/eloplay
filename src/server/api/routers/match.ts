@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
-export const playerRouter = createTRPCRouter({
+export const matchRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
