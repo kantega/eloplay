@@ -1,9 +1,9 @@
 import Head from "next/head";
 
 import { api } from "@/utils/api";
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme-toggle";
 import Leaderboard from "./Leaderboard";
+import NavigationBar from "./NavigationBar";
 
 export default function Home() {
   const players = api.player.findAll.useQuery();
@@ -16,11 +16,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          {players.data !== undefined && <Leaderboard data={players.data} />}
-          <Button>Tester</Button>
+        <div className=" fixed right-0 top-0">
           <ModeToggle />
         </div>
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+          {players.data !== undefined && <Leaderboard data={players.data} />}
+        </div>
+        <NavigationBar />
       </main>
     </>
   );
