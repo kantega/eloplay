@@ -13,4 +13,8 @@ export const playerRouter = createTRPCRouter({
         },
       });
     }),
+
+  findAll: publicProcedure.query(async ({ ctx }) => {
+    return ctx.db.player.findMany();
+  }),
 });
