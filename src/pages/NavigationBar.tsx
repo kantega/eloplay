@@ -1,17 +1,24 @@
 import { Button } from "@/components/ui/button";
-import { ListPlus, NotebookTabs, UserPlus } from "lucide-react";
+import { Medal, PlusCircle, UserPlus } from "lucide-react";
+import Link from "next/link";
 
 export default function NavigationBar() {
   return (
     <div className="fixed bottom-0 right-0 flex w-full justify-around bg-accent p-2">
       <Button>
-        <NotebookTabs />
+        <Link href={"/"}>
+          <Medal />
+        </Link>
       </Button>
       <Button>
-        <ListPlus />
+        <Link href={"/addMatch"}>
+          <PlusCircle />
+        </Link>
       </Button>
       <Button>
-        <UserPlus />
+        <Link href={"/addPlayer"}>
+          <UserPlus />
+        </Link>
       </Button>
     </div>
   );

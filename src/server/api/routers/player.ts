@@ -1,10 +1,9 @@
-import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { CreatePlayer } from "@/server/types/playerTypes";
 
 export const playerRouter = createTRPCRouter({
   create: publicProcedure
-    .input(z.object({ name: z.string().min(1), office: z.string().min(1) }))
+    .input(CreatePlayer)
     .mutation(async ({ ctx, input }) => {
       return ctx.db.player.create({
         data: {

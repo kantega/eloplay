@@ -4,12 +4,14 @@ import { api } from "@/utils/api";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import Layout from "./layout";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      {" "}
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </ThemeProvider>
   );
 };

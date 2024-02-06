@@ -1,5 +1,5 @@
 import { api } from "@/utils/api";
-import Leaderboard from "./Leaderboard";
+import Leaderboard from "../Leaderboard";
 
 export default function Home() {
   const players = api.player.findAll.useQuery();
