@@ -11,7 +11,7 @@ import { type TableTennisPlayer } from "@prisma/client";
 export default function Leaderboard({ data }: { data: TableTennisPlayer[] }) {
   data.sort(sortPlayers);
   return (
-    <Table>
+    <Table className="w-[min(500px,100%)]">
       <TableHeader>
         <TableRow>
           <TableHead>#</TableHead>
