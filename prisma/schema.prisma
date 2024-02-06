@@ -18,6 +18,7 @@ model TableTennisPlayer {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([name, office])
     @@index([name])
     @@index([id])
 }

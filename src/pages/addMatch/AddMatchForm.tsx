@@ -31,8 +31,12 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
+import { useState } from "react";
 
 export default function AddMatchForm() {
+  const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
+  const [popoverLoserOpen, setPopoverLoserOpen] = useState(false);
+
   const playersQuery = api.player.findAll.useQuery();
   const form = useForm<z.infer<typeof CreateMatch>>({
     resolver: zodResolver(CreateMatch),
@@ -82,9 +86,12 @@ export default function AddMatchForm() {
           control={form.control}
           name="player1Id"
           render={({ field }) => (
-            <FormItem className="flex w-[65%] flex-col">
+            <FormItem className="flex flex-col">
               <FormLabel className="text-2xl text-primary">Vinner</FormLabel>
-              <Popover>
+              <Popover
+                open={popoverWinnerOpen}
+                onOpenChange={setPopoverWinnerOpen}
+              >
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -121,6 +128,9 @@ export default function AddMatchForm() {
                               form.getValues("player2Id"),
                             );
                             form.setValue("player1Id", player.id);
+                            setPopoverWinnerOpen(false);
+                            if (form.getValues("player2Id") === "")
+                              setPopoverLoserOpen(true);
                           }}
                         >
                           <Check
@@ -147,11 +157,14 @@ export default function AddMatchForm() {
             control={form.control}
             name="player2Id"
             render={({ field }) => (
-              <FormItem className="flex w-[65%] flex-col">
+              <FormItem className="flex flex-col">
                 <FormLabel className="text-2xl text-destructive">
                   Taper
                 </FormLabel>
-                <Popover>
+                <Popover
+                  open={popoverLoserOpen}
+                  onOpenChange={setPopoverLoserOpen}
+                >
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -185,6 +198,7 @@ export default function AddMatchForm() {
                               key={player.id}
                               onSelect={() => {
                                 form.setValue("player2Id", player.id);
+                                setPopoverLoserOpen(false);
                               }}
                             >
                               <Check
