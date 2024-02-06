@@ -18,6 +18,7 @@ import {
 import { api } from "@/utils/api";
 import { updateEloRating } from "@/utils/elo";
 import { Minus, Plus, TrashIcon } from "lucide-react";
+import { type TableTennisMatch } from "@prisma/client";
 
 export default function MatchHistory({ id }: { id: string }) {
   const ctx = api.useContext();
@@ -27,6 +28,8 @@ export default function MatchHistory({ id }: { id: string }) {
   });
 
   if (data === undefined || isLoading) return null;
+
+  data.sort(sortMatchesByDate);
 
   return (
     <Table className="w-[min(500px,100%)]">
@@ -102,3 +105,7 @@ export default function MatchHistory({ id }: { id: string }) {
     </Table>
   );
 }
+
+const sortMatchesByDate = (a: TableTennisMatch, b: TableTennisMatch) => {
+  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+};
