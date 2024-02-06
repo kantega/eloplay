@@ -115,6 +115,21 @@ export const matchRouter = createTRPCRouter({
       });
 
       // todo: replace playerId with names
+      const modifiedData = data.map(async (match) => {
+        const player1 = await ctx.db.tableTennisPlayer.findUnique({
+          where: { id: match.player1Id },
+        });
+        const player2 = await ctx.db.tableTennisPlayer.findUnique({
+          where: { id: match.player2Id },
+        });
+
+        if (!player1 || !player2) throw new Error("Player not found");
+        match.winner = match.player1Id;
+        match.player2Id = player2.name;
+        match.player1Id = player1.name;
+      });
+
+      await Promise.all(modifiedData);
 
       return data;
     }),

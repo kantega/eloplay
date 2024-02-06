@@ -32,8 +32,8 @@ export default function MatchHistory({ id }: { id: string }) {
     <Table className="w-[min(500px,100%)]">
       <TableHeader>
         <TableRow>
-          <TableHead>ELO vinner</TableHead>
-          <TableHead>ELO taper</TableHead>
+          <TableHead>Vinner</TableHead>
+          <TableHead>Taper</TableHead>
           <TableHead>
             <Plus color="limegreen" />
             <Minus color="red" />
@@ -44,14 +44,18 @@ export default function MatchHistory({ id }: { id: string }) {
       <TableBody>
         {data.map((match) => (
           <TableRow key={match.id}>
-            <TableCell className="font-medium">{match.prePlayer1Elo}</TableCell>
-            <TableCell className="font-medium">{match.prePlayer2Elo}</TableCell>
+            <TableCell className="font-medium">
+              {`${match.player1Id} (${match.prePlayer1Elo})`}
+            </TableCell>
+            <TableCell className="font-medium">
+              {`${match.player2Id} (${match.prePlayer2Elo})`}
+            </TableCell>
             <TableCell
               className={
-                id === match.player1Id ? "text-green-500" : "text-red-500"
+                id === match.winner ? "text-green-500" : "text-red-500"
               }
             >
-              {id === match.player1Id
+              {id === match.winner
                 ? "+" +
                   (updateEloRating(
                     match.prePlayer1Elo,
@@ -68,7 +72,7 @@ export default function MatchHistory({ id }: { id: string }) {
             <TableCell>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="destructive">
+                  <Button variant="ghost">
                     <TrashIcon />
                   </Button>
                 </DialogTrigger>
