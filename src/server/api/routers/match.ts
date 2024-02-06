@@ -49,6 +49,60 @@ export const matchRouter = createTRPCRouter({
       });
     }),
 
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const match = await ctx.db.tableTennisMatch.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!match) {
+        throw new Error(`Match ${input.id} not found`);
+      }
+
+      const player1 = await ctx.db.tableTennisPlayer.findUnique({
+        where: { id: match.player1Id },
+      });
+
+      if (!player1) {
+        throw new Error(`Player ${match.player1Id} not found`);
+      }
+
+      const player2 = await ctx.db.tableTennisPlayer.findUnique({
+        where: { id: match.player2Id },
+      });
+
+      if (!player2) {
+        throw new Error(`Player ${match.player2Id} not found`);
+      }
+
+      const newElos = updateEloRating(
+        match.prePlayer1Elo,
+        match.prePlayer2Elo,
+        "player111",
+      );
+
+      await ctx.db.tableTennisPlayer.update({
+        where: { id: match.player1Id },
+        data: {
+          ...player1,
+          elo: player1.elo + (match.prePlayer1Elo - newElos[0]),
+        },
+      });
+
+      await ctx.db.tableTennisPlayer.update({
+        where: { id: match.player2Id },
+        data: {
+          ...player2,
+          elo: player2.elo + (match.prePlayer2Elo - newElos[1]),
+        },
+      });
+
+      return ctx.db.tableTennisMatch.delete({
+        where: { id: input.id },
+      });
+    }),
+
   findAll: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.tableTennisMatch.findMany();
   }),
