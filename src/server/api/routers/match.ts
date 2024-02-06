@@ -1,5 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { CreateMatch } from "@/server/types/matchTypes";
+import { updateEloRating } from "@/utils/elo";
 
 export const matchRouter = createTRPCRouter({
   create: publicProcedure
@@ -21,7 +22,21 @@ export const matchRouter = createTRPCRouter({
         throw new Error(`Player ${input.player2Id} not found`);
       }
 
-      //todo: update player elos
+      const newElos = updateEloRating(
+        player1.elo,
+        player2.elo,
+        input.winner as "player111" | "player222", //todo: eirik er flink <3
+      );
+
+      await ctx.db.player.update({
+        where: { id: input.player1Id },
+        data: { ...player1, elo: newElos[0] },
+      });
+
+      await ctx.db.player.update({
+        where: { id: input.player2Id },
+        data: { ...player2, elo: newElos[1] },
+      });
 
       return ctx.db.match.create({
         data: {

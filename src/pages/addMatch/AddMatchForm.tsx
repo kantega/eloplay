@@ -64,96 +64,103 @@ export function AddMatchForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <div className=" flex flex-row justify-around">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex h-full w-full flex-col justify-center gap-20 space-y-6"
+      >
+        <div className="flex flex-col gap-6">
+          <div className=" flex flex-row justify-around">
+            <FormField
+              control={form.control}
+              name="player1Id"
+              render={({ field }) => (
+                <FormItem className="w-[45%]">
+                  <FormLabel>Spiller 1</FormLabel>
+                  {/* todo: fix bug where form reset does not visially show */}
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Spiller 1" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {players.data?.map((player) => (
+                        <SelectItem key={player.id} value={player.id}>
+                          {`${player.name} | ${player.office}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="player2Id"
+              render={({ field }) => (
+                <FormItem className="w-[45%]">
+                  <FormLabel>Spiller 2</FormLabel>
+                  {/* todo: fix bug where form reset does not visially show */}
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Spiller 2" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {players.data?.map((player) => (
+                        <SelectItem key={player.id} value={player.id}>
+                          {`${player.name} | ${player.office}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
-            name="player1Id"
+            name="winner"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Spiller 1</FormLabel>
-                {/* todo: fix bug where form reset does not visially show */}
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Spiller 1" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {players.data?.map((player) => (
-                      <SelectItem key={player.id} value={player.id}>
-                        {`${player.name} | ${player.office}`}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="player2Id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Spiller 2</FormLabel>
-                {/* todo: fix bug where form reset does not visially show */}
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Spiller 2" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {players.data?.map((player) => (
-                      <SelectItem key={player.id} value={player.id}>
-                        {`${player.name} | ${player.office}`}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <FormItem className="m-auto w-[90%] space-y-3">
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-row justify-between space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="player111" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Seier P1</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="player222" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Seier P2</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <FormField
-          control={form.control}
-          name="winner"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-row justify-between space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="player111" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Seier P1</FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="player222" />
-                    </FormControl>
-                    <FormLabel className="font-normal">Seier P2</FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {/* todo: fix bug, you can select a office and press submit at the same time */}
-        <Button type="submit">Legg til </Button>
+        <Button type="submit" className=" m-auto w-fit">
+          Legg til kamp
+        </Button>
       </form>
     </Form>
   );
