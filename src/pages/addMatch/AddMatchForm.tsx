@@ -23,7 +23,6 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function AddMatchForm() {
   const players = api.player.findAll.useQuery();
@@ -32,7 +31,6 @@ export function AddMatchForm() {
     defaultValues: {
       player1Id: "",
       player2Id: "",
-      winner: "",
     },
   });
   const createMatch = api.match.create.useMutation({
@@ -66,97 +64,58 @@ export function AddMatchForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex h-full w-full flex-col justify-center gap-20 space-y-6"
+        className="flex h-full w-full flex-col items-center justify-center gap-10 space-y-6"
       >
-        <div className="flex flex-col gap-6">
-          <div className=" flex flex-row justify-around">
-            <FormField
-              control={form.control}
-              name="player1Id"
-              render={({ field }) => (
-                <FormItem className="w-[45%]">
-                  <FormLabel>Spiller 1</FormLabel>
-                  {/* todo: fix bug where form reset does not visially show */}
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Spiller 1" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {players.data?.map((player) => (
-                        <SelectItem key={player.id} value={player.id}>
-                          {`${player.name} | ${player.office}`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="player2Id"
-              render={({ field }) => (
-                <FormItem className="w-[45%]">
-                  <FormLabel>Spiller 2</FormLabel>
-                  {/* todo: fix bug where form reset does not visially show */}
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Spiller 2" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {players.data?.map((player) => (
-                        <SelectItem key={player.id} value={player.id}>
-                          {`${player.name} | ${player.office}`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="winner"
-            render={({ field }) => (
-              <FormItem className="m-auto w-[90%] space-y-3">
+        <FormField
+          control={form.control}
+          name="player1Id"
+          render={({ field }) => (
+            <FormItem className="w-[65%]">
+              <FormLabel className="text-2xl text-primary">Vinner</FormLabel>
+              {/* todo: fix bug where form reset does not visially show */}
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-row justify-between space-y-1"
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="player111" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Seier P1</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="player222" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Seier P2</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vinner..." />
+                  </SelectTrigger>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                <SelectContent>
+                  {players.data?.map((player) => (
+                    <SelectItem key={player.id} value={player.id}>
+                      {`${player.name} | ${player.office}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="player2Id"
+          render={({ field }) => (
+            <FormItem className="w-[65%]">
+              <FormLabel className="text-2xl text-destructive">Taper</FormLabel>
+              {/* todo: fix bug where form reset does not visially show */}
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Taper..." />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {players.data?.map((player) => (
+                    <SelectItem key={player.id} value={player.id}>
+                      {`${player.name} | ${player.office}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {/* todo: fix bug, you can select a office and press submit at the same time */}
         <Button type="submit" className=" m-auto w-fit">
           Legg til kamp

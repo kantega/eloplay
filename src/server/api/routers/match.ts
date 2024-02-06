@@ -22,11 +22,7 @@ export const matchRouter = createTRPCRouter({
         throw new Error(`Player ${input.player2Id} not found`);
       }
 
-      const newElos = updateEloRating(
-        player1.elo,
-        player2.elo,
-        input.winner as "player111" | "player222", //todo: eirik er flink <3
-      );
+      const newElos = updateEloRating(player1.elo, player2.elo, "player111");
 
       await ctx.db.tableTennisPlayer.update({
         where: { id: input.player1Id },
@@ -42,7 +38,7 @@ export const matchRouter = createTRPCRouter({
         data: {
           player1Id: input.player1Id,
           player2Id: input.player1Id,
-          winner: input.winner,
+          winner: player1.name,
           prePlayer1Elo: player1.elo,
           prePlayer2Elo: player2.elo,
         },
