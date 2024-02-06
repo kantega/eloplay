@@ -16,7 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-background">
-        <div className=" fixed right-0 top-0">
+        <div className=" fixed right-4 top-4">
           <ModeToggle />
         </div>
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
