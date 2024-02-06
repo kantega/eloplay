@@ -31,7 +31,6 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
-import { useEffect } from "react";
 
 export default function AddMatchForm() {
   const playersQuery = api.player.findAll.useQuery();
