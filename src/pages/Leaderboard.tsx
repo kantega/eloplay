@@ -7,8 +7,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { type TableTennisPlayer } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 export default function Leaderboard({ data }: { data: TableTennisPlayer[] }) {
+  const router = useRouter();
+
   data.sort(sortPlayers);
   return (
     <Table className="w-[min(500px,100%)]">
@@ -22,7 +25,10 @@ export default function Leaderboard({ data }: { data: TableTennisPlayer[] }) {
       </TableHeader>
       <TableBody>
         {data.map((player, index) => (
-          <TableRow key={player.id}>
+          <TableRow
+            key={player.id}
+            onClick={() => router.push("/player/" + player.id)}
+          >
             <TableCell className="font-medium">{index + 1}</TableCell>
             <TableCell className="font-medium">{player.name}</TableCell>
             <TableCell>{player.office}</TableCell>

@@ -1,6 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { CreateMatch } from "@/server/types/matchTypes";
 import { updateEloRating } from "@/utils/elo";
+import { z } from "zod";
 
 export const matchRouter = createTRPCRouter({
   create: publicProcedure
@@ -37,8 +38,8 @@ export const matchRouter = createTRPCRouter({
       return ctx.db.tableTennisMatch.create({
         data: {
           player1Id: input.player1Id,
-          player2Id: input.player1Id,
-          winner: player1.name,
+          player2Id: input.player2Id,
+          winner: input.player1Id,
           prePlayer1Elo: player1.elo,
           prePlayer2Elo: player2.elo,
         },
@@ -48,4 +49,16 @@ export const matchRouter = createTRPCRouter({
   findAll: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.tableTennisMatch.findMany();
   }),
+
+  findAllById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db.tableTennisMatch.findMany({
+        where: { OR: [{ player1Id: input.id }, { player2Id: input.id }] },
+      });
+
+      // todo: replace playerId with names
+
+      return data;
+    }),
 });
