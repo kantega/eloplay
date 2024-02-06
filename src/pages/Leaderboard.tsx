@@ -34,6 +34,5 @@ export default function Leaderboard({ data }: { data: Player[] }) {
   );
 }
 
-const sortPlayers = (playerA: Player, playerB: Player) => {
-  return playerB.elo - playerA.elo;
-};
+const sortPlayers = (playerA: Player, playerB: Player) =>
+  playerB.elo - playerA.elo;
