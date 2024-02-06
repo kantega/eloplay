@@ -1,16 +1,9 @@
-import { z } from "zod";
-
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { CreateMatch } from "@/server/types/matchTypes";
 
 export const matchRouter = createTRPCRouter({
   create: publicProcedure
-    .input(
-      z.object({
-        player1Id: z.string().min(1),
-        player2Id: z.string().min(1),
-        winner: z.string().min(1),
-      }),
-    )
+    .input(CreateMatch)
     .mutation(async ({ ctx, input }) => {
       const player1 = await ctx.db.player.findUnique({
         where: { id: input.player1Id },
