@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getMatchStats, sortMatchesByDate } from "@/utils/match";
 
 export default function PlayerPage() {
   const router = useRouter();
@@ -25,8 +26,14 @@ export default function PlayerPage() {
 }
 
 function Player({ id }: { id: string }) {
+  const { data: matchs, isLoading: matchsIsLoading } =
+    api.match.findAllById.useQuery({ id });
   const { data, isLoading } = api.player.findById.useQuery({ id });
   if (!data || isLoading) return null;
+  if (!matchs || matchsIsLoading) return null;
+
+  matchs.sort(sortMatchesByDate);
+  const { winrate, winstreak } = getMatchStats(matchs, id);
 
   return (
     <Card className="relative w-[min(350px,90%)]">
@@ -43,6 +50,14 @@ function Player({ id }: { id: string }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-6 flex flex-row gap-8">
+          <p>
+            <b>Winrate: </b> {" " + winrate}%
+          </p>
+          <p>
+            <b>Streak:</b> {winstreak}
+          </p>
+        </div>
         <Badge className="absolute bottom-4 left-4 text-2xl">
           Elo: {data.elo}
         </Badge>

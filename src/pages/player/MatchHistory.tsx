@@ -18,7 +18,7 @@ import {
 import { api } from "@/utils/api";
 import { updateEloRating } from "@/utils/elo";
 import { Minus, Plus, TrashIcon } from "lucide-react";
-import { type TableTennisMatch } from "@prisma/client";
+import { sortMatchesByDate } from "@/utils/match";
 
 export default function MatchHistory({ id }: { id: string }) {
   const ctx = api.useContext();
@@ -27,8 +27,7 @@ export default function MatchHistory({ id }: { id: string }) {
     onSuccess: () => ctx.match.findAllById.invalidate({ id }),
   });
 
-  if (data === undefined || isLoading) return null;
-
+  if (!data || isLoading) return null;
   data.sort(sortMatchesByDate);
 
   return (
@@ -105,7 +104,3 @@ export default function MatchHistory({ id }: { id: string }) {
     </Table>
   );
 }
-
-const sortMatchesByDate = (a: TableTennisMatch, b: TableTennisMatch) => {
-  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-};
