@@ -7,6 +7,9 @@ export const matchRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateMatch)
     .mutation(async ({ ctx, input }) => {
+      if (input.player1Id === input.player2Id)
+        throw new Error("Player 1 and player 2 cannot be the same");
+
       const player1 = await ctx.db.tableTennisPlayer.findUnique({
         where: { id: input.player1Id },
       });

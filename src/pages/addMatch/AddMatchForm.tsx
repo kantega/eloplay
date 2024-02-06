@@ -4,13 +4,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,9 +31,10 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
+import { useEffect } from "react";
 
 export default function AddMatchForm() {
-  const players = api.player.findAll.useQuery();
+  const playersQuery = api.player.findAll.useQuery();
   const form = useForm<z.infer<typeof CreateMatch>>({
     resolver: zodResolver(CreateMatch),
     defaultValues: {
@@ -60,6 +69,10 @@ export default function AddMatchForm() {
     createMatch.mutate(data);
   }
 
+  if (!playersQuery.data || playersQuery.isLoading) return null;
+
+  const players = playersQuery.data;
+
   return (
     <Form {...form}>
       <form
@@ -70,52 +83,132 @@ export default function AddMatchForm() {
           control={form.control}
           name="player1Id"
           render={({ field }) => (
-            <FormItem className="w-[65%]">
+            <FormItem className="flex w-[65%] flex-col">
               <FormLabel className="text-2xl text-primary">Vinner</FormLabel>
-              {/* todo: fix bug where form reset does not visially show */}
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Vinner..." />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {players.data?.map((player) => (
-                    <SelectItem key={player.id} value={player.id}>
-                      {`${player.name} | ${player.office}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-[200px] justify-between",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value
+                        ? players.find((player) => player.id === field.value)
+                            ?.name
+                        : "Select player"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search player..." />
+                    <CommandEmpty>No player found.</CommandEmpty>
+                    <CommandGroup>
+                      {players.map((player) => (
+                        <CommandItem
+                          value={player.name}
+                          key={player.id}
+                          onSelect={() => {
+                            if (player.id === form.getValues("player2Id"))
+                              form.setValue("player2Id", "");
+
+                            form.setValue(
+                              "player2Id",
+                              form.getValues("player2Id"),
+                            );
+                            form.setValue("player1Id", player.id);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              player.id === field.value
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                          {player.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="player2Id"
-          render={({ field }) => (
-            <FormItem className="w-[65%]">
-              <FormLabel className="text-2xl text-destructive">Taper</FormLabel>
-              {/* todo: fix bug where form reset does not visially show */}
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Taper..." />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {players.data?.map((player) => (
-                    <SelectItem key={player.id} value={player.id}>
-                      {`${player.name} | ${player.office}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {form.watch("player1Id") !== "" && (
+          <FormField
+            control={form.control}
+            name="player2Id"
+            render={({ field }) => (
+              <FormItem className="flex w-[65%] flex-col">
+                <FormLabel className="text-2xl text-destructive">
+                  Taper
+                </FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "w-[200px] justify-between",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value
+                          ? players.find((player) => player.id === field.value)
+                              ?.name
+                          : "Select player"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[200px] p-0">
+                    <Command>
+                      <CommandInput placeholder="Search player..." />
+                      <CommandEmpty>No player found.</CommandEmpty>
+                      <CommandGroup>
+                        {players.map((player) => {
+                          if (player.id === form.getValues("player1Id"))
+                            return null;
+
+                          return (
+                            <CommandItem
+                              value={player.name}
+                              key={player.id}
+                              onSelect={() => {
+                                form.setValue("player2Id", player.id);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  player.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                              {player.name}
+                            </CommandItem>
+                          );
+                        })}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         {/* todo: fix bug, you can select a office and press submit at the same time */}
         <Button type="submit" className=" m-auto w-fit">
           Legg til kamp
