@@ -6,7 +6,7 @@ export const matchRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateMatch)
     .mutation(async ({ ctx, input }) => {
-      const player1 = await ctx.db.player.findUnique({
+      const player1 = await ctx.db.tableTennisPlayer.findUnique({
         where: { id: input.player1Id },
       });
 
@@ -14,7 +14,7 @@ export const matchRouter = createTRPCRouter({
         throw new Error(`Player ${input.player1Id} not found`);
       }
 
-      const player2 = await ctx.db.player.findUnique({
+      const player2 = await ctx.db.tableTennisPlayer.findUnique({
         where: { id: input.player2Id },
       });
 
@@ -28,17 +28,17 @@ export const matchRouter = createTRPCRouter({
         input.winner as "player111" | "player222", //todo: eirik er flink <3
       );
 
-      await ctx.db.player.update({
+      await ctx.db.tableTennisPlayer.update({
         where: { id: input.player1Id },
         data: { ...player1, elo: newElos[0] },
       });
 
-      await ctx.db.player.update({
+      await ctx.db.tableTennisPlayer.update({
         where: { id: input.player2Id },
         data: { ...player2, elo: newElos[1] },
       });
 
-      return ctx.db.match.create({
+      return ctx.db.tableTennisMatch.create({
         data: {
           player1Id: input.player1Id,
           player2Id: input.player1Id,
@@ -50,6 +50,6 @@ export const matchRouter = createTRPCRouter({
     }),
 
   findAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.match.findMany();
+    return ctx.db.tableTennisMatch.findMany();
   }),
 });

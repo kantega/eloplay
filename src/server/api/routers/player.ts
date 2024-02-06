@@ -5,7 +5,7 @@ export const playerRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreatePlayer)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.player.create({
+      return ctx.db.tableTennisPlayer.create({
         data: {
           name: input.name,
           office: input.office,
@@ -14,6 +14,6 @@ export const playerRouter = createTRPCRouter({
     }),
 
   findAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.player.findMany();
+    return ctx.db.tableTennisPlayer.findMany();
   }),
 });
