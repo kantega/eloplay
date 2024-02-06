@@ -24,7 +24,7 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
 
-export function AddMatchForm() {
+export default function AddMatchForm() {
   const players = api.player.findAll.useQuery();
   const form = useForm<z.infer<typeof CreateMatch>>({
     resolver: zodResolver(CreateMatch),

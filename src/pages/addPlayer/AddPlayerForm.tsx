@@ -25,7 +25,7 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreatePlayer } from "@/server/types/playerTypes";
 
-export function AddPlayerForm() {
+export default function AddPlayerForm() {
   const form = useForm<z.infer<typeof CreatePlayer>>({
     resolver: zodResolver(CreatePlayer),
     defaultValues: {

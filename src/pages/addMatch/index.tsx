@@ -1,4 +1,4 @@
-import { AddMatchForm } from "./AddMatchForm";
+import AddMatchForm from "./AddMatchForm";
 
 export default function AddMatch() {
   return (

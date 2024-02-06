@@ -1,4 +1,4 @@
-import { AddPlayerForm } from "./AddPlayerForm";
+import AddPlayerForm from "./AddPlayerForm";
 
 export default function AddPlayer() {
   return (
