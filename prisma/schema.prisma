@@ -10,7 +10,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Player {
+model TableTennisPlayer {
     id        String   @id @default(cuid())
     name      String
     elo       Int      @default(1000)
@@ -22,7 +22,7 @@ model Player {
     @@index([id])
 }
 
-model Match {
+model TableTennisMatch {
     id            String   @id @default(cuid())
     player1Id     String
     player2Id     String

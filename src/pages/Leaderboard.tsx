@@ -6,9 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { type Player } from "@prisma/client";
+import { type TableTennisPlayer } from "@prisma/client";
 
-export default function Leaderboard({ data }: { data: Player[] }) {
+export default function Leaderboard({ data }: { data: TableTennisPlayer[] }) {
   data.sort(sortPlayers);
   return (
     <Table>
@@ -34,5 +34,5 @@ export default function Leaderboard({ data }: { data: Player[] }) {
   );
 }
 
-const sortPlayers = (playerA: Player, playerB: Player) =>
+const sortPlayers = (playerA: TableTennisPlayer, playerB: TableTennisPlayer) =>
   playerB.elo - playerA.elo;
