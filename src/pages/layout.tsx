@@ -1,6 +1,6 @@
 import { ModeToggle } from "@/components/theme-toggle";
 import Head from "next/head";
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "../components/NavigationBar";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
