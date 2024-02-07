@@ -76,7 +76,11 @@ export default function AddMatchForm() {
 
   if (!playersQuery.data || playersQuery.isLoading) return null;
 
-  const players = playersQuery.data;
+  const players = playersQuery.data.sort((a, b) => {
+    if (a.name > b.name) return 1;
+    if (a.name < b.name) return -1;
+    return 0;
+  });
 
   return (
     <Form {...form}>
@@ -116,7 +120,7 @@ export default function AddMatchForm() {
                   <Command>
                     <CommandInput placeholder="Search player..." />
                     <CommandEmpty>No player found.</CommandEmpty>
-                    <CommandGroup>
+                    <CommandGroup className="overflow-y-scroll">
                       {players.map((player) => (
                         <CommandItem
                           value={player.name}
@@ -189,7 +193,7 @@ export default function AddMatchForm() {
                     <Command>
                       <CommandInput placeholder="Search player..." />
                       <CommandEmpty>No player found.</CommandEmpty>
-                      <CommandGroup>
+                      <CommandGroup className="overflow-y-scroll">
                         {players.map((player) => {
                           if (player.id === form.getValues("player1Id"))
                             return null;
