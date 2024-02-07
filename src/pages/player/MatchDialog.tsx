@@ -23,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { getTime } from "@/utils/match";
 
 export default function MatchDialog({
   children,
@@ -127,20 +128,3 @@ function MatchCard({ match }: { match: TableTennisMatch }) {
     </Card>
   );
 }
-
-const getTime = (date: Date) => {
-  const hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-  const minutes =
-    date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-  return (
-    hours +
-    ":" +
-    minutes +
-    " " +
-    (date.getDate() + 1) +
-    "-" +
-    (date.getMonth() + 1) +
-    "-" +
-    date.getFullYear()
-  );
-};
