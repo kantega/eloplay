@@ -82,7 +82,7 @@ export default function AddMatchForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex h-full w-full flex-col items-center justify-center gap-10 space-y-6"
+        className="flex h-full w-full flex-col items-center justify-center gap-4 space-y-6"
       >
         <FormField
           control={form.control}
