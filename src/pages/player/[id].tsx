@@ -3,6 +3,8 @@ import MatchHistory from "./MatchHistory";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import PlayerCard from "./PlayerCard";
+import PlayerEloGraph from "./PlayerEloGraph";
+import PlayerOpponentRadar from "./PlayerOpponentRadar";
 
 export default function PlayerPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,6 +15,12 @@ export default function PlayerPage() {
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
       {typeof id === "string" && (
         <PlayerCard id={id} searchQuery={searchQuery} />
+      )}
+      {typeof id === "string" && (
+        <PlayerEloGraph id={id} searchQuery={searchQuery} />
+      )}
+      {typeof id === "string" && (
+        <PlayerOpponentRadar id={id} searchQuery={searchQuery} />
       )}
       <Input
         placeholder="search for opponent..."
