@@ -10,11 +10,30 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
+model TableTennisPlayer {
+    id        String   @id @default(cuid())
     name      String
+    elo       Int      @default(1200)
+    office    String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    @@unique([name, office])
     @@index([name])
+    @@index([id])
+}
+
+model TableTennisMatch {
+    id            String   @id @default(cuid())
+    player1Id     String
+    player2Id     String
+    winner        String
+    prePlayer1Elo Int
+    prePlayer2Elo Int
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    @@index([player1Id])
+    @@index([player2Id])
+    @@index([winner])
 }
