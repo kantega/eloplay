@@ -1,6 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { CreateMatch } from "@/server/types/matchTypes";
-import { updateEloRating } from "@/utils/elo";
+import { matchResults, updateEloRating } from "@/utils/elo";
 import { z } from "zod";
 
 export const matchRouter = createTRPCRouter({
@@ -26,7 +26,11 @@ export const matchRouter = createTRPCRouter({
         throw new Error(`Player ${input.player2Id} not found`);
       }
 
-      const newElos = updateEloRating(player1.elo, player2.elo, "player111");
+      const newElos = updateEloRating(
+        player1.elo,
+        player2.elo,
+        matchResults.player111,
+      );
 
       await ctx.db.tableTennisPlayer.update({
         where: { id: input.player1Id },
@@ -79,7 +83,7 @@ export const matchRouter = createTRPCRouter({
       const newElos = updateEloRating(
         match.prePlayer1Elo,
         match.prePlayer2Elo,
-        "player111",
+        matchResults.player111,
       );
 
       await ctx.db.tableTennisPlayer.update({

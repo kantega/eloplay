@@ -1,9 +1,14 @@
-// todo: make enums for winner/result variable
+export const matchResults = {
+  player111: "player111",
+  player222: "player222",
+} as const;
+
+type MatchResult = (typeof matchResults)[keyof typeof matchResults];
 
 export function updateEloRating(
   Ra: number,
   Rb: number,
-  result: "player111" | "player222",
+  result: MatchResult,
   K = 30,
 ): [number, number] {
   // Calculate the expected score for each player
@@ -13,11 +18,11 @@ export function updateEloRating(
   // Determine the actual score based on the result
   let Sa: number, Sb: number;
   switch (result) {
-    case "player111":
+    case matchResults.player111:
       Sa = 1;
       Sb = 0;
       break;
-    case "player222":
+    case matchResults.player222:
       Sa = 0;
       Sb = 1;
       break;

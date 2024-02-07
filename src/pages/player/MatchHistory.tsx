@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/utils/api";
-import { updateEloRating } from "@/utils/elo";
+import { matchResults, updateEloRating } from "@/utils/elo";
 import { Minus, Plus, TrashIcon } from "lucide-react";
 import { sortMatchesByDate } from "@/utils/match";
 
@@ -62,13 +62,13 @@ export default function MatchHistory({ id }: { id: string }) {
                   (updateEloRating(
                     match.prePlayer1Elo,
                     match.prePlayer2Elo,
-                    "player111",
+                    matchResults.player111,
                   )[0] -
                     match.prePlayer1Elo)
                 : updateEloRating(
                     match.prePlayer1Elo,
                     match.prePlayer2Elo,
-                    "player111",
+                    matchResults.player111,
                   )[1] - match.prePlayer2Elo}
             </TableCell>
             <TableCell>
