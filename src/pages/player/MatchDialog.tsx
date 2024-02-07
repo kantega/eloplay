@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function MatchDialog({
   children,
@@ -31,6 +33,7 @@ export default function MatchDialog({
   match: TableTennisMatch;
   id: string;
 }) {
+  const [value, setValue] = useState("");
   const ctx = api.useContext();
   const deleteMatch = api.match.delete.useMutation({
     onSuccess: () => ctx.match.findAllById.invalidate({ id }),
@@ -43,8 +46,15 @@ export default function MatchDialog({
           <DialogTitle>Match</DialogTitle>
         </DialogHeader>
         <MatchCard match={match} />
+        <Input
+          type="text"
+          placeholder="Type delete to confirm deletion..."
+          value={value}
+          onChange={(e) => setValue(e.currentTarget.value)}
+        />
         <DialogFooter>
           <Button
+            disabled={value.toLowerCase() !== "delete"}
             type="submit"
             variant="destructive"
             onClick={() => {
