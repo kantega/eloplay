@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { LocationContext } from "./LangContext";
+import { LocationContext } from "./location-provider";
 import {
   Select,
   SelectContent,
@@ -14,7 +14,7 @@ import {
 import { type Office, offices } from "@/server/types/officeTypes";
 import { setLocalStorageLocation } from "./location";
 
-export function LanguageSelector() {
+export function LocationSelector() {
   const { location, setLocation } = useContext(LocationContext);
 
   return (

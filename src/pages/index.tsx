@@ -1,7 +1,7 @@
 import { api } from "@/utils/api";
 import Leaderboard from "../components/Leaderboard";
 import { useContext } from "react";
-import { LocationContext } from "@/components/LangContext/LangContext";
+import { LocationContext } from "@/contexts/locationContext/location-provider";
 
 export default function Home() {
   const { location } = useContext(LocationContext);

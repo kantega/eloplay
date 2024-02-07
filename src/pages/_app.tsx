@@ -3,9 +3,9 @@ import { type AppType } from "next/app";
 import { api } from "@/utils/api";
 
 import "@/styles/globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/contexts/themeContext/theme-provider";
 import Layout from "./layout";
-import { LocationProvider } from "@/components/LangContext/LangContext";
+import { LocationProvider } from "@/contexts/locationContext/location-provider";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (

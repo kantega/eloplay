@@ -32,7 +32,7 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
 import { useContext, useState } from "react";
-import { LocationContext } from "@/components/LangContext/LangContext";
+import { LocationContext } from "@/contexts/locationContext/location-provider";
 
 export default function AddMatchForm() {
   const { location } = useContext(LocationContext);
