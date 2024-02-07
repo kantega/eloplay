@@ -20,3 +20,42 @@ export const getMatchStats = (matches: TableTennisMatch[], id: string) => {
   }, 0);
   return { winrate, winstreak };
 };
+
+export function filterMatches(
+  matches: TableTennisMatch[],
+  searchQuery: string,
+) {
+  const letters = searchQuery.split("");
+
+  const player1Matches = matches.filter((match) => {
+    return letters.reduce(
+      (acc, letter) => {
+        if (!acc.state) return { state: acc.state, name: acc.name };
+        const includesLetter = acc.name.includes(letter.toLowerCase());
+        return {
+          state: includesLetter,
+          name: acc.name.replace(letter.toLowerCase(), ""),
+        };
+      },
+      { state: true, name: match.player1Id.toLowerCase() },
+    ).state;
+  });
+
+  const player2Matches = matches.filter((match) => {
+    return letters.reduce(
+      (acc, letter) => {
+        if (!acc.state) return { state: acc.state, name: acc.name };
+        const includesLetter = acc.name.includes(letter.toLowerCase());
+        return {
+          state: includesLetter,
+          name: acc.name.replace(letter.toLowerCase(), ""),
+        };
+      },
+      { state: true, name: match.player2Id.toLowerCase() },
+    ).state;
+  });
+
+  return [...new Set(player1Matches.concat(player2Matches))].sort(
+    sortMatchesByDate,
+  );
+}

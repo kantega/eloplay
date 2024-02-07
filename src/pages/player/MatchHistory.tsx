@@ -18,14 +18,17 @@ import {
 import { api } from "@/utils/api";
 import { matchResults, updateEloRating } from "@/utils/elo";
 import { Minus, Plus, TrashIcon } from "lucide-react";
-import { sortMatchesByDate } from "@/utils/match";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { type TableTennisMatch } from "@prisma/client";
+import { filterMatches } from "@/utils/match";
 
-export default function MatchHistory({ id }: { id: string }) {
+export default function MatchHistory({
+  id,
+  searchQuery,
+}: {
+  id: string;
+  searchQuery: string;
+}) {
   const ctx = api.useContext();
-  const [searchQuery, setSearchQuery] = useState("");
+
   const { data, isLoading } = api.match.findAllById.useQuery({ id });
   const deleteMatch = api.match.delete.useMutation({
     onSuccess: () => ctx.match.findAllById.invalidate({ id }),
@@ -37,13 +40,6 @@ export default function MatchHistory({ id }: { id: string }) {
 
   return (
     <>
-      <Input
-        placeholder="search for opponent..."
-        value={searchQuery}
-        onChange={(value) => {
-          setSearchQuery(value.currentTarget.value);
-        }}
-      />
       <Table className="w-[min(500px,100%)]">
         <TableHeader>
           <TableRow>
@@ -116,56 +112,5 @@ export default function MatchHistory({ id }: { id: string }) {
         </TableBody>
       </Table>
     </>
-  );
-}
-
-function filterMatches(matches: TableTennisMatch[], searchQuery: string) {
-  // all letters in searchQuery must be in card.name,
-  // does not matter what order they are in and does
-  // not count for multiple instances of the same letter
-
-  // const offices = ["oslo", "trondheim", "bergen"];
-
-  // if (searchQuery === "") return matches;
-
-  // if (offices.includes(searchQuery.toLowerCase()))
-  //   return matches.filter(
-  //     (match) =>
-  //       match.office !== null &&
-  //       match.office.toLowerCase() === searchQuery.toLowerCase(),
-  //   );
-
-  const letters = searchQuery.split("");
-
-  const player1Matches = matches.filter((match) => {
-    return letters.reduce(
-      (acc, letter) => {
-        if (!acc.state) return { state: acc.state, name: acc.name };
-        const includesLetter = acc.name.includes(letter.toLowerCase());
-        return {
-          state: includesLetter,
-          name: acc.name.replace(letter.toLowerCase(), ""),
-        };
-      },
-      { state: true, name: match.player1Id.toLowerCase() },
-    ).state;
-  });
-
-  const player2Matches = matches.filter((match) => {
-    return letters.reduce(
-      (acc, letter) => {
-        if (!acc.state) return { state: acc.state, name: acc.name };
-        const includesLetter = acc.name.includes(letter.toLowerCase());
-        return {
-          state: includesLetter,
-          name: acc.name.replace(letter.toLowerCase(), ""),
-        };
-      },
-      { state: true, name: match.player2Id.toLowerCase() },
-    ).state;
-  });
-
-  return [...new Set(player1Matches.concat(player2Matches))].sort(
-    sortMatchesByDate,
   );
 }

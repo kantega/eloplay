@@ -11,29 +11,41 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getMatchStats, sortMatchesByDate } from "@/utils/match";
+import { filterMatches, getMatchStats } from "@/utils/match";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function PlayerPage() {
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { id } = router.query;
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      {typeof id === "string" && <Player id={id} />}
-      {typeof id === "string" && <MatchHistory id={id} />}
+      {typeof id === "string" && <Player id={id} searchQuery={searchQuery} />}
+      <Input
+        placeholder="search for opponent..."
+        value={searchQuery}
+        onChange={(value) => {
+          setSearchQuery(value.currentTarget.value);
+        }}
+      />
+      {typeof id === "string" && (
+        <MatchHistory id={id} searchQuery={searchQuery} />
+      )}
     </div>
   );
 }
 
-function Player({ id }: { id: string }) {
+function Player({ id, searchQuery }: { id: string; searchQuery: string }) {
   const { data: matchs, isLoading: matchsIsLoading } =
     api.match.findAllById.useQuery({ id });
   const { data, isLoading } = api.player.findById.useQuery({ id });
   if (!data || isLoading) return null;
   if (!matchs || matchsIsLoading) return null;
 
-  matchs.sort(sortMatchesByDate);
-  const { winrate, winstreak } = getMatchStats(matchs, id);
+  const filteredMatches = filterMatches(matchs, searchQuery);
+  const { winrate, winstreak } = getMatchStats(filteredMatches, id);
 
   return (
     <Card className="relative w-[min(350px,90%)]">
