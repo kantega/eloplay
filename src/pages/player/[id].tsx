@@ -18,7 +18,7 @@ export default function PlayerPage() {
   const { id } = router.query;
 
   return (
-    <div className="container flex h-full flex-col items-center gap-40 px-4 py-4 ">
+    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
       {typeof id === "string" && <Player id={id} />}
       {typeof id === "string" && <MatchHistory id={id} />}
     </div>
