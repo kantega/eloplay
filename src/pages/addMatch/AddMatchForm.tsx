@@ -112,7 +112,7 @@ export default function AddMatchForm() {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <PopoverContent className="h-52 w-[200px] p-0">
                   <Command>
                     <CommandInput placeholder="Search player..." />
                     <CommandEmpty>No player found.</CommandEmpty>
@@ -185,7 +185,7 @@ export default function AddMatchForm() {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[200px] p-0">
+                  <PopoverContent className="h-52 w-[200px] p-0">
                     <Command>
                       <CommandInput placeholder="Search player..." />
                       <CommandEmpty>No player found.</CommandEmpty>
