@@ -26,28 +26,31 @@ export default function PlayerEloGraph({ id, searchQuery }: Props) {
   const { graphData, min, max } = getGraphData(filteredMatches, id, data.elo);
 
   return (
-    <LineChart
-      width={350}
-      height={200}
-      data={graphData}
-      margin={{
-        top: 5,
-        right: 30,
-        left: 20,
-        bottom: 5,
-      }}
-    >
-      <CartesianGrid strokeDasharray="5 5" />
-      <XAxis dataKey="createdAt" visibility={""} />
-      <YAxis domain={[min, max]} />
-      <Tooltip />
-      <Line
-        type="monotone"
-        dataKey="ELO"
-        stroke="#6D27D9"
-        activeDot={{ r: 8 }}
-      />
-    </LineChart>
+    <>
+      <h1 className="m-0 text-2xl">Elo over time</h1>
+      <LineChart
+        width={350}
+        height={200}
+        data={graphData}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="5 5" />
+        <XAxis dataKey="createdAt" visibility={""} />
+        <YAxis domain={[min, max]} />
+        <Tooltip />
+        <Line
+          type="monotone"
+          dataKey="ELO"
+          stroke="#6D27D9"
+          activeDot={{ r: 8 }}
+        />
+      </LineChart>
+    </>
   );
 }
 

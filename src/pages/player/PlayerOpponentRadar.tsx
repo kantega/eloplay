@@ -27,25 +27,28 @@ export default function PlayerOpponentRadar({ id, searchQuery }: Props) {
   if (radarData.length < 3) return null;
 
   return (
-    <RadarChart
-      cx={160}
-      cy={160}
-      outerRadius={100}
-      width={320}
-      height={320}
-      data={radarData}
-    >
-      <PolarGrid />
-      <PolarAngleAxis dataKey="subject" />
-      <PolarRadiusAxis />
-      <Radar
-        name="Opponents WR radar"
-        dataKey="WR"
-        stroke="#8884d8"
-        fill="#8884d8"
-        fillOpacity={0.6}
-      />
-    </RadarChart>
+    <>
+      <h1 className="m-0 text-2xl">Winrate radar vs opponents</h1>
+      <RadarChart
+        cx={160}
+        cy={160}
+        outerRadius={100}
+        width={320}
+        height={320}
+        data={radarData}
+      >
+        <PolarGrid />
+        <PolarAngleAxis dataKey="subject" />
+        <PolarRadiusAxis />
+        <Radar
+          name="Opponents WR radar"
+          dataKey="WR"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+    </>
   );
 }
 
