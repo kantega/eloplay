@@ -69,7 +69,7 @@ export const getTime = (date: Date) => {
     ":" +
     minutes +
     " " +
-    (date.getDate() + 1) +
+    date.getDate() +
     "-" +
     (date.getMonth() + 1) +
     "-" +

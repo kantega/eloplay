@@ -42,7 +42,8 @@ export default function PlayerEloGraph({ id, searchQuery }: Props) {
         <CartesianGrid strokeDasharray="5 5" />
         <XAxis dataKey="createdAt" visibility={""} />
         <YAxis domain={[min, max]} />
-        <Tooltip />
+        {/* todo: fix tooltip colors. potential fix --> <Tooltip contentStyle={{backgroundColor: theme.semanticColors.bodyBackground}} itemStyle={{ color: theme.semanticColors.bodyText }} /> */}
+        <Tooltip contentStyle={{ backgroundColor: "#777777" }} />
         <Line
           type="monotone"
           dataKey="ELO"
