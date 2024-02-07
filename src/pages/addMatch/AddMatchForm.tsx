@@ -31,13 +31,15 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateMatch } from "@/server/types/matchTypes";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { LocationContext } from "@/components/LangContext/LangContext";
 
 export default function AddMatchForm() {
+  const { location } = useContext(LocationContext);
   const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
   const [popoverLoserOpen, setPopoverLoserOpen] = useState(false);
 
-  const playersQuery = api.player.findAll.useQuery();
+  const playersQuery = api.player.findAll.useQuery({ office: location });
   const form = useForm<z.infer<typeof CreateMatch>>({
     resolver: zodResolver(CreateMatch),
     defaultValues: {

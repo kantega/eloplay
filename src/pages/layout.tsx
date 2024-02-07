@@ -2,6 +2,7 @@ import { ModeToggle } from "@/components/theme-toggle";
 import Head from "next/head";
 import NavigationBar from "../components/NavigationBar";
 import { Toaster } from "@/components/ui/toaster";
+import { LanguageSelector } from "@/components/LangContext/LanguageSelector";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <main className="flex min-h-screen flex-col items-center bg-background pt-24">
         <Toaster />
+        <div className=" fixed left-4 top-4">
+          <LanguageSelector />
+        </div>
         <div className=" fixed right-4 top-4">
           <ModeToggle />
         </div>

@@ -1,8 +1,11 @@
 import { api } from "@/utils/api";
 import Leaderboard from "../components/Leaderboard";
+import { useContext } from "react";
+import { LocationContext } from "@/components/LangContext/LangContext";
 
 export default function Home() {
-  const players = api.player.findAll.useQuery();
+  const { location } = useContext(LocationContext);
+  const players = api.player.findAll.useQuery({ office: location });
 
   return (
     <div className="container flex h-full flex-col items-center justify-center gap-40 px-4 py-4 ">
