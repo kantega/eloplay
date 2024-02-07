@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayerEloGraph from "./PlayerEloGraph";
+import PlayerOpponentRadar from "./PlayerOpponentRadar";
 
 export default function PlayerPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +18,9 @@ export default function PlayerPage() {
       )}
       {typeof id === "string" && (
         <PlayerEloGraph id={id} searchQuery={searchQuery} />
+      )}
+      {typeof id === "string" && (
+        <PlayerOpponentRadar id={id} searchQuery={searchQuery} />
       )}
       <Input
         placeholder="search for opponent..."

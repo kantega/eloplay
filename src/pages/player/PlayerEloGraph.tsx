@@ -37,7 +37,7 @@ export default function PlayerEloGraph({ id, searchQuery }: Props) {
         bottom: 5,
       }}
     >
-      <CartesianGrid strokeDasharray="3 3" />
+      <CartesianGrid strokeDasharray="5 5" />
       <XAxis dataKey="createdAt" visibility={""} />
       <YAxis domain={[min, max]} />
       <Tooltip />
