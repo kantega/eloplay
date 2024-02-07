@@ -77,7 +77,7 @@ export default function MatchHistory({
                     )[1] - match.prePlayer2Elo}
               </TableCell>
               <TableCell>
-                <MatchDialog match={match}>
+                <MatchDialog match={match} id={id}>
                   <Info />
                 </MatchDialog>
               </TableCell>
@@ -104,13 +104,15 @@ import { Badge } from "@/components/ui/badge";
 export function MatchDialog({
   children,
   match,
+  id,
 }: {
   children: React.ReactNode;
   match: TableTennisMatch;
+  id: string;
 }) {
   const ctx = api.useContext();
   const deleteMatch = api.match.delete.useMutation({
-    onSuccess: () => ctx.match.findAllById.invalidate({ id: match.id }),
+    onSuccess: () => ctx.match.findAllById.invalidate({ id }),
   });
   return (
     <Dialog>
