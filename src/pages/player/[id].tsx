@@ -48,7 +48,7 @@ function Player({ id, searchQuery }: { id: string; searchQuery: string }) {
   const { winrate, winstreak } = getMatchStats(filteredMatches, id);
 
   return (
-    <Card className="relative w-[min(350px,90%)]">
+    <Card className="relative w-[min(350px,100%)]">
       <CardHeader>
         <CardTitle className="flex flex-row gap-2">
           <Avatar>
@@ -64,10 +64,14 @@ function Player({ id, searchQuery }: { id: string; searchQuery: string }) {
       <CardContent>
         <div className="mb-6 flex flex-row gap-8">
           <p>
-            <b>Winrate: </b> {" " + winrate}%
+            <b>Total:</b> {filteredMatches.length}
           </p>
           <p>
-            <b>Streak:</b> {winstreak}
+            <b>Streak:</b>
+            {winstreak}
+          </p>
+          <p>
+            <b>WR: </b> {winrate}%
           </p>
         </div>
         <Badge className="absolute bottom-4 left-4 text-2xl">
