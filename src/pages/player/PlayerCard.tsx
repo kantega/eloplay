@@ -59,7 +59,6 @@ export default function PlayerCard({
         <p className="absolute bottom-4 right-4 text-xs">
           Joined:{" "}
           {data.createdAt.getDate() +
-            1 +
             "-" +
             (data.createdAt.getMonth() + 1) +
             "-" +
