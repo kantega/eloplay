@@ -23,7 +23,7 @@ export default function MatchHistory({
 
   if (!data || isLoading) return null;
 
-  const filteredMatches = filterMatches(data, searchQuery);
+  const filteredMatches = filterMatches(data, searchQuery, id);
 
   return (
     <>
