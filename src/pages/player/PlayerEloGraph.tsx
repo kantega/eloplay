@@ -22,7 +22,7 @@ export default function PlayerEloGraph({ id, searchQuery }: Props) {
   if (!data || isLoading) return null;
   if (!matchs || matchsIsLoading) return null;
 
-  const filteredMatches = filterMatches(matchs, searchQuery);
+  const filteredMatches = filterMatches(matchs, searchQuery, id);
   const { graphData, min, max } = getGraphData(filteredMatches, id, data.elo);
 
   return (

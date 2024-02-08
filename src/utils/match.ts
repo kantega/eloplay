@@ -24,10 +24,11 @@ export const getMatchStats = (matches: TableTennisMatch[], id: string) => {
 export function filterMatches(
   matches: TableTennisMatch[],
   searchQuery: string,
+  id: string,
 ) {
   const letters = searchQuery.split("");
 
-  const player1Matches = matches.filter((match) => {
+  const filteredMatches = matches.filter((match) => {
     return letters.reduce(
       (acc, letter) => {
         if (!acc.state) return { state: acc.state, name: acc.name };
@@ -37,27 +38,17 @@ export function filterMatches(
           name: acc.name.replace(letter.toLowerCase(), ""),
         };
       },
-      { state: true, name: match.player1Id.toLowerCase() },
-    ).state;
-  });
-
-  const player2Matches = matches.filter((match) => {
-    return letters.reduce(
-      (acc, letter) => {
-        if (!acc.state) return { state: acc.state, name: acc.name };
-        const includesLetter = acc.name.includes(letter.toLowerCase());
-        return {
-          state: includesLetter,
-          name: acc.name.replace(letter.toLowerCase(), ""),
-        };
+      {
+        state: true,
+        name:
+          match.winner === id
+            ? match.player2Id.toLowerCase()
+            : match.player1Id.toLowerCase(),
       },
-      { state: true, name: match.player2Id.toLowerCase() },
     ).state;
   });
 
-  return [...new Set(player1Matches.concat(player2Matches))].sort(
-    sortMatchesByDate,
-  );
+  return filteredMatches;
 }
 
 export const getTime = (date: Date) => {

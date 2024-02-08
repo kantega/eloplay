@@ -21,7 +21,7 @@ export default function PlayerOpponentRadar({ id, searchQuery }: Props) {
   if (!data || isLoading) return null;
   if (!matchs || matchsIsLoading) return null;
 
-  const filteredMatches = filterMatches(matchs, searchQuery);
+  const filteredMatches = filterMatches(matchs, searchQuery, id);
   const { radarData } = getRadarData(filteredMatches, id);
 
   if (radarData.length < 3) return null;
