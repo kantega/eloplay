@@ -1,28 +1,31 @@
-# Create T3 App
+# Table Tennis Leaderboard App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Welcome to the Table Tennis Leaderboard App! This open-source application is designed to help you manage and keep track of table tennis matches, players, and leaderboards effortlessly.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **Add Players**: Easily add new players to the system.
+- **Record Matches**: Log matches between players
+- **Leaderboard**: View an leaderboard showcasing the top players based on Elo rating.
+- **Player Page**: Get detailed statistics for each player, including Elo rating, win-loss ratio, match history and more.
+- **No Authentication**: This app does not require any user authenticatio.
+- **Full trust throttle**: Everybody can make the experience great. Anybody can make it not so great.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Contributing
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+Contributions are welcome! If you have ideas for new features, bug fixes, or improvements, feel free to open an issue or submit a pull request. Please ensure that your code adheres to the established coding standards and includes appropriate documentation.
 
-## Learn More
+## License
+
+This project is licensed under the MIT License.
+
+## Built using T3 stack and Shadcn/UI
 
 To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
 
 - [Documentation](https://create.t3.gg/)
 - [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+To learn more about the [Shadcn/UI](https://ui.shadcn.com/), take a look at the following resources:
 
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+- [Documentation](https://ui.shadcn.com/docs)
