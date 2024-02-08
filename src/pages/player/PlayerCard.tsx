@@ -23,7 +23,7 @@ export default function PlayerCard({
   if (!data || isLoading) return null;
   if (!matchs || matchsIsLoading) return null;
 
-  const filteredMatches = filterMatches(matchs, searchQuery);
+  const filteredMatches = filterMatches(matchs, searchQuery, id);
   const { winrate, winstreak } = getMatchStats(filteredMatches, id);
 
   return (

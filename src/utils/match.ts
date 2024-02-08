@@ -48,7 +48,7 @@ export function filterMatches(
     ).state;
   });
 
-  return filteredMatches;
+  return filteredMatches.reverse();
 }
 
 export const getTime = (date: Date) => {
