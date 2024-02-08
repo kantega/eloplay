@@ -93,7 +93,7 @@ export default function AddMatchForm() {
           name="player1Id"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel className="text-2xl text-primary">Vinner</FormLabel>
+              <FormLabel className="text-2xl text-green-600">Vinner</FormLabel>
               <Popover
                 open={popoverWinnerOpen}
                 onOpenChange={setPopoverWinnerOpen}
@@ -118,7 +118,10 @@ export default function AddMatchForm() {
                 </PopoverTrigger>
                 <PopoverContent className="h-52 w-[200px] p-0">
                   <Command>
-                    <CommandInput placeholder="Search player..." />
+                    <CommandInput
+                      className="placeholder-green-600"
+                      placeholder="Velg vinner..."
+                    />
                     <CommandEmpty>No player found.</CommandEmpty>
                     <CommandGroup className="overflow-y-scroll">
                       {players.map((player) => (
@@ -164,9 +167,7 @@ export default function AddMatchForm() {
             name="player2Id"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel className="text-2xl text-destructive">
-                  Taper
-                </FormLabel>
+                <FormLabel className="text-2xl text-red-600">Taper</FormLabel>
                 <Popover
                   open={popoverLoserOpen}
                   onOpenChange={setPopoverLoserOpen}
@@ -191,7 +192,10 @@ export default function AddMatchForm() {
                   </PopoverTrigger>
                   <PopoverContent className="h-52 w-[200px] p-0">
                     <Command>
-                      <CommandInput placeholder="Search player..." />
+                      <CommandInput
+                        className="placeholder-red-600"
+                        placeholder="Velg taper..."
+                      />
                       <CommandEmpty>No player found.</CommandEmpty>
                       <CommandGroup className="overflow-y-scroll">
                         {players.map((player) => {
