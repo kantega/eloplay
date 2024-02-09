@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { api } from "@/utils/api";
-import { matchResults, updateEloRating } from "@/utils/elo";
+import { updateEloRating } from "@/utils/elo";
 import { TrashIcon } from "lucide-react";
 
 import { type TableTennisMatch } from "@prisma/client";
@@ -106,18 +106,12 @@ function MatchCard({ match }: { match: TableTennisMatch }) {
         <div className=" flex flex-row justify-between">
           <Badge className=" bg-green-600 text-2xl">
             +
-            {updateEloRating(
-              match.prePlayer1Elo,
-              match.prePlayer2Elo,
-              matchResults.player111,
-            )[0] - match.prePlayer1Elo}
+            {updateEloRating(match.prePlayer1Elo, match.prePlayer2Elo)[0] -
+              match.prePlayer1Elo}
           </Badge>
           <Badge className=" bg-red-600 text-2xl">
-            {updateEloRating(
-              match.prePlayer1Elo,
-              match.prePlayer2Elo,
-              matchResults.player111,
-            )[1] - match.prePlayer2Elo}
+            {updateEloRating(match.prePlayer1Elo, match.prePlayer2Elo)[1] -
+              match.prePlayer2Elo}
           </Badge>
         </div>
         <p className="absolute bottom-2 right-2 text-xs">

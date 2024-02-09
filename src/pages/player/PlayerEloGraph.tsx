@@ -26,7 +26,7 @@ export default function PlayerEloGraph({ id, searchQuery }: Props) {
   const { graphData, min, max } = getGraphData(filteredMatches, id, data.elo);
 
   return (
-    <>
+    <span className="flex flex-col items-center justify-center">
       <h1 className="m-0 text-2xl">Elo over time</h1>
       <LineChart
         width={350}
@@ -51,7 +51,7 @@ export default function PlayerEloGraph({ id, searchQuery }: Props) {
           activeDot={{ r: 8 }}
         />
       </LineChart>
-    </>
+    </span>
   );
 }
 

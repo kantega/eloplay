@@ -16,12 +16,15 @@ export default function PlayerPage() {
       {typeof id === "string" && (
         <PlayerCard id={id} searchQuery={searchQuery} />
       )}
-      {typeof id === "string" && (
-        <PlayerEloGraph id={id} searchQuery={searchQuery} />
-      )}
-      {typeof id === "string" && (
-        <PlayerOpponentRadar id={id} searchQuery={searchQuery} />
-      )}
+
+      <div className="container flex flex-col justify-center gap-8 md:flex-row">
+        {typeof id === "string" && (
+          <PlayerEloGraph id={id} searchQuery={searchQuery} />
+        )}
+        {typeof id === "string" && (
+          <PlayerOpponentRadar id={id} searchQuery={searchQuery} />
+        )}
+      </div>
       <Input
         placeholder="search for opponent..."
         value={searchQuery}
