@@ -49,12 +49,13 @@ export default function MatchDialog({
         <MatchCard match={match} />
         <Input
           type="text"
-          placeholder="Type delete to confirm deletion..."
+          placeholder="Type delete to activate delete button..."
           value={value}
           onChange={(e) => setValue(e.currentTarget.value)}
         />
         <DialogFooter>
           <Button
+            className="w-full"
             disabled={value.toLowerCase() !== "delete"}
             type="submit"
             variant="destructive"
