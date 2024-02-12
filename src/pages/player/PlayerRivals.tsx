@@ -1,20 +1,13 @@
 import { api } from "@/utils/api";
 import { filterMatches } from "@/utils/match";
 import { type TableTennisMatch } from "@prisma/client";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-} from "recharts";
 
 interface Props {
   id: string;
   searchQuery: string;
 }
 
-export default function PlayerOpponentRadar({ id, searchQuery }: Props) {
+export default function PlayerRivals({ id, searchQuery }: Props) {
   const { data: matchs, isLoading: matchsIsLoading } =
     api.match.findAllById.useQuery({ id });
   const { data, isLoading } = api.player.findById.useQuery({ id });
@@ -22,32 +15,12 @@ export default function PlayerOpponentRadar({ id, searchQuery }: Props) {
   if (!matchs || matchsIsLoading) return null;
 
   const filteredMatches = filterMatches(matchs, searchQuery, id);
-  const { radarData } = getRadarData(filteredMatches, id);
-
-  if (radarData.length < 3) return null;
+  const { nemesis, bestFriend } = getRivalsData(filteredMatches, id);
 
   return (
-    <span className="flex flex-col items-center justify-center">
-      <h1 className="m-0 text-2xl">Winrate radar vs opponents</h1>
-      <RadarChart
-        cx={160}
-        cy={160}
-        outerRadius={100}
-        width={320}
-        height={320}
-        data={radarData}
-      >
-        <PolarGrid />
-        <PolarAngleAxis dataKey="subject" />
-        <PolarRadiusAxis />
-        <Radar
-          name="Opponents WR radar"
-          dataKey="WR"
-          stroke="#8884d8"
-          fill="#8884d8"
-          fillOpacity={0.6}
-        />
-      </RadarChart>
+    <span className="flex w-full flex-row flex-wrap justify-between gap-2">
+      <h1 className="text-3xl">🥳 {bestFriend?.subject.slice(0, 20)}</h1>
+      <h1 className="text-3xl"> 👹 {nemesis?.subject}</h1>
     </span>
   );
 }
@@ -60,7 +33,7 @@ interface RadarData {
   fullMark: number;
 }
 
-const getRadarData = (matches: TableTennisMatch[], id: string) => {
+const getRivalsData = (matches: TableTennisMatch[], id: string) => {
   const radarData: RadarData[] = matches.map((match) => {
     const isWin = match.winner === id;
     const opponent = !isWin ? match.player1Id : match.player2Id;
@@ -90,14 +63,20 @@ const getRadarData = (matches: TableTennisMatch[], id: string) => {
     return acc;
   }, [] as RadarData[]);
 
-  const doneRadarData = aggregatedList.map((item) => {
+  const doneRivals = aggregatedList.map((item) => {
     return {
       ...item,
-      WR: Math.floor((item.wins / item.total) * 100),
+      WR: Math.floor(((item.wins + 1) / (item.total + 2)) * 100),
+      wins: item.wins + 1,
+      total: item.total + 2,
     };
   });
 
-  const sortedRadarData = doneRadarData.sort((a, b) => b.total - a.total);
+  const sortedRivals = doneRivals.sort((a, b) => b.WR - a.WR);
 
-  return { radarData: sortedRadarData.slice(0, 6) };
+  const bestFriend = sortedRivals[0];
+
+  const nemesis = sortedRivals[sortedRivals.length - 1];
+
+  return { nemesis, bestFriend };
 };

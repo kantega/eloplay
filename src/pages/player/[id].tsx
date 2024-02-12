@@ -5,6 +5,7 @@ import { useState } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayerEloGraph from "./PlayerEloGraph";
 import PlayerOpponentRadar from "./PlayerOpponentRadar";
+import PlayerRivals from "./PlayerRivals";
 
 export default function PlayerPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,11 +18,17 @@ export default function PlayerPage() {
         <PlayerCard id={id} searchQuery={searchQuery} />
       )}
       {typeof id === "string" && (
-        <PlayerEloGraph id={id} searchQuery={searchQuery} />
+        <PlayerRivals id={id} searchQuery={searchQuery} />
       )}
-      {typeof id === "string" && (
-        <PlayerOpponentRadar id={id} searchQuery={searchQuery} />
-      )}
+
+      <div className="container flex flex-col justify-center gap-8 md:flex-row">
+        {typeof id === "string" && (
+          <PlayerEloGraph id={id} searchQuery={searchQuery} />
+        )}
+        {typeof id === "string" && (
+          <PlayerOpponentRadar id={id} searchQuery={searchQuery} />
+        )}
+      </div>
       <Input
         placeholder="search for opponent..."
         value={searchQuery}
