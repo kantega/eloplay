@@ -29,7 +29,7 @@ export default function PlayerCard({
 
   return (
     <Card className=" relative w-full overflow-hidden">
-      <PingPongShower number={10} />
+      {winstreak > 0 && <PingPongShower number={winstreak} />}
       <CardHeader>
         <CardTitle className="flex flex-row gap-2">
           <Avatar>
