@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { filterMatches, getMatchStats } from "@/utils/match";
+import { PingPongShower } from "@/components/ping-pong-shower";
 
 export default function PlayerCard({
   id,
@@ -27,7 +28,8 @@ export default function PlayerCard({
   const { winrate, winstreak } = getMatchStats(filteredMatches, id);
 
   return (
-    <Card className="relative w-[min(350px,100%)]">
+    <Card className=" relative w-full overflow-hidden">
+      {winstreak > 0 && <PingPongShower number={winstreak} />}
       <CardHeader>
         <CardTitle className="flex flex-row gap-2">
           <Avatar>
