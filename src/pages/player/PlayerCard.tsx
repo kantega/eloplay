@@ -9,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { filterMatches, getMatchStats } from "@/utils/match";
-import { Meteors } from "@/components/meteors";
+import { PingPongShower } from "@/components/ping-pong-shower";
 
 export default function PlayerCard({
   id,
@@ -29,7 +29,7 @@ export default function PlayerCard({
 
   return (
     <Card className=" relative w-full overflow-hidden">
-      <Meteors number={10} />
+      <PingPongShower number={10} />
       <CardHeader>
         <CardTitle className="flex flex-row gap-2">
           <Avatar>
