@@ -1,4 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { offices } from "@/server/types/officeTypes";
 import { CreatePlayer } from "@/server/types/playerTypes";
 import { z } from "zod";
@@ -33,4 +37,8 @@ export const playerRouter = createTRPCRouter({
         where: { id: input.id },
       });
     }),
+
+  getSecretMessage: protectedProcedure.query(() => {
+    return "you can now see this secret message!";
+  }),
 });
