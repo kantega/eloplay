@@ -3,6 +3,9 @@ import Head from "next/head";
 import NavigationBar from "../components/NavigationBar";
 import { Toaster } from "@/components/ui/toaster";
 import { LocationSelector } from "@/contexts/locationContext/location-toggle";
+import { signIn, signOut, useSession } from "next-auth/react";
+// import { api } from "@/utils/api";
+import { Button } from "@/components/ui/button";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,15 +17,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <main className="relative m-auto flex min-h-screen max-w-[700px] flex-col items-center bg-background pt-24">
         <Toaster />
-        <div className=" absolute left-4 top-4">
+        <div className="sticky flex w-full flex-row justify-between">
           <LocationSelector />
-        </div>
-        <div className=" absolute right-4 top-4">
+
           <ModeToggle />
+          <AuthShowcase />
         </div>
+
         {children}
         <NavigationBar />
       </main>
     </>
+  );
+}
+
+function AuthShowcase() {
+  const { data: sessionData } = useSession();
+
+  // const { data: secretMessage } = api.player.getSecretMessage.useQuery(
+  //   undefined, // no input
+  //   { enabled: sessionData?.user !== undefined },
+  // );
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-4">
+      {/* <p className="text-center text-2xl text-white">
+        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {secretMessage && <span> - {secretMessage}</span>}
+      </p> */}
+      <Button
+        variant={sessionData ? "outline" : "default"}
+        onClick={sessionData ? () => void signOut() : () => void signIn()}
+      >
+        {sessionData ? "Sign out" : "Sign in"}
+      </Button>
+    </div>
   );
 }
