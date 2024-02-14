@@ -63,13 +63,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String         @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?        @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    UserRoleLink  UserRoleLink[]
+    Elo           Elo[]
 }
 
 model VerificationToken {
@@ -78,4 +80,81 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Role {
+    id                 String         @id @default(cuid())
+    name               String         @unique
+    createdAt          DateTime       @default(now())
+    UserRoleLink       UserRoleLink[]
+    AdminOrganisation  Organisation?  @relation("role_adminId")
+    MemberOrganisation Organisation?  @relation("role_memberId")
+}
+
+model Organisation {
+    id           String   @id @default(cuid())
+    name         String   @unique
+    createdAt    DateTime @default(now())
+    adminId      String   @unique
+    memberId     String   @unique
+    RoleAdminId  Role     @relation("role_adminId", fields: [adminId], references: [id])
+    RoleMemberId Role     @relation("role_memberId", fields: [memberId], references: [id])
+    Team         Team[]
+    Sport        Sport[]
+}
+
+model Team {
+    id             String       @id @default(cuid())
+    name           String       @unique
+    organisation   Organisation @relation(fields: [organisationId], references: [id])
+    organisationId String
+    createdAt      DateTime     @default(now())
+}
+
+model UserRoleLink {
+    id        String   @id @default(cuid())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    role      Role     @relation(fields: [roleId], references: [id])
+    roleId    String
+    createdAt DateTime @default(now())
+
+    @@unique([userId, roleId])
+}
+
+model Sport {
+    id             String       @id @default(cuid())
+    name           String       @unique
+    organisationId String
+    Organisation   Organisation @relation(fields: [organisationId], references: [id])
+    Elo            Elo[]
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+    Match          Match[]
+}
+
+model Elo {
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    sportId   String
+    sport     Sport    @relation(fields: [sportId], references: [id])
+    elo       Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Match {
+    id           String   @id @default(cuid())
+    winnerId     String
+    loserId      String
+    sportId      String
+    sport        Sport    @relation(fields: [sportId], references: [id])
+    preWinnerElo Int
+    preLoserElo  Int
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    @@index([winnerId])
+    @@index([loserId])
 }
