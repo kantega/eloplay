@@ -83,32 +83,29 @@ model VerificationToken {
 }
 
 model Role {
-    id                 String         @id @default(cuid())
-    name               String         @unique
-    createdAt          DateTime       @default(now())
-    UserRoleLink       UserRoleLink[]
-    AdminOrganisation  Organisation?  @relation("role_adminId")
-    MemberOrganisation Organisation?  @relation("role_memberId")
+    id                    String         @id @default(cuid())
+    name                  String
+    createdAt             DateTime       @default(now())
+    UserRoleLink          UserRoleLink[]
+    AdminOrganisation     Organisation?  @relation("organisation_role_adminId")
+    ModeratorOrganisation Organisation?  @relation("organisation_role_moderatorId")
+    MemberOrganisation    Organisation?  @relation("organisation_role_memberId")
 }
 
 model Organisation {
-    id           String   @id @default(cuid())
-    name         String   @unique
-    createdAt    DateTime @default(now())
-    adminId      String   @unique
-    memberId     String   @unique
-    RoleAdminId  Role     @relation("role_adminId", fields: [adminId], references: [id])
-    RoleMemberId Role     @relation("role_memberId", fields: [memberId], references: [id])
-    Team         Team[]
-    Sport        Sport[]
-}
-
-model Team {
-    id             String       @id @default(cuid())
-    name           String       @unique
-    organisation   Organisation @relation(fields: [organisationId], references: [id])
-    organisationId String
-    createdAt      DateTime     @default(now())
+    id              String   @id @default(cuid())
+    name            String   @unique
+    image           String?
+    description     String?
+    password        String?
+    createdAt       DateTime @default(now())
+    adminRoleId     String   @unique
+    moderatorRoleId String   @unique
+    memberRoleId    String   @unique
+    RoleAdmin       Role     @relation("organisation_role_adminId", fields: [adminRoleId], references: [id])
+    RoleModerator   Role     @relation("organisation_role_moderatorId", fields: [moderatorRoleId], references: [id])
+    RoleMember      Role     @relation("organisation_role_memberId", fields: [memberRoleId], references: [id])
+    Sport           Sport[]
 }
 
 model UserRoleLink {

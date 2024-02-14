@@ -15,6 +15,7 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import { organisationIdSchema } from "../types/organisationTypes";
 
 /**
  * 1. CONTEXT
@@ -126,3 +127,150 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+export const organisationAdminProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { id } = organisationIdSchema.parse(rawInput);
+
+    const organisation = await ctx.db.organisation.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!organisation)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Organisation not found",
+      });
+
+    const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        roleId: organisation.adminRoleId as string,
+      },
+    });
+
+    if (!userIsAdmin)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "User is not an admin of this organisation",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);
+
+export const organisationModeratorProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { id } = organisationIdSchema.parse(rawInput);
+
+    const organisation = await ctx.db.organisation.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!organisation)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Organisation not found",
+      });
+
+    const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        roleId: organisation.adminRoleId as string,
+      },
+    });
+
+    const userIsModerator = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        roleId: organisation.moderatorRoleId as string,
+      },
+    });
+
+    if (!userIsAdmin && !userIsModerator)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "User is not an admin or moderator of this organisation",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);
+
+export const organisationMemberProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { id } = organisationIdSchema.parse(rawInput);
+
+    const organisation = await ctx.db.organisation.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!organisation)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Organisation not found",
+      });
+
+    const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        roleId: organisation.adminRoleId as string,
+      },
+    });
+
+    const userIsModerator = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        roleId: organisation.moderatorRoleId as string,
+      },
+    });
+
+    const userIsMember = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        roleId: organisation.memberRoleId as string,
+      },
+    });
+
+    if (!userIsAdmin && !userIsModerator && !userIsMember)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "User is not a part of this organisation",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);

@@ -35,7 +35,7 @@ export default function MatchDialog({
   id: string;
 }) {
   const [value, setValue] = useState("");
-  const ctx = api.useContext();
+  const ctx = api.useUtils();
   const deleteMatch = api.match.delete.useMutation({
     onSuccess: () => ctx.match.findAllById.invalidate({ id }),
   });

@@ -1,8 +1,7 @@
 import { api } from "@/utils/api";
-import Leaderboard from "../components/Leaderboard";
+import Leaderboard from "../../components/Leaderboard";
 import { useContext } from "react";
 import { LocationContext } from "@/contexts/locationContext/location-provider";
-import Link from "next/link";
 
 export default function Home() {
   const { location } = useContext(LocationContext);
@@ -13,7 +12,6 @@ export default function Home() {
       <h1 className="text-5xl font-bold">Leaderboard</h1>
 
       {players.data !== undefined && <Leaderboard data={players.data} />}
-      <Link href={"/new"}>new</Link>
     </div>
   );
 }

@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type Office, offices } from "@/server/types/officeTypes";
-import { setLocalStorageLocation } from "./location";
 
 export function LocationSelector() {
   const { location, setLocation } = useContext(LocationContext);
@@ -20,10 +19,7 @@ export function LocationSelector() {
   return (
     <Select
       defaultValue={location}
-      onValueChange={(v: Office) => {
-        setLocation(v);
-        setLocalStorageLocation(v);
-      }}
+      onValueChange={(v: Office) => setLocation(v)}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select a office" />

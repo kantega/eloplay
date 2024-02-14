@@ -2,7 +2,7 @@
 
 import React, { createContext, useState } from "react";
 import { type Office } from "@/server/types/officeTypes";
-import { getLocalStorageLocation } from "./location";
+import { getLocalStorageLocation, setLocalStorageLocation } from "./location";
 
 interface LocationProps {
   location: Office;
@@ -15,7 +15,14 @@ const LocationContext = createContext<LocationProps>({
 });
 
 function LocationProvider({ children }: { children: React.ReactNode }) {
-  const [location, setLocation] = useState<Office>(getLocalStorageLocation()); // state for current locale
+  const [location, setLocationState] = useState<Office>(
+    getLocalStorageLocation(),
+  ); // state for current locale
+
+  const setLocation = (location: Office) => {
+    setLocationState(location);
+    setLocalStorageLocation(location);
+  };
 
   return (
     <LocationContext.Provider
