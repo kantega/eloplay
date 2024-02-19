@@ -9,6 +9,7 @@ import { LocationProvider } from "@/contexts/locationContext/location-provider";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { TeamProvider } from "@/contexts/teamContext/team-provider";
+import { LeagueProvider } from "@/contexts/leagueContext/league-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -18,11 +19,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <TeamProvider>
-          <LocationProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </LocationProvider>
+          <LeagueProvider>
+            <LocationProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </LocationProvider>
+          </LeagueProvider>
         </TeamProvider>
       </ThemeProvider>
     </SessionProvider>
