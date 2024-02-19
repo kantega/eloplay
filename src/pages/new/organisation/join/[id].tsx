@@ -44,7 +44,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
     onSuccess: async () => {
       toast({
         title: "Success",
-        description: "Added player.",
+        description: "Welcome, your are part of the team!",
         variant: "default",
       });
       setRequestStatus(RequestStatuses.SUCCESS);

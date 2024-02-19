@@ -80,6 +80,15 @@ export const organisationRouter = createTRPCRouter({
 
       const userId = ctx.session.user.id;
 
+      const userIsMember = await ctx.db.userRoleLink.findFirst({
+        where: {
+          userId: userId,
+          roleId: organisation.memberRoleId,
+        },
+      });
+
+      if (userIsMember) return organisation;
+
       await ctx.db.userRoleLink.create({
         data: {
           userId: userId,
