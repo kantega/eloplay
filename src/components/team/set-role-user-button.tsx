@@ -7,7 +7,7 @@ import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { userIsModerator } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 
-export default function UpgradeUserButton({
+export default function SetRoleUserButton({
   member,
 }: {
   member: { role: RoleText; id: string };
@@ -39,6 +39,7 @@ export default function UpgradeUserButton({
     },
   });
 
+  console.log(member);
   return (
     <>
       {member.role !== RoleTexts.ADMIN && userIsModerator(role) && (

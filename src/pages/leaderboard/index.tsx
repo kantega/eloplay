@@ -1,5 +1,5 @@
 import { api } from "@/utils/api";
-import Leaderboard from "../../components/Leaderboard";
+import Leaderboard from "../../components/leaderboard";
 import { useContext } from "react";
 import { LocationContext } from "@/contexts/locationContext/location-provider";
 

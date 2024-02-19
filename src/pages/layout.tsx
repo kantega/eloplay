@@ -1,7 +1,7 @@
 import Head from "next/head";
-import NavigationBar from "../components/NavigationBar";
+import NavigationBar from "../components/navigation-bar";
 import { Toaster } from "@/components/ui/toaster";
-import SettingsBar from "@/components/SettingsBar";
+import SettingsBar from "@/components/settings-bar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

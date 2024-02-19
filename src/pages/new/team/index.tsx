@@ -9,8 +9,8 @@ import { PencilLine, X } from "lucide-react";
 import { userIsAdmin } from "@/utils/role";
 import { filterMembers } from "@/utils/match";
 import { Input } from "@/components/ui/input";
-import ChangeTeamName from "./components/change-team-name";
-import UpgradeUserButton from "./components/set-role-user-button";
+import ChangeTeamName from "../../../components/team/change-team-name";
+import SetRoleUserButton from "../../../components/team/set-role-user-button";
 
 export default function PlayerPage() {
   const { role, teamId } = useContext(TeamContext);
@@ -76,7 +76,7 @@ function TeamInfo({ id }: { id: string }) {
               >
                 {member.role}
               </Badge>
-              <UpgradeUserButton member={member} />
+              <SetRoleUserButton member={member} />
             </li>
           );
         })}

@@ -1,6 +1,6 @@
 "use client";
 
-import JoinTeamForm from "../components/JoinTeamForm";
+import JoinTeamForm from "../../../../components/team/jon-team-form";
 
 export default function PlayerPage() {
   return (
