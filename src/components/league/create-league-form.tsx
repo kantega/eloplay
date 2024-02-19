@@ -16,20 +16,27 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateTeam } from "@/server/types/teamTypes";
+import { useContext } from "react";
+import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { userIsModerator } from "@/utils/role";
 
-export default function CreateTeamForm() {
+export default function CreateLeagueForm() {
+  const { role, teamId } = useContext(TeamContext);
+  const ctx = api.useUtils();
   const form = useForm<z.infer<typeof CreateTeam>>({
     resolver: zodResolver(CreateTeam),
     defaultValues: {
       name: "",
     },
   });
-  const createTeam = api.team.create.useMutation({
+  const createLeague = api.league.create.useMutation({
     onSuccess: async () => {
+      void ctx.league.findAll.invalidate({ id: teamId });
       form.reset();
+
       toast({
         title: "Success",
-        description: "Added player.",
+        description: `Added new league, ${form.getValues("name")}, to team.`,
         variant: "default",
       });
     },
@@ -48,12 +55,14 @@ export default function CreateTeamForm() {
   });
 
   function onSubmit(data: z.infer<typeof CreateTeam>) {
-    createTeam.mutate(data);
+    createLeague.mutate({ ...data, id: teamId });
   }
+
+  if (!userIsModerator(role)) return null;
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4">
-      <h1 className="w-fit">Create Team</h1>
+      <h1 className="w-fit">Create new league</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -64,7 +73,7 @@ export default function CreateTeamForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Team{"'"}s name</FormLabel>
+                <FormLabel>League{"'"}s name</FormLabel>
                 <FormControl>
                   <Input placeholder="Navn..." {...field} />
                 </FormControl>

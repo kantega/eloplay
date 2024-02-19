@@ -50,10 +50,11 @@ export const teamRouter = createTRPCRouter({
 
       const userId = ctx.session.user.id;
 
-      await ctx.db.userRoleLink.create({
+      await ctx.db.teamUser.create({
         data: {
           userId: userId,
           roleId: adminRole.id,
+          gamerTag: ctx.session.user.name ?? "No name",
         },
       });
 
@@ -75,7 +76,7 @@ export const teamRouter = createTRPCRouter({
 
     const userId = ctx.session.user.id;
 
-    const userIsMember = await ctx.db.userRoleLink.findFirst({
+    const userIsMember = await ctx.db.teamUser.findFirst({
       where: {
         userId: userId,
         OR: [
@@ -88,12 +89,32 @@ export const teamRouter = createTRPCRouter({
 
     if (userIsMember) return team;
 
-    await ctx.db.userRoleLink.create({
+    await ctx.db.teamUser.create({
       data: {
         userId: userId,
         roleId: team.memberRoleId,
+        gamerTag: ctx.session.user.name ?? "No name",
       },
     });
+
+    // add user to all leagues of the team
+    const allLeagues = await ctx.db.league.findMany({
+      where: {
+        teamId: input.id,
+      },
+    });
+
+    await Promise.all(
+      allLeagues.map(async (league) => {
+        const leagueUser = await ctx.db.leagueUser.create({
+          data: {
+            userId: ctx.session.user.id,
+            leagueId: league.id,
+          },
+        });
+        return leagueUser;
+      }),
+    );
 
     return team;
   }),
@@ -137,20 +158,20 @@ export const teamRouter = createTRPCRouter({
       };
     }),
   findAll: protectedProcedure.query(async ({ ctx }) => {
-    const userRoleLinks = await ctx.db.userRoleLink.findMany({
+    const teamUsers = await ctx.db.teamUser.findMany({
       where: {
         userId: ctx.session.user.id,
       },
     });
 
     const teams = await Promise.all(
-      userRoleLinks.map(async (userRoleLink) => {
+      teamUsers.map(async (teamUser) => {
         const tempTeams = await ctx.db.team.findMany({
           where: {
             OR: [
-              { adminRoleId: userRoleLink.roleId },
-              { moderatorRoleId: userRoleLink.roleId },
-              { memberRoleId: userRoleLink.roleId },
+              { adminRoleId: teamUser.roleId },
+              { moderatorRoleId: teamUser.roleId },
+              { memberRoleId: teamUser.roleId },
             ],
           },
         });
@@ -171,6 +192,9 @@ export const teamRouter = createTRPCRouter({
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
+      //todo: if user is not part of the team, just say that it is a member?
+      if (input.id === "") return RoleTexts.MEMBER;
+
       const team = await ctx.db.team.findUnique({
         where: {
           id: input.id,
@@ -183,7 +207,7 @@ export const teamRouter = createTRPCRouter({
           message: "Team not found",
         });
 
-      const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+      const userIsAdmin = await ctx.db.teamUser.findFirst({
         where: {
           userId: ctx.session.user.id,
           roleId: team.adminRoleId,
@@ -192,7 +216,7 @@ export const teamRouter = createTRPCRouter({
 
       if (userIsAdmin) return RoleTexts.ADMIN;
 
-      const userIsModerator = await ctx.db.userRoleLink.findFirst({
+      const userIsModerator = await ctx.db.teamUser.findFirst({
         where: {
           userId: ctx.session.user.id,
           roleId: team.moderatorRoleId,
@@ -201,7 +225,7 @@ export const teamRouter = createTRPCRouter({
 
       if (userIsModerator) return RoleTexts.MODERATOR;
 
-      const userIsMember = await ctx.db.userRoleLink.findFirst({
+      const userIsMember = await ctx.db.teamUser.findFirst({
         where: {
           userId: ctx.session.user.id,
           roleId: team.memberRoleId,
@@ -253,7 +277,7 @@ export const teamRouter = createTRPCRouter({
 
       //if new role is moderator --> check if user is member
       if (input.newRole === RoleTexts.MODERATOR) {
-        const userIsMember = await ctx.db.userRoleLink.findFirst({
+        const userIsMember = await ctx.db.teamUser.findFirst({
           where: {
             userId: input.userId,
           },
@@ -265,7 +289,7 @@ export const teamRouter = createTRPCRouter({
             message: "User is not a member of this team",
           });
 
-        await ctx.db.userRoleLink.update({
+        await ctx.db.teamUser.update({
           where: {
             id: userIsMember.id,
           },
@@ -276,7 +300,7 @@ export const teamRouter = createTRPCRouter({
       }
       //if new role is member --> check if user is moderator
       if (input.newRole === RoleTexts.MEMBER) {
-        const userIsModerator = await ctx.db.userRoleLink.findFirst({
+        const userIsModerator = await ctx.db.teamUser.findFirst({
           where: {
             userId: input.userId,
             roleId: team.moderatorRoleId,
@@ -289,7 +313,7 @@ export const teamRouter = createTRPCRouter({
             message: "User is not a moderator of this team",
           });
 
-        await ctx.db.userRoleLink.updateMany({
+        await ctx.db.teamUser.updateMany({
           where: {
             id: userIsModerator.id,
           },
@@ -342,7 +366,7 @@ async function getUsersThatSatifiesRole({
   roleId: string;
   role: RoleText;
 }) {
-  const usersSatifiesRole = await db.userRoleLink.findMany({
+  const usersSatifiesRole = await db.teamUser.findMany({
     where: {
       roleId: roleId,
     },

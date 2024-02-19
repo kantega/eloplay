@@ -39,7 +39,6 @@ export default function SetRoleUserButton({
     },
   });
 
-  console.log(member);
   return (
     <>
       {member.role !== RoleTexts.ADMIN && userIsModerator(role) && (

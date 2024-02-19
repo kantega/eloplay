@@ -148,7 +148,7 @@ export const teamAdminProcedure = t.procedure.use(
         message: "Team not found",
       });
 
-    const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+    const userIsAdmin = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
         roleId: team.adminRoleId,
@@ -190,14 +190,14 @@ export const teamModeratorProcedure = t.procedure.use(
         message: "Team not found",
       });
 
-    const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+    const userIsAdmin = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
         roleId: team.adminRoleId,
       },
     });
 
-    const userIsModerator = await ctx.db.userRoleLink.findFirst({
+    const userIsModerator = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
         roleId: team.moderatorRoleId,
@@ -239,21 +239,21 @@ export const teamMemberProcedure = t.procedure.use(
         message: "Team not found",
       });
 
-    const userIsAdmin = await ctx.db.userRoleLink.findFirst({
+    const userIsAdmin = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
         roleId: team.adminRoleId,
       },
     });
 
-    const userIsModerator = await ctx.db.userRoleLink.findFirst({
+    const userIsModerator = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
         roleId: team.moderatorRoleId,
       },
     });
 
-    const userIsMember = await ctx.db.userRoleLink.findFirst({
+    const userIsMember = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
         roleId: team.memberRoleId,
