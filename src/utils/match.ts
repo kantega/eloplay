@@ -1,5 +1,5 @@
 import { type RoleText } from "@/server/types/roleTypes";
-import { type User, type TableTennisMatch } from "@prisma/client";
+import { type TableTennisMatch, type TeamUser } from "@prisma/client";
 
 export const sortMatchesByDate = (a: TableTennisMatch, b: TableTennisMatch) => {
   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -52,26 +52,29 @@ export function filterMatches(
   return filteredMatches.reverse();
 }
 
-export interface MemberProps extends User {
+export interface TeamMemberProps extends TeamUser {
   role: RoleText;
 }
 
-export function filterMembers(members: MemberProps[], searchQuery: string) {
+export function filterTeamUsers(
+  members: TeamMemberProps[],
+  searchQuery: string,
+) {
   const letters = searchQuery.split("");
 
   const filteredMatches = members.filter((member) => {
     return letters.reduce(
       (acc, letter) => {
-        if (!acc.state) return { state: acc.state, name: acc.name };
-        const includesLetter = acc.name.includes(letter.toLowerCase());
+        if (!acc.state) return { state: acc.state, gamerTag: acc.gamerTag };
+        const includesLetter = acc.gamerTag.includes(letter.toLowerCase());
         return {
           state: includesLetter,
-          name: acc.name.replace(letter.toLowerCase(), ""),
+          gamerTag: acc.gamerTag.replace(letter.toLowerCase(), ""),
         };
       },
       {
         state: true,
-        name: member.name?.toLowerCase() ?? "",
+        gamerTag: member.gamerTag?.toLowerCase() ?? "",
       },
     ).state;
   });

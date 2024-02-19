@@ -1,18 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 import { RoleTexts } from "@/server/types/roleTypes";
-import { filterMembers, type MemberProps } from "@/utils/match";
+import { type TeamMemberProps, filterTeamUsers } from "@/utils/match";
 import { Input } from "@/components/ui/input";
 import SetRoleUserButton from "@/components/team/set-role-user-button";
 import { useState } from "react";
 
 export default function TeamMemberList({
-  members,
+  teamUsers,
 }: {
-  members: MemberProps[];
+  teamUsers: TeamMemberProps[];
 }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredMembers = filterMembers(members, searchQuery);
+  const filteredTeamUsers = filterTeamUsers(teamUsers, searchQuery);
 
   return (
     <>
@@ -24,18 +24,18 @@ export default function TeamMemberList({
         }}
       />
       <ul className="flex flex-col justify-center gap-1">
-        {filteredMembers.map((member) => {
+        {filteredTeamUsers.map((teamUser) => {
           return (
-            <li key={member.id} className=" flex gap-4">
-              {member.name}{" "}
+            <li key={teamUser.id} className=" flex gap-4">
+              {teamUser.gamerTag}{" "}
               <Badge
                 variant={
-                  member.role === RoleTexts.MEMBER ? "outline" : "default"
+                  teamUser.role === RoleTexts.MEMBER ? "outline" : "default"
                 }
               >
-                {member.role}
+                {teamUser.role}
               </Badge>
-              <SetRoleUserButton member={member} />
+              <SetRoleUserButton member={teamUser} />
             </li>
           );
         })}

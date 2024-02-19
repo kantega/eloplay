@@ -6,21 +6,21 @@ import TeamMemberList from "@/components/team/team-member-list";
 import TeamLeagueList from "@/components/league/team-league-list";
 import TeamName from "@/components/team/team-name";
 import CreateLeagueForm from "@/components/league/create-league-form";
+import TeamProfile from "@/components/teamUser/team-profile";
 
 export default function PlayerPage() {
-  const { role, teamId } = useContext(TeamContext);
-
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <h1 className="text-5xl">You are a {role}</h1>
-      <TeamInfo id={teamId} />
+      <TeamProfile />
+      <TeamInfo />
     </div>
   );
 }
 
-function TeamInfo({ id }: { id: string }) {
+function TeamInfo() {
+  const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.team.findById.useQuery({
-    id,
+    id: teamId,
   });
 
   if (isLoading) return <LoadingSpinner />;
@@ -31,7 +31,7 @@ function TeamInfo({ id }: { id: string }) {
       <TeamName teamName={data.team.name} />
       <CreateLeagueForm />
       <TeamLeagueList />
-      <TeamMemberList members={data.members} />
+      <TeamMemberList teamUsers={data.teamUsers} />
     </div>
   );
 }

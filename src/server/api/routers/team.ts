@@ -6,16 +6,11 @@ import {
   teamAdminProcedure,
 } from "@/server/api/trpc";
 import { CreateTeam, JoinTeam, teamIdSchema } from "@/server/types/teamTypes";
-import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
-import {
-  type Team,
-  type Prisma,
-  type PrismaClient,
-  type User,
-} from "@prisma/client";
-import { type DefaultArgs } from "@prisma/client/runtime/library";
+import { RoleTexts } from "@/server/types/roleTypes";
+import { type Team } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { type TeamMemberProps } from "@/utils/match";
 
 export const teamRouter = createTRPCRouter({
   create: protectedProcedure
@@ -52,6 +47,7 @@ export const teamRouter = createTRPCRouter({
 
       await ctx.db.teamUser.create({
         data: {
+          teamId: team.id,
           userId: userId,
           roleId: adminRole.id,
           gamerTag: ctx.session.user.name ?? "No name",
@@ -91,6 +87,7 @@ export const teamRouter = createTRPCRouter({
 
     await ctx.db.teamUser.create({
       data: {
+        teamId: team.id,
         userId: userId,
         roleId: team.memberRoleId,
         gamerTag: ctx.session.user.name ?? "No name",
@@ -134,27 +131,30 @@ export const teamRouter = createTRPCRouter({
           message: "Team not found",
         });
 
-      const members = await getUsersThatSatifiesRole({
-        db: ctx.db,
-        roleId: team.memberRoleId,
-        role: RoleTexts.MEMBER,
+      const teamUsers = await ctx.db.teamUser.findMany({
+        where: {
+          teamId: input.id,
+        },
       });
 
-      const moderator = await getUsersThatSatifiesRole({
-        db: ctx.db,
-        roleId: team.moderatorRoleId,
-        role: RoleTexts.MODERATOR,
-      });
-
-      const admin = await getUsersThatSatifiesRole({
-        db: ctx.db,
-        roleId: team.adminRoleId,
-        role: RoleTexts.ADMIN,
-      });
+      const teamUsersWithRole = teamUsers
+        .map((member) => {
+          let role = "";
+          if (member.roleId === team.adminRoleId) role = RoleTexts.ADMIN;
+          if (member.roleId === team.moderatorRoleId)
+            role = RoleTexts.MODERATOR;
+          if (member.roleId === team.memberRoleId) role = RoleTexts.MEMBER;
+          return {
+            ...member,
+            role: role,
+          };
+        })
+        .filter((teamUser): teamUser is TeamMemberProps => teamUser !== null);
+      //todo: hmmm... can we fix this filter?
 
       return {
         team,
-        members: [...members, ...moderator, ...admin],
+        teamUsers: teamUsersWithRole,
       };
     }),
   findAll: protectedProcedure.query(async ({ ctx }) => {
@@ -186,7 +186,7 @@ export const teamRouter = createTRPCRouter({
   }),
 
   getRoleByUserId: protectedProcedure
-    .input(teamIdSchema)
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -356,40 +356,3 @@ export const teamRouter = createTRPCRouter({
       return team;
     }),
 });
-
-async function getUsersThatSatifiesRole({
-  db,
-  roleId,
-  role,
-}: {
-  db: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>;
-  roleId: string;
-  role: RoleText;
-}) {
-  const usersSatifiesRole = await db.teamUser.findMany({
-    where: {
-      roleId: roleId,
-    },
-  });
-
-  const users = (
-    await Promise.all(
-      usersSatifiesRole.map(async (member) => {
-        return await db.user.findUnique({
-          where: {
-            id: member.userId,
-          },
-        });
-      }),
-    )
-  ).filter((user): user is User => user !== null);
-
-  const usersWithRole = users.map((user) => {
-    return {
-      ...user,
-      role: role,
-    };
-  });
-
-  return usersWithRole;
-}
