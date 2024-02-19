@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/router";
-import JoinOrganisationForm from "../../JoinOrganisationForm";
 import LoadingSpinner from "@/components/loading";
 import { api } from "@/utils/api";
 import { useEffect, useState } from "react";
@@ -17,11 +16,7 @@ export default function PlayerPage() {
         <JoinTeamByInviteLink id={id} />
       </div>
     );
-  return (
-    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <JoinOrganisationForm />
-    </div>
-  );
+  return null;
 }
 
 const RequestStatuses = {
