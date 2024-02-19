@@ -52,7 +52,7 @@ export function filterMatches(
   return filteredMatches.reverse();
 }
 
-interface MemberProps extends User {
+export interface MemberProps extends User {
   role: RoleText;
 }
 
