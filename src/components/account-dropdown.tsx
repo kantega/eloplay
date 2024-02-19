@@ -17,15 +17,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { OrganisationSelector } from "@/contexts/organisationContext/organisation-toggle";
+import { TeamSelector } from "@/contexts/teamContext/team-toggle";
 import Link from "next/link";
 import { useContext } from "react";
-import { OrganisationContext } from "@/contexts/organisationContext/organisation-provider";
+import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { userIsModerator } from "@/utils/role";
 import { toast } from "./ui/use-toast";
 
 export function AccountDropdown() {
-  const { role, organisationId } = useContext(OrganisationContext);
+  const { role, teamId } = useContext(TeamContext);
   const { data: sessionData } = useSession();
 
   if (!sessionData) return <SignInOrOutButton />;
@@ -47,39 +47,41 @@ export function AccountDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <OrganisationSelector />
+            <TeamSelector />
           </DropdownMenuItem>
           {userIsModerator(role) && (
             <DropdownMenuItem>
               <Users className="mr-2 h-4 w-4" />
-              <Link href="/new/organisation">Team Admin Page</Link>
+              <Link href="/new/team">Team Admin Page</Link>
+            </DropdownMenuItem>
+          )}
+          {teamId !== "" && (
+            <DropdownMenuItem>
+              <Button
+                onClick={() => {
+                  const url = `${window.origin}/new/team/join/${teamId}`;
+                  void navigator.clipboard.writeText(url).then(() => {
+                    toast({
+                      title: "Copied invite link to clipboard.",
+                      description:
+                        "You can now share the link with your friends.",
+                      variant: "success",
+                    });
+                  });
+                }}
+              >
+                <UserPlus className="mr-2 h-4 w-4" />
+                Copy Invite link
+              </Button>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem>
-            <Button
-              onClick={() => {
-                const url = `${window.origin}/new/organisation/join/${organisationId}`;
-                void navigator.clipboard.writeText(url).then(() => {
-                  toast({
-                    title: "Copied invite link to clipboard.",
-                    description:
-                      "You can now share the link with your friends.",
-                    variant: "success",
-                  });
-                });
-              }}
-            >
-              <UserPlus className="mr-2 h-4 w-4" />
-              Copy Invite link
-            </Button>
+            <Plus className="mr-2 h-4 w-4" />
+            <Link href="/new/team/join">Join Team</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Plus className="mr-2 h-4 w-4" />
-            <Link href="/new/organisation/join">Join Team</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Plus className="mr-2 h-4 w-4" />
-            <Link href="/new/organisation/create">Create Team</Link>
+            <Link href="/new/team/create">Create Team</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

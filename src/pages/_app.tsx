@@ -8,7 +8,7 @@ import Layout from "./layout";
 import { LocationProvider } from "@/contexts/locationContext/location-provider";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { OrganisationProvider } from "@/contexts/organisationContext/organisation-provider";
+import { TeamProvider } from "@/contexts/teamContext/team-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -17,13 +17,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <OrganisationProvider>
+        <TeamProvider>
           <LocationProvider>
             <Layout>
               <Component {...pageProps} />
             </Layout>
           </LocationProvider>
-        </OrganisationProvider>
+        </TeamProvider>
       </ThemeProvider>
     </SessionProvider>
   );

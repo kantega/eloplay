@@ -1,17 +1,13 @@
 import {
   createTRPCRouter,
-  organisationMemberProcedure,
-  organisationModeratorProcedure,
+  teamMemberProcedure,
+  teamModeratorProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-import {
-  CreateOrganisation,
-  JoinOrganisation,
-  organisationIdSchema,
-} from "@/server/types/organisationTypes";
+import { CreateTeam, JoinTeam, teamIdSchema } from "@/server/types/teamTypes";
 import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
 import {
-  type Organisation,
+  type Team,
   type Prisma,
   type PrismaClient,
   type User,
@@ -20,9 +16,9 @@ import { type DefaultArgs } from "@prisma/client/runtime/library";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-export const organisationRouter = createTRPCRouter({
+export const teamRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(CreateOrganisation)
+    .input(CreateTeam)
     .mutation(async ({ ctx, input }) => {
       const adminRole = await ctx.db.role.create({
         data: {
@@ -42,7 +38,7 @@ export const organisationRouter = createTRPCRouter({
         },
       });
 
-      const organisation = await ctx.db.organisation.create({
+      const team = await ctx.db.team.create({
         data: {
           name: input.name,
           adminRoleId: adminRole.id,
@@ -60,80 +56,82 @@ export const organisationRouter = createTRPCRouter({
         },
       });
 
-      return organisation;
+      return team;
     }),
 
-  join: protectedProcedure
-    .input(JoinOrganisation)
-    .mutation(async ({ ctx, input }) => {
-      const organisation = await ctx.db.organisation.findUnique({
-        where: {
-          id: input.id,
-        },
+  join: protectedProcedure.input(JoinTeam).mutation(async ({ ctx, input }) => {
+    const team = await ctx.db.team.findUnique({
+      where: {
+        id: input.id,
+      },
+    });
+
+    if (!team)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found",
       });
 
-      if (!organisation)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Organisation not found",
-        });
+    const userId = ctx.session.user.id;
 
-      const userId = ctx.session.user.id;
+    const userIsMember = await ctx.db.userRoleLink.findFirst({
+      where: {
+        userId: userId,
+        OR: [
+          { roleId: team.adminRoleId },
+          { roleId: team.moderatorRoleId },
+          { roleId: team.memberRoleId },
+        ],
+      },
+    });
 
-      const userIsMember = await ctx.db.userRoleLink.findFirst({
-        where: {
-          userId: userId,
-          roleId: organisation.memberRoleId,
-        },
-      });
+    if (userIsMember) return team;
 
-      if (userIsMember) return organisation;
+    await ctx.db.userRoleLink.create({
+      data: {
+        userId: userId,
+        roleId: team.memberRoleId,
+      },
+    });
 
-      await ctx.db.userRoleLink.create({
-        data: {
-          userId: userId,
-          roleId: organisation.memberRoleId,
-        },
-      });
+    return team;
+  }),
 
-      return organisation;
-    }),
-
-  findById: organisationMemberProcedure
-    .input(JoinOrganisation)
+  findById: teamMemberProcedure
+    .input(JoinTeam)
     .query(async ({ ctx, input }) => {
-      const organisation = await ctx.db.organisation.findUnique({
+      const team = await ctx.db.team.findUnique({
         where: {
           id: input.id,
         },
       });
 
-      if (!organisation)
+      if (!team)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Organisation not found",
+          message: "Team not found",
         });
 
       const members = await getUsersThatSatifiesRole({
         db: ctx.db,
-        roleId: organisation.memberRoleId,
+        roleId: team.memberRoleId,
         role: RoleTexts.MEMBER,
       });
 
       const moderator = await getUsersThatSatifiesRole({
         db: ctx.db,
-        roleId: organisation.moderatorRoleId,
+        roleId: team.moderatorRoleId,
         role: RoleTexts.MODERATOR,
       });
 
       const admin = await getUsersThatSatifiesRole({
         db: ctx.db,
-        roleId: organisation.adminRoleId,
+        roleId: team.adminRoleId,
         role: RoleTexts.ADMIN,
       });
 
       return {
-        organisation,
+        team,
         members: [...members, ...moderator, ...admin],
       };
     }),
@@ -144,9 +142,9 @@ export const organisationRouter = createTRPCRouter({
       },
     });
 
-    const organisations = await Promise.all(
+    const teams = await Promise.all(
       userRoleLinks.map(async (userRoleLink) => {
-        const tempOrganisations = await ctx.db.organisation.findMany({
+        const tempTeams = await ctx.db.team.findMany({
           where: {
             OR: [
               { adminRoleId: userRoleLink.roleId },
@@ -155,41 +153,39 @@ export const organisationRouter = createTRPCRouter({
             ],
           },
         });
-        if (!!tempOrganisations[0]) return tempOrganisations[0];
+        if (!!tempTeams[0]) return tempTeams[0];
         return null;
       }),
     );
 
-    const filtedOrganisations = organisations.filter(
-      (organisation): organisation is Organisation => organisation !== null,
-    );
+    const filtedTeams = teams.filter((team): team is Team => team !== null);
 
-    return filtedOrganisations;
+    return filtedTeams;
   }),
 
   getRoleByUserId: protectedProcedure
-    .input(organisationIdSchema)
+    .input(teamIdSchema)
     .query(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      const organisation = await ctx.db.organisation.findUnique({
+      const team = await ctx.db.team.findUnique({
         where: {
           id: input.id,
         },
       });
 
-      if (!organisation)
+      if (!team)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Organisation not found",
+          message: "Team not found",
         });
 
       const userIsAdmin = await ctx.db.userRoleLink.findFirst({
         where: {
           userId: ctx.session.user.id,
-          roleId: organisation.adminRoleId,
+          roleId: team.adminRoleId,
         },
       });
 
@@ -198,7 +194,7 @@ export const organisationRouter = createTRPCRouter({
       const userIsModerator = await ctx.db.userRoleLink.findFirst({
         where: {
           userId: ctx.session.user.id,
-          roleId: organisation.moderatorRoleId,
+          roleId: team.moderatorRoleId,
         },
       });
 
@@ -207,7 +203,7 @@ export const organisationRouter = createTRPCRouter({
       const userIsMember = await ctx.db.userRoleLink.findFirst({
         where: {
           userId: ctx.session.user.id,
-          roleId: organisation.memberRoleId,
+          roleId: team.memberRoleId,
         },
       });
 
@@ -216,38 +212,38 @@ export const organisationRouter = createTRPCRouter({
       if (!userIsAdmin && !userIsModerator && !userIsMember)
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "User is not an part of this organisation",
+          message: "User is not an part of this team",
         });
     }),
-  setRoleForMember: organisationModeratorProcedure
+  setRoleForMember: teamModeratorProcedure
     .input(
       z
         .object({
           userId: z.string(),
           newRole: z.string(),
         })
-        .extend(organisationIdSchema.shape),
+        .extend(teamIdSchema.shape),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      const organisation = await ctx.db.organisation.findUnique({
+      const team = await ctx.db.team.findUnique({
         where: {
           id: input.id,
         },
       });
 
-      if (!organisation)
+      if (!team)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Organisation not found",
+          message: "Team not found",
         });
 
       //if new role is admin --> throw error
       if (input.newRole === RoleTexts.ADMIN) {
-        if (!organisation)
+        if (!team)
           throw new TRPCError({
             code: "UNAUTHORIZED",
             message: "Only one admin is allowed",
@@ -265,7 +261,7 @@ export const organisationRouter = createTRPCRouter({
         if (!userIsMember)
           throw new TRPCError({
             code: "NOT_FOUND",
-            message: "User is not a member of this organisation",
+            message: "User is not a member of this team",
           });
 
         await ctx.db.userRoleLink.update({
@@ -273,7 +269,7 @@ export const organisationRouter = createTRPCRouter({
             id: userIsMember.id,
           },
           data: {
-            roleId: organisation.moderatorRoleId,
+            roleId: team.moderatorRoleId,
           },
         });
       }
@@ -282,14 +278,14 @@ export const organisationRouter = createTRPCRouter({
         const userIsModerator = await ctx.db.userRoleLink.findFirst({
           where: {
             userId: input.userId,
-            roleId: organisation.moderatorRoleId,
+            roleId: team.moderatorRoleId,
           },
         });
 
         if (!userIsModerator)
           throw new TRPCError({
             code: "NOT_FOUND",
-            message: "User is not a moderator of this organisation",
+            message: "User is not a moderator of this team",
           });
 
         await ctx.db.userRoleLink.updateMany({
@@ -297,7 +293,7 @@ export const organisationRouter = createTRPCRouter({
             id: userIsModerator.id,
           },
           data: {
-            roleId: organisation.memberRoleId,
+            roleId: team.memberRoleId,
           },
         });
       }

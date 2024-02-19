@@ -3,7 +3,7 @@ import { api } from "@/utils/api";
 import { Badge } from "@/components/ui/badge";
 import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
 import { useContext, useState } from "react";
-import { OrganisationContext } from "@/contexts/organisationContext/organisation-provider";
+import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { userIsModerator } from "@/utils/role";
@@ -12,30 +12,30 @@ import { filterMembers } from "@/utils/match";
 import { Input } from "@/components/ui/input";
 
 export default function PlayerPage() {
-  const { role, organisationId } = useContext(OrganisationContext);
+  const { role, teamId } = useContext(TeamContext);
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
       <h1 className="text-5xl">You are a {role}</h1>
-      <OrganisationInfo id={organisationId} />
+      <TeamInfo id={teamId} />
     </div>
   );
 }
 
-function OrganisationInfo({ id }: { id: string }) {
+function TeamInfo({ id }: { id: string }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data, isLoading } = api.organisation.findById.useQuery({
+  const { data, isLoading } = api.team.findById.useQuery({
     id,
   });
 
   if (isLoading) return <LoadingSpinner />;
-  if (!data) return <div>Organisation not found</div>;
+  if (!data) return <div>Team not found</div>;
 
   const filteredMembers = filterMembers(data.members, searchQuery);
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className=" text-5xl">{data.organisation.name}</h1>
+      <h1 className=" text-5xl">{data.team.name}</h1>
       <Input
         placeholder="search for member..."
         value={searchQuery}
@@ -69,11 +69,11 @@ function UpgradeUserButton({
 }: {
   member: { role: RoleText; id: string };
 }) {
-  const { role, organisationId } = useContext(OrganisationContext);
+  const { role, teamId } = useContext(TeamContext);
   const ctx = api.useUtils();
-  const { mutateAsync } = api.organisation.setRoleForMember.useMutation({
+  const { mutateAsync } = api.team.setRoleForMember.useMutation({
     onSuccess: async () => {
-      await ctx.organisation.findById.invalidate({ id: organisationId });
+      await ctx.team.findById.invalidate({ id: teamId });
 
       toast({
         title: "Success",
@@ -108,7 +108,7 @@ function UpgradeUserButton({
                 member.role === RoleTexts.MEMBER
                   ? RoleTexts.MODERATOR
                   : RoleTexts.MEMBER,
-              id: organisationId,
+              id: teamId,
             });
           }}
         >

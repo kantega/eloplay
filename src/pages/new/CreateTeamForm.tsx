@@ -15,16 +15,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { CreateOrganisation } from "@/server/types/organisationTypes";
+import { CreateTeam } from "@/server/types/teamTypes";
 
-export default function CreateOrganisationForm() {
-  const form = useForm<z.infer<typeof CreateOrganisation>>({
-    resolver: zodResolver(CreateOrganisation),
+export default function CreateTeamForm() {
+  const form = useForm<z.infer<typeof CreateTeam>>({
+    resolver: zodResolver(CreateTeam),
     defaultValues: {
       name: "",
     },
   });
-  const createPlayer = api.organisation.create.useMutation({
+  const createPlayer = api.team.create.useMutation({
     onSuccess: async () => {
       form.reset();
       toast({
@@ -47,13 +47,13 @@ export default function CreateOrganisationForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof CreateOrganisation>) {
+  function onSubmit(data: z.infer<typeof CreateTeam>) {
     createPlayer.mutate(data);
   }
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4">
-      <h1 className="w-fit">Create Organisation</h1>
+      <h1 className="w-fit">Create Team</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -72,7 +72,7 @@ export default function CreateOrganisationForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Lag organisation </Button>
+          <Button type="submit">Lag team </Button>
         </form>
       </Form>
     </div>

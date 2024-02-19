@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
-import CreateOrganisationForm from "./CreateOrganisationForm";
-import JoinOrganisationForm from "./JoinOrganisationForm";
+import CreateTeamForm from "./CreateTeamForm";
+import JoinTeamForm from "./JoinTeamForm";
 
 export default function CreateOrJoinO() {
   const { data: sessionData } = useSession();
@@ -14,8 +14,8 @@ export default function CreateOrJoinO() {
 
   return (
     <div className="container flex h-full flex-col items-center justify-center gap-8 px-4 py-4 ">
-      <CreateOrganisationForm />
-      <JoinOrganisationForm />
+      <CreateTeamForm />
+      <JoinTeamForm />
     </div>
   );
 }

@@ -15,16 +15,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { JoinOrganisation } from "@/server/types/organisationTypes";
+import { JoinTeam } from "@/server/types/teamTypes";
 
-export default function JoinOrganisationForm() {
-  const form = useForm<z.infer<typeof JoinOrganisation>>({
-    resolver: zodResolver(JoinOrganisation),
+export default function JoinTeamForm() {
+  const form = useForm<z.infer<typeof JoinTeam>>({
+    resolver: zodResolver(JoinTeam),
     defaultValues: {
       id: "",
     },
   });
-  const joinOrganisationMutation = api.organisation.join.useMutation({
+  const joinTeamMutation = api.team.join.useMutation({
     onSuccess: async () => {
       form.reset();
       toast({
@@ -47,13 +47,13 @@ export default function JoinOrganisationForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof JoinOrganisation>) {
-    joinOrganisationMutation.mutate(data);
+  function onSubmit(data: z.infer<typeof JoinTeam>) {
+    joinTeamMutation.mutate(data);
   }
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4">
-      <h1 className="w-fit">Join Organisation</h1>
+      <h1 className="w-fit">Join Team</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

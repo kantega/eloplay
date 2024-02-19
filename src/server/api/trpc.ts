@@ -15,7 +15,7 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { organisationIdSchema } from "../types/organisationTypes";
+import { teamIdSchema } from "../types/teamTypes";
 
 /**
  * 1. CONTEXT
@@ -128,37 +128,37 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   });
 });
 
-export const organisationAdminProcedure = t.procedure.use(
+export const teamAdminProcedure = t.procedure.use(
   async ({ ctx, rawInput, next }) => {
     if (!ctx.session || !ctx.session.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { id } = organisationIdSchema.parse(rawInput);
+    const { id } = teamIdSchema.parse(rawInput);
 
-    const organisation = await ctx.db.organisation.findUnique({
+    const team = await ctx.db.team.findUnique({
       where: {
         id,
       },
     });
 
-    if (!organisation)
+    if (!team)
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Organisation not found",
+        message: "Team not found",
       });
 
     const userIsAdmin = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: organisation.adminRoleId as string,
+        roleId: team.adminRoleId as string,
       },
     });
 
     if (!userIsAdmin)
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "User is not an admin of this organisation",
+        message: "User is not an admin of this team",
       });
 
     return next({
@@ -170,44 +170,44 @@ export const organisationAdminProcedure = t.procedure.use(
   },
 );
 
-export const organisationModeratorProcedure = t.procedure.use(
+export const teamModeratorProcedure = t.procedure.use(
   async ({ ctx, rawInput, next }) => {
     if (!ctx.session || !ctx.session.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { id } = organisationIdSchema.parse(rawInput);
+    const { id } = teamIdSchema.parse(rawInput);
 
-    const organisation = await ctx.db.organisation.findUnique({
+    const team = await ctx.db.team.findUnique({
       where: {
         id,
       },
     });
 
-    if (!organisation)
+    if (!team)
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Organisation not found",
+        message: "Team not found",
       });
 
     const userIsAdmin = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: organisation.adminRoleId as string,
+        roleId: team.adminRoleId as string,
       },
     });
 
     const userIsModerator = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: organisation.moderatorRoleId as string,
+        roleId: team.moderatorRoleId as string,
       },
     });
 
     if (!userIsAdmin && !userIsModerator)
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "User is not an admin or moderator of this organisation",
+        message: "User is not an admin or moderator of this team",
       });
 
     return next({
@@ -219,51 +219,51 @@ export const organisationModeratorProcedure = t.procedure.use(
   },
 );
 
-export const organisationMemberProcedure = t.procedure.use(
+export const teamMemberProcedure = t.procedure.use(
   async ({ ctx, rawInput, next }) => {
     if (!ctx.session || !ctx.session.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { id } = organisationIdSchema.parse(rawInput);
+    const { id } = teamIdSchema.parse(rawInput);
 
-    const organisation = await ctx.db.organisation.findUnique({
+    const team = await ctx.db.team.findUnique({
       where: {
         id,
       },
     });
 
-    if (!organisation)
+    if (!team)
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Organisation not found",
+        message: "Team not found",
       });
 
     const userIsAdmin = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: organisation.adminRoleId as string,
+        roleId: team.adminRoleId as string,
       },
     });
 
     const userIsModerator = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: organisation.moderatorRoleId as string,
+        roleId: team.moderatorRoleId as string,
       },
     });
 
     const userIsMember = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: organisation.memberRoleId as string,
+        roleId: team.memberRoleId as string,
       },
     });
 
     if (!userIsAdmin && !userIsModerator && !userIsMember)
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "User is not a part of this organisation",
+        message: "User is not a part of this team",
       });
 
     return next({

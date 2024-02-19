@@ -32,10 +32,10 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
   const [requestStatus, setRequestStatus] = useState<RequestStatus>(
     RequestStatuses.PENDING,
   );
-  const { data, isLoading } = api.organisation.findById.useQuery({
+  const { data, isLoading } = api.team.findById.useQuery({
     id,
   });
-  const joinOrganisationMutation = api.organisation.join.useMutation({
+  const joinTeamMutation = api.team.join.useMutation({
     onSuccess: async () => {
       toast({
         title: "Success",
@@ -61,10 +61,10 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
 
   useEffect(() => {
     if (!sentRequest) {
-      joinOrganisationMutation.mutate({ id });
+      joinTeamMutation.mutate({ id });
       setSentRequest(true);
     }
-  }, [id, joinOrganisationMutation, sentRequest]);
+  }, [id, joinTeamMutation, sentRequest]);
 
   if (!data || isLoading) return <LoadingSpinner />;
 
@@ -73,8 +73,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
       {requestStatus === RequestStatuses.PENDING && (
         <>
           <h1 className="max-w-sm text-3xl">
-            Joining team:{" "}
-            <b className="text-primary">{data.organisation.name}</b>
+            Joining team: <b className="text-primary">{data.team.name}</b>
           </h1>
           <h2 className=" text-md max-w-sm">
             Please hang on while we process your request to join the most
@@ -86,8 +85,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
       {requestStatus === RequestStatuses.SUCCESS && (
         <>
           <h1 className="max-w-sm text-3xl">
-            Joined team:{" "}
-            <b className="text-primary">{data.organisation.name}</b>
+            Joined team: <b className="text-primary">{data.team.name}</b>
           </h1>
           <h2 className=" text-md max-w-sm">
             You have successfully joined the team. Welcome to the team!
@@ -97,8 +95,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
       {requestStatus === RequestStatuses.ERROR && (
         <>
           <h1 className="max-w-sm text-3xl">
-            Tried to join team:{" "}
-            <b className="text-primary">{data.organisation.name}</b>
+            Tried to join team: <b className="text-primary">{data.team.name}</b>
           </h1>
           <h2 className=" text-md max-w-sm">
             This is akward, but it seems like something went wrong. Maybe you

@@ -83,16 +83,16 @@ model VerificationToken {
 }
 
 model Role {
-    id                    String         @id @default(cuid())
-    name                  String
-    createdAt             DateTime       @default(now())
-    UserRoleLink          UserRoleLink[]
-    AdminOrganisation     Organisation?  @relation("organisation_role_adminId")
-    ModeratorOrganisation Organisation?  @relation("organisation_role_moderatorId")
-    MemberOrganisation    Organisation?  @relation("organisation_role_memberId")
+    id            String         @id @default(cuid())
+    name          String
+    createdAt     DateTime       @default(now())
+    UserRoleLink  UserRoleLink[]
+    AdminTeam     Team?          @relation("team_role_adminId")
+    ModeratorTeam Team?          @relation("team_role_moderatorId")
+    MemberTeam    Team?          @relation("team_role_memberId")
 }
 
-model Organisation {
+model Team {
     id              String   @id @default(cuid())
     name            String   @unique
     image           String?
@@ -102,9 +102,9 @@ model Organisation {
     adminRoleId     String   @unique
     moderatorRoleId String   @unique
     memberRoleId    String   @unique
-    RoleAdmin       Role     @relation("organisation_role_adminId", fields: [adminRoleId], references: [id])
-    RoleModerator   Role     @relation("organisation_role_moderatorId", fields: [moderatorRoleId], references: [id])
-    RoleMember      Role     @relation("organisation_role_memberId", fields: [memberRoleId], references: [id])
+    RoleAdmin       Role     @relation("team_role_adminId", fields: [adminRoleId], references: [id])
+    RoleModerator   Role     @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
+    RoleMember      Role     @relation("team_role_memberId", fields: [memberRoleId], references: [id])
     Sport           Sport[]
 }
 
@@ -120,14 +120,14 @@ model UserRoleLink {
 }
 
 model Sport {
-    id             String       @id @default(cuid())
-    name           String       @unique
-    organisationId String
-    Organisation   Organisation @relation(fields: [organisationId], references: [id])
-    Elo            Elo[]
-    createdAt      DateTime     @default(now())
-    updatedAt      DateTime     @updatedAt
-    Match          Match[]
+    id        String   @id @default(cuid())
+    name      String   @unique
+    teamId    String
+    Team      Team     @relation(fields: [teamId], references: [id])
+    Elo       Elo[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    Match     Match[]
 }
 
 model Elo {
