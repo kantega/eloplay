@@ -1,4 +1,4 @@
-import CreateTeamForm from "../../CreateTeamForm";
+import CreateTeamForm from "../../../../components/CreateTeamForm";
 
 export default function PlayerPage() {
   return (
