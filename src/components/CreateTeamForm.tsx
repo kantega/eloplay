@@ -64,7 +64,7 @@ export default function CreateTeamForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Organisasjons navn</FormLabel>
+                <FormLabel>Team{"'"}s name</FormLabel>
                 <FormControl>
                   <Input placeholder="Navn..." {...field} />
                 </FormControl>
@@ -72,7 +72,7 @@ export default function CreateTeamForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Lag team </Button>
+          <Button type="submit">Create team </Button>
         </form>
       </Form>
     </div>

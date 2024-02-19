@@ -64,7 +64,7 @@ export default function JoinTeamForm() {
             name="id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Organisasjons ID</FormLabel>
+                <FormLabel>Team{"'"}s ID</FormLabel>
                 <FormControl>
                   <Input placeholder="ID..." {...field} />
                 </FormControl>
@@ -72,7 +72,7 @@ export default function JoinTeamForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Bli med i organisasjonen </Button>
+          <Button type="submit">Join team</Button>
         </form>
       </Form>
     </div>
