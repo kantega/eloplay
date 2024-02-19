@@ -61,29 +61,26 @@ export default function CreateLeagueForm() {
   if (!userIsModerator(role)) return null;
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-4">
-      <h1 className="w-fit">Create new league</h1>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-2/3 space-y-6"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>League{"'"}s name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Navn..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Create league </Button>
-        </form>
-      </Form>
-    </div>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex gap-2 space-y-6"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>League{"'"}s name</FormLabel>
+              <FormControl>
+                <Input placeholder="Navn..." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Create league </Button>
+      </form>
+    </Form>
   );
 }
