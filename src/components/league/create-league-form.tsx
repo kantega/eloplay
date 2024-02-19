@@ -81,7 +81,7 @@ export default function CreateLeagueForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Create team </Button>
+          <Button type="submit">Create league </Button>
         </form>
       </Form>
     </div>

@@ -10,7 +10,7 @@ import { z } from "zod";
 
 export const leagueRouter = createTRPCRouter({
   create: teamModeratorProcedure
-    .input(z.object({ name: z.string() }).extend(teamIdSchema.shape))
+    .input(z.object({ name: z.string().min(1) }).extend(teamIdSchema.shape))
     .mutation(async ({ ctx, input }) => {
       const league = await ctx.db.league.create({
         data: {
@@ -66,12 +66,38 @@ export const leagueRouter = createTRPCRouter({
       });
     }),
   delete: teamAdminProcedure
-    .input(z.object({ id: z.string() }).extend(teamIdSchema.shape))
+    .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .mutation(async ({ ctx, input }) => {
+      await ctx.db.leagueUser.deleteMany({
+        where: { leagueId: input.leagueId },
+      });
+
+      await ctx.db.match.deleteMany({
+        where: { leagueId: input.leagueId },
+      });
+
       return ctx.db.league.delete({
         where: {
-          id: input.id,
+          id: input.leagueId,
         },
       });
+    }),
+  updateName: teamModeratorProcedure
+    .input(
+      z
+        .object({ name: z.string().min(1), leagueId: z.string().min(1) })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const league = await ctx.db.league.update({
+        where: {
+          id: input.leagueId,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+
+      return league;
     }),
 });

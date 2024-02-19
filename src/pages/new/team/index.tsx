@@ -3,7 +3,7 @@ import { api } from "@/utils/api";
 import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import TeamMemberList from "@/components/team/team-member-list";
-import TeamLeagueList from "@/components/team/team-league-list";
+import TeamLeagueList from "@/components/league/team-league-list";
 import TeamName from "@/components/team/team-name";
 import CreateLeagueForm from "@/components/league/create-league-form";
 
