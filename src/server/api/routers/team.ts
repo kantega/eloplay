@@ -3,6 +3,7 @@ import {
   teamMemberProcedure,
   teamModeratorProcedure,
   protectedProcedure,
+  teamAdminProcedure,
 } from "@/server/api/trpc";
 import { CreateTeam, JoinTeam, teamIdSchema } from "@/server/types/teamTypes";
 import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
@@ -297,6 +298,38 @@ export const teamRouter = createTRPCRouter({
           },
         });
       }
+    }),
+  changeTeamName: teamAdminProcedure
+    .input(
+      z
+        .object({
+          name: z.string(),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const team = await ctx.db.team.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!team)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team not found",
+        });
+
+      await ctx.db.team.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+
+      return team;
     }),
 });
 
