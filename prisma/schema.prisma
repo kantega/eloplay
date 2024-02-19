@@ -105,7 +105,7 @@ model Team {
     RoleAdmin       Role     @relation("team_role_adminId", fields: [adminRoleId], references: [id])
     RoleModerator   Role     @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
     RoleMember      Role     @relation("team_role_memberId", fields: [memberRoleId], references: [id])
-    Sport           Sport[]
+    League          League[]
 }
 
 model UserRoleLink {
@@ -119,7 +119,7 @@ model UserRoleLink {
     @@unique([userId, roleId])
 }
 
-model Sport {
+model League {
     id        String   @id @default(cuid())
     name      String   @unique
     teamId    String
@@ -134,8 +134,8 @@ model Elo {
     id        String   @id @default(cuid())
     userId    String
     user      User     @relation(fields: [userId], references: [id])
-    sportId   String
-    sport     Sport    @relation(fields: [sportId], references: [id])
+    leagueId  String
+    league    League   @relation(fields: [leagueId], references: [id])
     elo       Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -145,8 +145,8 @@ model Match {
     id           String   @id @default(cuid())
     winnerId     String
     loserId      String
-    sportId      String
-    sport        Sport    @relation(fields: [sportId], references: [id])
+    leagueId     String
+    league       League   @relation(fields: [leagueId], references: [id])
     preWinnerElo Int
     preLoserElo  Int
     createdAt    DateTime @default(now())
