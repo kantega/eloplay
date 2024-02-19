@@ -28,7 +28,6 @@ export function TeamSelector() {
           {!!data &&
             !isLoading &&
             data.map((team) => {
-              console.log(team.name);
               return (
                 <SelectItem key={team.id} value={team.id}>
                   {team.name}
