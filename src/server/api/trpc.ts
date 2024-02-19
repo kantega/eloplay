@@ -151,7 +151,7 @@ export const teamAdminProcedure = t.procedure.use(
     const userIsAdmin = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.adminRoleId as string,
+        roleId: team.adminRoleId,
       },
     });
 
@@ -193,14 +193,14 @@ export const teamModeratorProcedure = t.procedure.use(
     const userIsAdmin = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.adminRoleId as string,
+        roleId: team.adminRoleId,
       },
     });
 
     const userIsModerator = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.moderatorRoleId as string,
+        roleId: team.moderatorRoleId,
       },
     });
 
@@ -242,21 +242,21 @@ export const teamMemberProcedure = t.procedure.use(
     const userIsAdmin = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.adminRoleId as string,
+        roleId: team.adminRoleId,
       },
     });
 
     const userIsModerator = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.moderatorRoleId as string,
+        roleId: team.moderatorRoleId,
       },
     });
 
     const userIsMember = await ctx.db.userRoleLink.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.memberRoleId as string,
+        roleId: team.memberRoleId,
       },
     });
 

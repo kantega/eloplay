@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
-import CreateTeamForm from "../../components/CreateTeamForm";
-import JoinTeamForm from "../../components/JoinTeamForm";
+import CreateTeamForm from "./team/components/CreateTeamForm";
+import JoinTeamForm from "./team/components/JoinTeamForm";
 
 export default function CreateOrJoinO() {
   const { data: sessionData } = useSession();
