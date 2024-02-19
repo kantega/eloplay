@@ -71,7 +71,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     UserRoleLink  UserRoleLink[]
-    Elo           Elo[]
+    Elo           LeagueUser[]
 }
 
 model VerificationToken {
@@ -120,37 +120,44 @@ model UserRoleLink {
 }
 
 model League {
-    id        String   @id @default(cuid())
-    name      String   @unique
-    teamId    String
-    Team      Team     @relation(fields: [teamId], references: [id])
-    Elo       Elo[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    Match     Match[]
+    id         String       @id @default(cuid())
+    name       String       @unique
+    teamId     String
+    Team       Team         @relation(fields: [teamId], references: [id])
+    LeagueUser LeagueUser[]
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    Match      Match[]
 }
 
-model Elo {
-    id        String   @id @default(cuid())
-    userId    String
-    user      User     @relation(fields: [userId], references: [id])
-    leagueId  String
-    league    League   @relation(fields: [leagueId], references: [id])
-    elo       Int
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model LeagueUser {
+    id            String   @id @default(cuid())
+    gamerTag      String
+    userId        String
+    user          User     @relation(fields: [userId], references: [id])
+    leagueId      String
+    league        League   @relation(fields: [leagueId], references: [id])
+    elo           Int
+    streak        Int
+    latestEloGain Int[]
+    WinnerMatch   Match?   @relation("match_winner_id")
+    LoserMatch    Match?   @relation("match_loser_id")
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 }
 
 model Match {
-    id           String   @id @default(cuid())
-    winnerId     String
-    loserId      String
-    leagueId     String
-    league       League   @relation(fields: [leagueId], references: [id])
-    preWinnerElo Int
-    preLoserElo  Int
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
+    id               String     @id @default(cuid())
+    winnerId         String     @unique
+    loserId          String     @unique
+    WinnerLeagueUser LeagueUser @relation("match_winner_id", fields: [winnerId], references: [id])
+    LoserLeagueUser  LeagueUser @relation("match_loser_id", fields: [loserId], references: [id])
+    leagueId         String
+    league           League     @relation(fields: [leagueId], references: [id])
+    preWinnerElo     Int
+    preLoserElo      Int
+    createdAt        DateTime   @default(now())
+    updatedAt        DateTime   @updatedAt
 
     @@index([winnerId])
     @@index([loserId])
