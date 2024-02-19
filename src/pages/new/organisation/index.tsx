@@ -37,7 +37,7 @@ function OrganisationInfo({ id }: { id: string }) {
     <div className="flex flex-col gap-4">
       <h1 className=" text-5xl">{data.organisation.name}</h1>
       <Input
-        placeholder="search for opponent..."
+        placeholder="search for member..."
         value={searchQuery}
         onChange={(value) => {
           setSearchQuery(value.currentTarget.value);
