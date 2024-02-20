@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/types/teamTypes";
-import { type League, type LeagueUser } from "@prisma/client";
+import { type TeamUser, type League, type LeagueUser } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -134,6 +134,41 @@ export const leagueUserRouter = createTRPCRouter({
       );
 
       return { leagueAndLeagueUsers, gamerTag: teamUser.gamerTag };
+    }),
+
+  findAllByLeagueId: protectedProcedure
+    .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
+    .query(async ({ ctx, input }) => {
+      const leagueUsers = await ctx.db.leagueUser.findMany({
+        where: {
+          leagueId: input.leagueId,
+        },
+      });
+
+      console.log(leagueUsers);
+      const leagueUsersAndTeamUsers = (
+        await Promise.all(
+          leagueUsers.map(async (leagueUser) => {
+            const teamUser = await ctx.db.teamUser.findFirst({
+              where: {
+                userId: leagueUser.userId,
+                teamId: leagueUser.teamId,
+              },
+            });
+
+            return { teamUser, leagueUser };
+          }),
+        )
+      ).filter(
+        (
+          leagueAndLeagueUser,
+        ): leagueAndLeagueUser is {
+          teamUser: TeamUser;
+          leagueUser: LeagueUser;
+        } => leagueAndLeagueUser.teamUser !== null,
+      );
+
+      return { leagueUsersAndTeamUsers };
     }),
   findAllById: protectedProcedure
     .input(

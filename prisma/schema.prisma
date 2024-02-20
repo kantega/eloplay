@@ -93,21 +93,22 @@ model Role {
 }
 
 model Team {
-    id              String       @id @default(cuid())
-    name            String       @unique
+    id              String        @id @default(cuid())
+    name            String        @unique
     image           String?
     description     String?
     password        String?
-    createdAt       DateTime     @default(now())
-    adminRoleId     String       @unique
-    moderatorRoleId String       @unique
-    memberRoleId    String       @unique
-    RoleAdmin       Role         @relation("team_role_adminId", fields: [adminRoleId], references: [id])
-    RoleModerator   Role         @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
-    RoleMember      Role         @relation("team_role_memberId", fields: [memberRoleId], references: [id])
+    createdAt       DateTime      @default(now())
+    adminRoleId     String        @unique
+    moderatorRoleId String        @unique
+    memberRoleId    String        @unique
+    RoleAdmin       Role          @relation("team_role_adminId", fields: [adminRoleId], references: [id])
+    RoleModerator   Role          @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
+    RoleMember      Role          @relation("team_role_memberId", fields: [memberRoleId], references: [id])
     League          League[]
     TeamUser        TeamUser[]
     LeagueUser      LeagueUser[]
+    LeagueMatch     LeagueMatch[]
 }
 
 model TeamUser {
@@ -163,6 +164,8 @@ model LeagueMatch {
     loserId          String     @unique
     WinnerLeagueUser LeagueUser @relation("match_winner_id", fields: [winnerId], references: [id])
     LoserLeagueUser  LeagueUser @relation("match_loser_id", fields: [loserId], references: [id])
+    teamId           String
+    team             Team       @relation(fields: [teamId], references: [id])
     leagueId         String
     league           League     @relation(fields: [leagueId], references: [id])
     preWinnerElo     Int

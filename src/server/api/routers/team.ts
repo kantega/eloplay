@@ -245,16 +245,12 @@ export const teamRouter = createTRPCRouter({
     .input(
       z
         .object({
-          userId: z.string(),
+          teamUserId: z.string(),
           newRole: z.string(),
         })
         .extend(teamIdSchema.shape),
     )
     .mutation(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-
       const team = await ctx.db.team.findUnique({
         where: {
           id: input.id,
@@ -267,56 +263,21 @@ export const teamRouter = createTRPCRouter({
           message: "Team not found",
         });
 
-      //if new role is admin --> throw error
-      if (input.newRole === RoleTexts.ADMIN) {
-        if (!team)
-          throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: "Only one admin is allowed",
-          });
-      }
-
-      //if new role is moderator --> check if user is member
       if (input.newRole === RoleTexts.MODERATOR) {
-        const userIsMember = await ctx.db.teamUser.findFirst({
+        return await ctx.db.teamUser.update({
           where: {
-            userId: input.userId,
-          },
-        });
-
-        if (!userIsMember)
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "User is not a member of this team",
-          });
-
-        await ctx.db.teamUser.update({
-          where: {
-            id: userIsMember.id,
+            id: input.teamUserId,
           },
           data: {
             roleId: team.moderatorRoleId,
           },
         });
       }
-      //if new role is member --> check if user is moderator
+
       if (input.newRole === RoleTexts.MEMBER) {
-        const userIsModerator = await ctx.db.teamUser.findFirst({
+        return await ctx.db.teamUser.update({
           where: {
-            userId: input.userId,
-            roleId: team.moderatorRoleId,
-          },
-        });
-
-        if (!userIsModerator)
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "User is not a moderator of this team",
-          });
-
-        await ctx.db.teamUser.updateMany({
-          where: {
-            id: userIsModerator.id,
+            id: input.teamUserId,
           },
           data: {
             roleId: team.memberRoleId,

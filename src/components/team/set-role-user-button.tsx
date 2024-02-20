@@ -47,7 +47,7 @@ export default function SetRoleUserButton({
           size="icon"
           onClick={async () => {
             await mutateAsync({
-              userId: member.id,
+              teamUserId: member.id,
               newRole:
                 member.role === RoleTexts.MEMBER
                   ? RoleTexts.MODERATOR
