@@ -92,6 +92,50 @@ export const leagueUserRouter = createTRPCRouter({
       return { leagueUser, teamUser, league };
     }),
   findAll: protectedProcedure
+    .input(teamIdSchema)
+    .query(async ({ ctx, input }) => {
+      const teamUser = await ctx.db.teamUser.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+          teamId: input.id,
+        },
+      });
+
+      if (!teamUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team user not found",
+        });
+
+      const leagueUsers = await ctx.db.leagueUser.findMany({
+        where: {
+          userId: teamUser.userId,
+          teamId: teamUser.teamId,
+        },
+      });
+
+      const leagueAndLeagueUsers = (
+        await Promise.all(
+          leagueUsers.map(async (leagueUser) => {
+            const league = await ctx.db.league.findUnique({
+              where: {
+                id: leagueUser.leagueId,
+              },
+            });
+
+            return { league, leagueUser };
+          }),
+        )
+      ).filter(
+        (
+          leagueAndLeagueUser,
+        ): leagueAndLeagueUser is { league: League; leagueUser: LeagueUser } =>
+          leagueAndLeagueUser.league !== null,
+      );
+
+      return { leagueAndLeagueUsers, gamerTag: teamUser.gamerTag };
+    }),
+  findAllById: protectedProcedure
     .input(
       z.object({ teamUserId: z.string().min(1) }).extend(teamIdSchema.shape),
     )

@@ -118,6 +118,7 @@ model TeamUser {
     teamId    String
     role      Role     @relation(fields: [roleId], references: [id])
     roleId    String
+    image     String   @default("https://github.com/shadcn.png")
     gamerTag  String   @default("GamerTagTeamUser")
     createdAt DateTime @default(now())
 

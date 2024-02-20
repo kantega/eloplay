@@ -40,19 +40,20 @@ export function AccountDropdown() {
       <DropdownMenuContent className="w-56">
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <span>My Profile</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
             <TeamSelector />
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/new/profile" className="flex">
+              <User className="mr-2 h-4 w-4" />
+              <span>My Profile</span>
+            </Link>
           </DropdownMenuItem>
           {userIsModerator(role) && (
             <DropdownMenuItem>
-              <Users className="mr-2 h-4 w-4" />
-              <Link href="/new/team">Team Admin Page</Link>
+              <Link href="/new/team" className="flex">
+                <Users className="mr-2 h-4 w-4" />
+                Team Page
+              </Link>
             </DropdownMenuItem>
           )}
           {teamId !== "" && (
