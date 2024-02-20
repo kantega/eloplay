@@ -73,7 +73,7 @@ export const leagueRouter = createTRPCRouter({
         where: { leagueId: input.leagueId },
       });
 
-      await ctx.db.match.deleteMany({
+      await ctx.db.leagueMatch.deleteMany({
         where: { leagueId: input.leagueId },
       });
 
