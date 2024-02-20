@@ -20,7 +20,7 @@ export function TeamSelector() {
   return (
     <Select defaultValue={teamId} onValueChange={(v: string) => setTeamId(v)}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Pick a team" />
+        <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

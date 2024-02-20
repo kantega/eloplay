@@ -47,6 +47,7 @@ export const leagueRouter = createTRPCRouter({
           const leagueUser = await ctx.db.leagueUser.create({
             data: {
               userId: teamUser.userId,
+              teamId: teamUser.teamId,
               leagueId: league.id,
             },
           });

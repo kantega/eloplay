@@ -93,20 +93,21 @@ model Role {
 }
 
 model Team {
-    id              String     @id @default(cuid())
-    name            String     @unique
+    id              String       @id @default(cuid())
+    name            String       @unique
     image           String?
     description     String?
     password        String?
-    createdAt       DateTime   @default(now())
-    adminRoleId     String     @unique
-    moderatorRoleId String     @unique
-    memberRoleId    String     @unique
-    RoleAdmin       Role       @relation("team_role_adminId", fields: [adminRoleId], references: [id])
-    RoleModerator   Role       @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
-    RoleMember      Role       @relation("team_role_memberId", fields: [memberRoleId], references: [id])
+    createdAt       DateTime     @default(now())
+    adminRoleId     String       @unique
+    moderatorRoleId String       @unique
+    memberRoleId    String       @unique
+    RoleAdmin       Role         @relation("team_role_adminId", fields: [adminRoleId], references: [id])
+    RoleModerator   Role         @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
+    RoleMember      Role         @relation("team_role_memberId", fields: [memberRoleId], references: [id])
     League          League[]
     TeamUser        TeamUser[]
+    LeagueUser      LeagueUser[]
 }
 
 model TeamUser {
@@ -121,7 +122,6 @@ model TeamUser {
     createdAt DateTime @default(now())
 
     @@unique([userId, teamId])
-    @@unique([userId, roleId])
 }
 
 model League {
@@ -140,15 +140,20 @@ model LeagueUser {
     id            String   @id @default(cuid())
     userId        String
     user          User     @relation(fields: [userId], references: [id])
+    teamId        String
+    team          Team     @relation(fields: [teamId], references: [id])
     leagueId      String
     league        League   @relation(fields: [leagueId], references: [id])
     elo           Int      @default(1200)
     streak        Int      @default(0)
+    matchCount    Int      @default(0)
     latestEloGain Int[]    @default([])
     WinnerMatch   Match?   @relation("match_winner_id")
     LoserMatch    Match?   @relation("match_loser_id")
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
+
+    @@unique([userId, leagueId])
 }
 
 model Match {

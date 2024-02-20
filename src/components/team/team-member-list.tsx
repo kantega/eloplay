@@ -4,6 +4,7 @@ import { type TeamMemberProps, filterTeamUsers } from "@/utils/match";
 import { Input } from "@/components/ui/input";
 import SetRoleUserButton from "@/components/team/set-role-user-button";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function TeamMemberList({
   teamUsers,
@@ -27,7 +28,9 @@ export default function TeamMemberList({
         {filteredTeamUsers.map((teamUser) => {
           return (
             <li key={teamUser.id} className=" flex gap-4">
-              {teamUser.gamerTag}{" "}
+              <Link href={`/new/profile/${teamUser.id}`}>
+                {teamUser.gamerTag}
+              </Link>
               <Badge
                 variant={
                   teamUser.role === RoleTexts.MEMBER ? "outline" : "default"

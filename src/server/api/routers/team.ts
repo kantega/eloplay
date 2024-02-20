@@ -106,6 +106,7 @@ export const teamRouter = createTRPCRouter({
         const leagueUser = await ctx.db.leagueUser.create({
           data: {
             userId: ctx.session.user.id,
+            teamId: team.id,
             leagueId: league.id,
           },
         });

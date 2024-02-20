@@ -25,7 +25,7 @@ export function LeagueSelector() {
       onValueChange={(v: string) => setLeagueId(v)}
     >
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Pick a league" />
+        <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
