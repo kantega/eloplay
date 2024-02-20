@@ -42,7 +42,7 @@ function LeaguePlayer() {
 function LeagueUserMatches() {
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
-  const { data, isLoading } = api.leagueMatch.getAll.useQuery({
+  const { data, isLoading } = api.leagueMatch.getAllForUser.useQuery({
     leagueId,
     id: teamId,
   });

@@ -139,21 +139,22 @@ model League {
 }
 
 model LeagueUser {
-    id            String       @id @default(cuid())
-    userId        String
-    user          User         @relation(fields: [userId], references: [id])
-    teamId        String
-    team          Team         @relation(fields: [teamId], references: [id])
-    leagueId      String
-    league        League       @relation(fields: [leagueId], references: [id])
-    elo           Int          @default(1200)
-    streak        Int          @default(0)
-    matchCount    Int          @default(0)
-    latestEloGain Int[]        @default([])
-    WinnerMatch   LeagueMatch? @relation("match_winner_id")
-    LoserMatch    LeagueMatch? @relation("match_loser_id")
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @updatedAt
+    id             String       @id @default(cuid())
+    userId         String
+    user           User         @relation(fields: [userId], references: [id])
+    teamId         String
+    team           Team         @relation(fields: [teamId], references: [id])
+    leagueId       String
+    league         League       @relation(fields: [leagueId], references: [id])
+    elo            Int          @default(1200)
+    streak         Int          @default(0)
+    matchLossCount Int          @default(0)
+    matchCount     Int          @default(0)
+    latestEloGain  Int[]        @default([])
+    WinnerMatch    LeagueMatch? @relation("match_winner_id")
+    LoserMatch     LeagueMatch? @relation("match_loser_id")
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
 
     @@unique([userId, leagueId])
 }

@@ -145,7 +145,6 @@ export const leagueUserRouter = createTRPCRouter({
         },
       });
 
-      console.log(leagueUsers);
       const leagueUsersAndTeamUsers = (
         await Promise.all(
           leagueUsers.map(async (leagueUser) => {

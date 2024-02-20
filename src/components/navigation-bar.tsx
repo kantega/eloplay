@@ -8,10 +8,10 @@ export default function NavigationBar() {
         <Link href={"/new/leaderboard"} className="p-4">
           <Medal />
         </Link>
-        <Link href={"/addMatch"} className="p-4">
+        <Link href={"/new/addLeagueMatch"} className="p-4">
           <PlusCircle />
         </Link>
-        <Link href={"/addPlayer"} className="p-4">
+        <Link href={"/new/leagueActivity"} className="p-4">
           <UserPlus />
         </Link>
       </div>
