@@ -56,13 +56,13 @@ function LeaguePlayerMatches({ leagueUserId }: { leagueUserId: string }) {
 
   if (isLoading || !data) return null;
 
-  const { leagueMatches } = data;
+  const { leagueMatchesWithProfiles } = data;
 
   return (
     <ul>
-      {leagueMatches.map((match) => (
-        <li key={match.id}>
-          {match.winnerId} vs. {match.loserId}
+      {leagueMatchesWithProfiles.map((match) => (
+        <li key={match.match.id}>
+          {match.winnerTeamUser.gamerTag} vs. {match.loserTeamUser.gamerTag}
         </li>
       ))}
     </ul>

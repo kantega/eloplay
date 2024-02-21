@@ -17,10 +17,10 @@ export default function LeagueMatchHistory() {
 
   return (
     <ul>
-      {data.leagueMatches.map((match) => {
+      {data.leagueMatchesWithProfiles.map((match) => {
         return (
-          <li key={match.id}>
-            {match.winnerId} vs {match.loserId}
+          <li key={match.match.id}>
+            {match.winnerTeamUser.gamerTag} vs {match.loserTeamUser.gamerTag}
           </li>
         );
       })}
