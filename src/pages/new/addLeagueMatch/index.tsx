@@ -17,7 +17,7 @@ export default function AddMatch() {
 
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4">
-      <HeaderLabel headerText={data.name} label="Add league match" />
+      <HeaderLabel headerText={data.name} label="ADD LEAGUE MATCH" />
       <AddMatchForm />
     </div>
   );
