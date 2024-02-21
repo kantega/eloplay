@@ -33,7 +33,7 @@ export function AccountDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" className=" bg-background-tertiary">
           <User className="mr-2 h-6 w-6" /> {sessionData.user.name}
         </Button>
       </DropdownMenuTrigger>
