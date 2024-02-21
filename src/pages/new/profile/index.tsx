@@ -43,6 +43,7 @@ function PersonalLeaguePlayerCards() {
           );
         })}
       </ul>
+      <span className="py-6" />
     </>
   );
 }
