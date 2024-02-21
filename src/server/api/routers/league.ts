@@ -57,6 +57,16 @@ export const leagueRouter = createTRPCRouter({
 
       return league;
     }),
+  find: teamMemberProcedure
+    .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.league.findUnique({
+        where: {
+          id: input.leagueId,
+          teamId: input.id,
+        },
+      });
+    }),
   findAll: teamMemberProcedure
     .input(teamIdSchema)
     .query(async ({ ctx, input }) => {

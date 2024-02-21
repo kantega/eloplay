@@ -90,10 +90,10 @@ export const leagueMatchRouter = createTRPCRouter({
           elo: matchNewElos[1],
           matchLossCount: leagueLoser.matchLossCount + 1,
           matchCount: leagueLoser.matchCount + 1,
-          streak: newLeagueUserStreak({ streak: leagueLoser.streak, add: 1 }),
+          streak: newLeagueUserStreak({ streak: leagueLoser.streak, add: -1 }),
           latestEloGain: addEloToLatestEloList(
             leagueLoser.latestEloGain,
-            matchNewElos[0] - leagueLoser.elo,
+            matchNewElos[1] - leagueLoser.elo,
           ),
         },
       });
