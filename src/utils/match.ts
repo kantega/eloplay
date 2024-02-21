@@ -1,3 +1,4 @@
+import { latestEloGainSchema } from "@/server/types/matchTypes";
 import { type RoleText } from "@/server/types/roleTypes";
 import { type TableTennisMatch, type TeamUser } from "@prisma/client";
 
@@ -97,4 +98,25 @@ export const getTime = (date: Date) => {
     "-" +
     date.getFullYear()
   );
+};
+
+export const addEloToLatestEloList = (eloList: string, eloGain: number) => {
+  const eloNumberList = latestEloGainSchema.parse(JSON.parse(eloList));
+
+  eloNumberList.unshift(eloGain);
+  if (eloNumberList.length > 10) eloNumberList.pop();
+
+  return JSON.stringify(eloNumberList);
+};
+
+export const newLeagueUserStreak = ({
+  streak,
+  add,
+}: {
+  streak: number;
+  add: number;
+}) => {
+  if (streak > 0 && add > 0) return streak + add;
+  if (streak < 0 && add < 0) return streak + add;
+  return add;
 };

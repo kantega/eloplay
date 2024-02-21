@@ -4,6 +4,8 @@ import {
   teamMemberProcedure,
 } from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/types/teamTypes";
+import { updateEloRating } from "@/utils/elo";
+import { addEloToLatestEloList, newLeagueUserStreak } from "@/utils/match";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -60,7 +62,50 @@ export const leagueMatchRouter = createTRPCRouter({
         },
       });
 
+      const matchNewElos = updateEloRating(leagueWinner.elo, leagueLoser.elo);
+
       // update stats on league users and league
+      await ctx.db.leagueUser.update({
+        where: {
+          id: leagueWinner.id,
+          teamId: input.id,
+        },
+        data: {
+          elo: matchNewElos[0],
+          matchCount: leagueWinner.matchCount + 1,
+          streak: newLeagueUserStreak({ streak: leagueWinner.streak, add: 1 }),
+          latestEloGain: addEloToLatestEloList(
+            leagueWinner.latestEloGain,
+            matchNewElos[0] - leagueWinner.elo,
+          ),
+        },
+      });
+
+      await ctx.db.leagueUser.update({
+        where: {
+          id: leagueLoser.id,
+          teamId: input.id,
+        },
+        data: {
+          elo: matchNewElos[1],
+          matchLossCount: leagueLoser.matchLossCount + 1,
+          matchCount: leagueLoser.matchCount + 1,
+          streak: newLeagueUserStreak({ streak: leagueLoser.streak, add: 1 }),
+          latestEloGain: addEloToLatestEloList(
+            leagueLoser.latestEloGain,
+            matchNewElos[0] - leagueLoser.elo,
+          ),
+        },
+      });
+
+      await ctx.db.league.update({
+        where: { id: input.leagueId, teamId: input.id },
+        data: {
+          matchCount: {
+            increment: 1,
+          },
+        },
+      });
 
       return { leagueMatch };
     }),

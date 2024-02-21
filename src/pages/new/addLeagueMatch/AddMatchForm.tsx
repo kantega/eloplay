@@ -57,7 +57,7 @@ export default function AddMatchForm() {
       loserId: "",
     },
   });
-  const createMatch = api.leagueMatch.create.useMutation({
+  const createMatchMutate = api.leagueMatch.create.useMutation({
     onSuccess: async () => {
       form.reset();
       toast({
@@ -81,7 +81,7 @@ export default function AddMatchForm() {
   });
 
   function onSubmit(data: z.infer<typeof CreateLeagueMatch>) {
-    createMatch.mutate({ ...data, id: teamId, leagueId });
+    createMatchMutate.mutate({ ...data, id: teamId, leagueId });
   }
 
   if (!data || isLoading) return null;
@@ -271,7 +271,11 @@ export default function AddMatchForm() {
             />
           </div>
         )}
-        <Button type="submit" className=" m-auto w-fit">
+        <Button
+          type="submit"
+          className=" m-auto w-fit"
+          onClick={() => onSubmit(form.getValues())} //todo: theres a bug here, i have to manually call the onSubmit function
+        >
           Legg til kamp
         </Button>
       </form>

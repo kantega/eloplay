@@ -63,15 +63,17 @@ model Session {
 }
 
 model User {
-    id            String       @id @default(cuid())
-    name          String?
-    email         String?      @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    TeamUser      TeamUser[]
-    Elo           LeagueUser[]
+    id                String        @id @default(cuid())
+    name              String?
+    email             String?       @unique
+    emailVerified     DateTime?
+    image             String?
+    accounts          Account[]
+    sessions          Session[]
+    TeamUser          TeamUser[]
+    Elo               LeagueUser[]
+    WinnerLeagueMatch LeagueMatch[] @relation("match_winner_id")
+    LoserLeagueMatch  LeagueMatch[] @relation("match_loser_id")
 }
 
 model VerificationToken {
@@ -132,47 +134,45 @@ model League {
     teamId     String
     Team       Team          @relation(fields: [teamId], references: [id])
     LeagueUser LeagueUser[]
-    MatchCount Int           @default(0)
+    matchCount Int           @default(0)
     createdAt  DateTime      @default(now())
     updatedAt  DateTime      @updatedAt
     Match      LeagueMatch[]
 }
 
 model LeagueUser {
-    id             String       @id @default(cuid())
+    id             String   @id @default(cuid())
     userId         String
-    user           User         @relation(fields: [userId], references: [id])
+    user           User     @relation(fields: [userId], references: [id])
     teamId         String
-    team           Team         @relation(fields: [teamId], references: [id])
+    team           Team     @relation(fields: [teamId], references: [id])
     leagueId       String
-    league         League       @relation(fields: [leagueId], references: [id])
-    elo            Int          @default(1200)
-    streak         Int          @default(0)
-    matchLossCount Int          @default(0)
-    matchCount     Int          @default(0)
-    latestEloGain  Int[]        @default([])
-    WinnerMatch    LeagueMatch? @relation("match_winner_id")
-    LoserMatch     LeagueMatch? @relation("match_loser_id")
-    createdAt      DateTime     @default(now())
-    updatedAt      DateTime     @updatedAt
+    league         League   @relation(fields: [leagueId], references: [id])
+    elo            Int      @default(1200)
+    streak         Int      @default(0)
+    matchLossCount Int      @default(0)
+    matchCount     Int      @default(0)
+    latestEloGain  String   @default("[]") //todo: hmmm, this is actually a list. Always use zod to validate its structure
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
 
     @@unique([userId, leagueId])
 }
 
 model LeagueMatch {
-    id               String     @id @default(cuid())
-    winnerId         String     @unique
-    loserId          String     @unique
-    WinnerLeagueUser LeagueUser @relation("match_winner_id", fields: [winnerId], references: [id])
-    LoserLeagueUser  LeagueUser @relation("match_loser_id", fields: [loserId], references: [id])
-    teamId           String
-    team             Team       @relation(fields: [teamId], references: [id])
-    leagueId         String
-    league           League     @relation(fields: [leagueId], references: [id])
-    preWinnerElo     Int
-    preLoserElo      Int
-    createdAt        DateTime   @default(now())
-    updatedAt        DateTime   @updatedAt
+    id           String   @id @default(cuid())
+    winnerId     String
+    loserId      String
+    WinnerUser   User     @relation("match_winner_id", fields: [winnerId], references: [id])
+    LoserUser    User     @relation("match_loser_id", fields: [loserId], references: [id])
+    teamId       String
+    team         Team     @relation(fields: [teamId], references: [id])
+    leagueId     String
+    league       League   @relation(fields: [leagueId], references: [id])
+    preWinnerElo Int
+    preLoserElo  Int
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
 
     @@index([winnerId])
     @@index([loserId])
