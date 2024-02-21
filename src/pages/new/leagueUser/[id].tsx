@@ -16,7 +16,6 @@ export default function PlayerPage() {
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      Welcome to personal profile page
       <SpecificLeaguePlayer leagueUserId={id} />
       <LeaguePlayerMatches leagueUserId={id} />
     </div>
@@ -35,10 +34,9 @@ function SpecificLeaguePlayer({ leagueUserId }: { leagueUserId: string }) {
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <h1>Personal League Player Card </h1>
       <LeagueUserCard
         leagueUser={leagueUser}
-        gamerTag={teamUser.gamerTag}
+        teamUser={teamUser}
         leagueName={league.name}
       />
       {/* todo: missing match list */}

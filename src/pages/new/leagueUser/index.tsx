@@ -10,7 +10,6 @@ import { useContext } from "react";
 export default function PlayerPage() {
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      Welcome to personal profile page
       <LeaguePlayer />
       <LeagueUserMatches />
     </div>
@@ -30,10 +29,9 @@ function LeaguePlayer() {
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <h1>Personal League Player Card </h1>
       <LeagueUserCard
         leagueUser={leagueUser}
-        gamerTag={teamUser.gamerTag}
+        teamUser={teamUser}
         leagueName={league.name}
       />
     </div>

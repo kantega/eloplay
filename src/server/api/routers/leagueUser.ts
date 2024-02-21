@@ -133,7 +133,7 @@ export const leagueUserRouter = createTRPCRouter({
           leagueAndLeagueUser.league !== null,
       );
 
-      return { leagueAndLeagueUsers, gamerTag: teamUser.gamerTag };
+      return { leagueAndLeagueUsers, teamUser };
     }),
 
   findAllByLeagueId: protectedProcedure
@@ -212,6 +212,6 @@ export const leagueUserRouter = createTRPCRouter({
           leagueAndLeagueUser.league !== null,
       );
 
-      return { leagueAndLeagueUsers, gamerTag: teamUser.gamerTag };
+      return { leagueAndLeagueUsers, teamUser };
     }),
 });

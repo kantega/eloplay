@@ -8,7 +8,6 @@ import { useContext } from "react";
 export default function ProfilePage() {
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      Welcome to personal profile page
       <PersonalLeaguePlayerCards />
     </div>
   );
@@ -21,19 +20,18 @@ function PersonalLeaguePlayerCards() {
   });
   if (isLoading || !data) return null;
 
-  const { leagueAndLeagueUsers, gamerTag } = data;
+  const { leagueAndLeagueUsers, teamUser } = data;
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <h1>Personal League Player Cards</h1>
-      <ul>
+      <ul className="space-y-2">
         {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
           const { league, leagueUser } = leagueAndLeagueUser;
           return (
             <li key={leagueUser.id}>
               <LeagueUserCard
                 leagueUser={leagueUser}
-                gamerTag={gamerTag}
+                teamUser={teamUser}
                 leagueName={league.name}
               />
             </li>
