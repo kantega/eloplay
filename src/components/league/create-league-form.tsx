@@ -64,7 +64,7 @@ export default function CreateLeagueForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex gap-2 space-y-6"
+        className="flex items-end gap-2"
       >
         <FormField
           control={form.control}

@@ -21,13 +21,12 @@ import { TeamSelector } from "@/contexts/teamContext/team-toggle";
 import Link from "next/link";
 import { useContext, useState } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { userIsModerator } from "@/utils/role";
 import { toast } from "./ui/use-toast";
 import { api } from "@/utils/api";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
-  const { role, teamId } = useContext(TeamContext);
+  const { teamId } = useContext(TeamContext);
   const { data: sessionData } = useSession();
 
   if (!sessionData) return <SignInOrOutButton />;
@@ -45,19 +44,17 @@ export function AccountDropdown() {
             <TeamSelector />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Link href="/new/profile" className="flex">
+            <Link href="/new/teamUser" className="flex">
               <User className="mr-2 h-4 w-4" />
               <span>My Profile</span>
             </Link>
           </DropdownMenuItem>
-          {userIsModerator(role) && (
-            <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-              <Link href="/new/team" className="flex">
-                <Users className="mr-2 h-4 w-4" />
-                Team Page
-              </Link>
-            </DropdownMenuItem>
-          )}
+          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+            <Link href="/new/team" className="flex">
+              <Users className="mr-2 h-4 w-4" />
+              Team Page
+            </Link>
+          </DropdownMenuItem>
           {teamId !== "" && (
             <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
               <Button
@@ -106,6 +103,7 @@ export function AccountDropdown() {
 }
 
 function ProfileButton() {
+  // todo: bug: if user logs in but no context value is picked you get error
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.teamUser.get.useQuery({ id: teamId });
 

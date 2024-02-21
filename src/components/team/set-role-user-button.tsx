@@ -43,8 +43,9 @@ export default function SetRoleUserButton({
     <>
       {member.role !== RoleTexts.ADMIN && userIsModerator(role) && (
         <Button
-          variant="outline"
-          size="icon"
+          className="h-8 w-8 items-start p-1"
+          variant="ghost"
+          size="sm"
           onClick={async () => {
             await mutateAsync({
               teamUserId: member.id,
@@ -56,7 +57,11 @@ export default function SetRoleUserButton({
             });
           }}
         >
-          {member.role === RoleTexts.MEMBER ? <ArrowBigUp /> : <ArrowBigDown />}
+          {member.role === RoleTexts.MEMBER ? (
+            <ArrowBigUp className="text-primary" />
+          ) : (
+            <ArrowBigDown className="text-red-500" />
+          )}
         </Button>
       )}
     </>

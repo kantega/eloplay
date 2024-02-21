@@ -1,7 +1,7 @@
 "use client";
 
 import HeaderLabel from "@/components/header-label";
-import LeagueUserCard from "@/components/leagueUser/league-user-card";
+import LeagueUserCards from "@/components/leagueUser/league-user-cards";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
@@ -33,20 +33,10 @@ function PersonalLeaguePlayerCards({ id }: { id: string }) {
   return (
     <>
       <HeaderLabel headerText={teamUser.gamerTag} label="Team User Profile" />
-      <ul className="space-y-2">
-        {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
-          const { league, leagueUser } = leagueAndLeagueUser;
-          return (
-            <li key={leagueUser.id}>
-              <LeagueUserCard
-                leagueUser={leagueUser}
-                teamUser={teamUser}
-                leagueName={league.name}
-              />
-            </li>
-          );
-        })}
-      </ul>
+      <LeagueUserCards
+        leagueAndLeagueUsers={leagueAndLeagueUsers}
+        teamUser={teamUser}
+      />
     </>
   );
 }

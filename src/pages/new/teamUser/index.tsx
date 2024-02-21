@@ -1,6 +1,6 @@
 "use client";
 
-import LeagueUserCard from "@/components/leagueUser/league-user-card";
+import LeagueUserCards from "@/components/leagueUser/league-user-cards";
 import TeamProfile from "@/components/teamUser/team-profile";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
@@ -26,22 +26,10 @@ function PersonalLeaguePlayerCards() {
   return (
     <>
       <TeamProfile />
-      <ul className="space-y-2">
-        {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
-          const { league, leagueUser } = leagueAndLeagueUser;
-          if (leagueUser.matchCount === 0) return null;
-          return (
-            <li key={leagueUser.id}>
-              <LeagueUserCard
-                leagueUser={leagueUser}
-                teamUser={teamUser}
-                leagueName={league.name}
-              />
-            </li>
-          );
-        })}
-      </ul>
-      <span className="py-6" />
+      <LeagueUserCards
+        leagueAndLeagueUsers={leagueAndLeagueUsers}
+        teamUser={teamUser}
+      />
     </>
   );
 }

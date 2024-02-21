@@ -6,6 +6,7 @@ import TeamMemberList from "@/components/team/team-member-list";
 import TeamLeagueList from "@/components/league/team-league-list";
 import TeamName from "@/components/team/team-name";
 import CreateLeagueForm from "@/components/league/create-league-form";
+import { userIsModerator } from "@/utils/role";
 
 export default function PlayerPage() {
   return (
@@ -16,7 +17,7 @@ export default function PlayerPage() {
 }
 
 function TeamInfo() {
-  const { teamId } = useContext(TeamContext);
+  const { teamId, role } = useContext(TeamContext);
   const { data, isLoading } = api.team.findById.useQuery({
     id: teamId,
   });
@@ -25,10 +26,14 @@ function TeamInfo() {
   if (!data) return <div>Team not found</div>;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-8">
       <TeamName teamName={data.team.name} />
-      <CreateLeagueForm />
-      <TeamLeagueList />
+      {userIsModerator(role) && (
+        <>
+          <CreateLeagueForm />
+          <TeamLeagueList />
+        </>
+      )}
       <TeamMemberList teamUsers={data.teamUsers} />
     </div>
   );
