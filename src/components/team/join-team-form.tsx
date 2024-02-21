@@ -53,11 +53,10 @@ export default function JoinTeamForm() {
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4">
-      <h1 className="w-fit">Join Team</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-2/3 space-y-6"
+          className="flex w-full items-end gap-4 space-y-6 "
         >
           <FormField
             control={form.control}

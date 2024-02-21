@@ -13,7 +13,7 @@ export default function PlayerPage() {
   if (typeof id !== "string") return null;
 
   return (
-    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
+    <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">
       <JoinTeamByInviteLink id={id} />
     </div>
   );
