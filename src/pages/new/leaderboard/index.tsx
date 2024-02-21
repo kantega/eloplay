@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">
       <span>
-        <h2 className=" m-0 text-sm font-bold text-gray-500">Leaderboard</h2>
+        <h2 className=" m-0 text-xs font-bold text-gray-500">Leaderboard</h2>
         <h1 className="m-0 text-4xl text-primary">{leagueData.name}</h1>
       </span>
       <FilterUnplayedPlayers

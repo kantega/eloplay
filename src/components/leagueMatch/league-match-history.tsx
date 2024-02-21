@@ -4,6 +4,9 @@ import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext } from "react";
+import LeagueMatchCard from "./league-match-card";
+// import { getNiceDateString } from "./league-match-util";
+// todo: add date separators to the match history list
 
 export default function LeagueMatchHistory() {
   const { leagueId } = useContext(LeagueContext);
@@ -15,15 +18,22 @@ export default function LeagueMatchHistory() {
 
   if (isLoading || !data) return null;
 
+  const sortedLeagueMatchesWithProfiles = data.leagueMatchesWithProfiles.sort(
+    (a, b) => b.match.createdAt.getTime() - a.match.createdAt.getTime(),
+  );
+
   return (
-    <ul>
-      {data.leagueMatchesWithProfiles.map((match) => {
-        return (
-          <li key={match.match.id}>
-            {match.winnerTeamUser.gamerTag} vs {match.loserTeamUser.gamerTag}
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <ul>
+        {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
+          return (
+            <li key={leagueMatchWithProfiles.match.id}>
+              <LeagueMatchCard {...leagueMatchWithProfiles} />
+            </li>
+          );
+        })}
+      </ul>
+      <span className="py-10" />
+    </>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
@@ -48,15 +49,22 @@ function LeagueUserMatches() {
   });
   if (isLoading || !data) return null;
 
-  const { leagueMatchesWithProfiles } = data;
+  const sortedLeagueMatchesWithProfiles = data.leagueMatchesWithProfiles.sort(
+    (a, b) => b.match.createdAt.getTime() - a.match.createdAt.getTime(),
+  );
 
   return (
-    <ul>
-      {leagueMatchesWithProfiles.map((match) => (
-        <li key={match.match.id}>
-          {match.winnerTeamUser.gamerTag} vs. {match.loserTeamUser.gamerTag}
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="w-full">
+        {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
+          return (
+            <li key={leagueMatchWithProfiles.match.id}>
+              <LeagueMatchCard {...leagueMatchWithProfiles} />
+            </li>
+          );
+        })}
+      </ul>
+      <span className="py-10" />
+    </>
   );
 }
