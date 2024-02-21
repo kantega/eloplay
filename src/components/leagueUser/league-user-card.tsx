@@ -6,6 +6,7 @@ import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-histo
 import Image from "next/image";
 import { PingPongShower } from "../ping-pong-shower";
 import { Badge } from "../ui/badge";
+import LeagueUserEloGraph from "./league-user-elo-graph";
 
 export default function LeagueUserCard({
   leagueUser,
@@ -20,35 +21,37 @@ export default function LeagueUserCard({
 
   return (
     <Link href={`/new/leagueUser/${leagueUser.id}`} className="w-96">
-      <Card className="relative w-full space-y-4 overflow-hidden p-4">
+      <Card className="relative w-full space-y-4 overflow-hidden">
         {leagueUser.streak > 0 && <PingPongShower number={leagueUser.streak} />}
-        <Badge className="absolute right-4 top-4 text-black">
-          {leagueName}
-        </Badge>
-        <div className="flex w-full gap-4">
-          <div>
-            <Image
-              className="rounded-full"
-              src={teamUser.image}
-              alt="Team user profile image"
-              width={60}
-              height={60}
-              quality={100}
-            />
+        <div className="relative w-full space-y-4 overflow-hidden px-4 py-2">
+          <Badge className="absolute right-4 top-4 text-black">
+            {leagueName}
+          </Badge>
+          <div className="flex w-full gap-4">
+            <div>
+              <Image
+                className="rounded-full"
+                src={teamUser.image}
+                alt="Team user profile image"
+                width={60}
+                height={60}
+                quality={100}
+              />
+            </div>
+            <div className="flex flex-col">
+              <p className="text-2xl">{teamUser.gamerTag}</p>
+              <span className="flex flex-row items-end justify-end gap-2">
+                <p className="text-lg">{leagueUser.elo}</p>
+                <p className="text-sm text-gray-500">ELO</p>
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="text-2xl">{teamUser.gamerTag}</p>
-            <span className="flex flex-row items-end justify-end gap-2">
-              <p className="text-lg">{leagueUser.elo}</p>
-              <p className="text-sm text-gray-500">ELO</p>
-            </span>
-          </div>
+          <MinityrLeagueMatchHistory
+            eloList={eloGainList}
+            length={eloGainList.length}
+          />
         </div>
-        <MinityrLeagueMatchHistory
-          eloList={eloGainList}
-          length={eloGainList.length}
-        />
-        <div className="flex justify-between">
+        <div className="bg-background-secondary flex justify-between px-6 py-4">
           <StatsText
             value={leagueUser.matchCount - leagueUser.matchLossCount}
             label="wins"
@@ -66,6 +69,7 @@ export default function LeagueUserCard({
           />
           <StatsText value={leagueUser.streak} label="streak" />
         </div>
+        <LeagueUserEloGraph leagueUserId={leagueUser.id} />
       </Card>
     </Link>
   );
