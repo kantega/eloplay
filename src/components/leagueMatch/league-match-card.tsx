@@ -7,10 +7,12 @@ export default function LeagueMatchCard({
   match,
   winnerTeamUser,
   loserTeamUser,
+  includeSeparator = true,
 }: {
   winnerTeamUser: TeamUser;
   loserTeamUser: TeamUser;
-  match: LeagueMatch;
+  match: LeagueMatch | { preWinnerElo: number; preLoserElo: number };
+  includeSeparator?: boolean;
 }) {
   const newElos = updateEloRating(match.preWinnerElo, match.preLoserElo);
   const winnerEloGain = "+" + (newElos[0] - match.preWinnerElo);
@@ -38,7 +40,7 @@ export default function LeagueMatchCard({
           </p>
         </div>
       </div>
-      <Separator className=" bg-background-tertiary" />
+      {includeSeparator && <Separator className=" bg-background-tertiary" />}
     </>
   );
 }

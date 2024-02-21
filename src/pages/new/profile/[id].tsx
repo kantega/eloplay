@@ -1,5 +1,6 @@
 "use client";
 
+import HeaderLabel from "@/components/header-label";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
@@ -13,7 +14,7 @@ export default function PlayerPage() {
   if (typeof id !== "string") return null;
 
   return (
-    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
+    <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4">
       <PersonalLeaguePlayerCards id={id} />
     </div>
   );
@@ -30,7 +31,8 @@ function PersonalLeaguePlayerCards({ id }: { id: string }) {
   const { leagueAndLeagueUsers, teamUser } = data;
 
   return (
-    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
+    <>
+      <HeaderLabel headerText={teamUser.gamerTag} label="Team User Profile" />
       <ul className="space-y-2">
         {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
           const { league, leagueUser } = leagueAndLeagueUser;
@@ -45,6 +47,6 @@ function PersonalLeaguePlayerCards({ id }: { id: string }) {
           );
         })}
       </ul>
-    </div>
+    </>
   );
 }

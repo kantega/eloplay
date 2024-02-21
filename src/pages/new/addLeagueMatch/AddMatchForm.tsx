@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 
-import { ArrowRight, Check, ChevronsUpDown } from "lucide-react";
+import { ArrowLeftRight, Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -32,15 +32,14 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { type CreateLeagueMatch, CreateMatch } from "@/server/types/matchTypes";
 import { useContext, useState } from "react";
-import {
-  type TeamUserWithLeagueUser,
-  sortTeamUsersByGamerTag,
-} from "@/utils/player";
-import { updateEloRating } from "@/utils/elo";
+import { sortTeamUsersByGamerTag } from "@/utils/player";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useSession } from "next-auth/react";
+import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 
 export default function AddMatchForm() {
+  const { data: sessionData } = useSession();
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
@@ -53,8 +52,8 @@ export default function AddMatchForm() {
   const form = useForm<z.infer<typeof CreateLeagueMatch>>({
     resolver: zodResolver(CreateMatch),
     defaultValues: {
-      winnerId: "",
-      loserId: "",
+      winnerId: sessionData?.user.id ?? "",
+      loserId: sessionData?.user.id ?? "",
     },
   });
   const createMatchMutate = api.leagueMatch.create.useMutation({
@@ -100,17 +99,25 @@ export default function AddMatchForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex h-full w-full flex-col items-center justify-center gap-4 space-y-6"
+        className="relative flex h-full w-full flex-col items-center justify-center gap-4 space-y-6"
       >
-        <div className="flex flex-col gap-4">
+        <Button
+          className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
+          onClick={() => {
+            const tempValue = form.getValues("winnerId");
+            form.setValue("winnerId", form.getValues("loserId"));
+            form.setValue("loserId", tempValue);
+          }}
+        >
+          <ArrowLeftRight />
+        </Button>
+        <div className="flex w-full flex-col gap-4">
           <FormField
             control={form.control}
             name="winnerId"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel className="text-2xl text-green-600">
-                  Vinner
-                </FormLabel>
+              <FormItem className="flex w-full flex-col">
+                <FormLabel>Winner</FormLabel>
                 <Popover
                   open={popoverWinnerOpen}
                   onOpenChange={setPopoverWinnerOpen}
@@ -121,7 +128,7 @@ export default function AddMatchForm() {
                         variant="outline"
                         role="combobox"
                         className={cn(
-                          "w-[200px] justify-between",
+                          "w-full justify-between",
                           !field.value && "text-muted-foreground",
                         )}
                       >
@@ -135,11 +142,11 @@ export default function AddMatchForm() {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="h-52 w-[200px] p-0">
+                  <PopoverContent className="h-52 p-0">
                     <Command>
                       <CommandInput
-                        className="placeholder-green-600"
-                        placeholder="Velg vinner..."
+                        className="placeholder-primary"
+                        placeholder="Pick winner..."
                       />
                       <CommandEmpty>No player found.</CommandEmpty>
                       <CommandGroup className="overflow-y-scroll">
@@ -183,16 +190,15 @@ export default function AddMatchForm() {
               </FormItem>
             )}
           />
-          <EloGainLoss winnerPlayer={winnerPlayer} loserPlayer={loserPlayer} />
         </div>
         {form.watch("winnerId") !== "" && (
-          <div className="flex flex-col gap-4">
+          <div className="flex w-full flex-col">
             <FormField
               control={form.control}
               name="loserId"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel className="text-2xl text-red-600">Taper</FormLabel>
+                  <FormLabel>Loser</FormLabel>
                   <Popover
                     open={popoverLoserOpen}
                     onOpenChange={setPopoverLoserOpen}
@@ -203,7 +209,7 @@ export default function AddMatchForm() {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[200px] justify-between",
+                            "w-full justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >
@@ -264,88 +270,29 @@ export default function AddMatchForm() {
                 </FormItem>
               )}
             />
-            <EloGainLoss
-              winnerPlayer={winnerPlayer}
-              loserPlayer={loserPlayer}
-              showLoser={true}
-            />
           </div>
         )}
-        <Button
-          type="submit"
-          className=" m-auto w-fit"
-          onClick={() => onSubmit(form.getValues())} //todo: theres a bug here, i have to manually call the onSubmit function
-        >
-          Legg til kamp
-        </Button>
+        {loserPlayer !== winnerPlayer && (
+          <Button
+            type="submit"
+            className="m-auto w-full justify-center text-black"
+            onClick={() => onSubmit(form.getValues())} //todo: theres a bug here, i have to manually call the onSubmit function
+          >
+            Add match
+          </Button>
+        )}
+        {!!winnerPlayer && !!loserPlayer && (
+          <LeagueMatchCard
+            winnerTeamUser={winnerPlayer.teamUser}
+            loserTeamUser={loserPlayer.teamUser}
+            match={{
+              preWinnerElo: winnerPlayer.leagueUser.elo,
+              preLoserElo: loserPlayer.leagueUser.elo,
+            }}
+            includeSeparator={false}
+          />
+        )}
       </form>
     </Form>
-  );
-}
-
-function EloGainLoss({
-  winnerPlayer,
-  loserPlayer,
-  showLoser = false,
-}: {
-  winnerPlayer?: TeamUserWithLeagueUser;
-  loserPlayer?: TeamUserWithLeagueUser;
-  showLoser?: boolean;
-}) {
-  if (showLoser)
-    return (
-      <>
-        {winnerPlayer && loserPlayer && (
-          <p className="flex items-center justify-center gap-2 text-sm">
-            <b>{loserPlayer.teamUser.gamerTag}</b>
-            <ArrowRight className=" scale-75" />
-            <b className="text-red-600">
-              {
-                updateEloRating(
-                  winnerPlayer.leagueUser.elo,
-                  loserPlayer.leagueUser.elo,
-                )[1]
-              }
-            </b>
-            <b className="text-red-600">
-              {" (" +
-                (updateEloRating(
-                  winnerPlayer.leagueUser.elo,
-                  loserPlayer.leagueUser.elo,
-                )[1] -
-                  loserPlayer.leagueUser.elo) +
-                ")"}
-            </b>
-          </p>
-        )}
-      </>
-    );
-
-  return (
-    <>
-      {winnerPlayer && loserPlayer && (
-        <p className="flex items-center justify-center gap-2 text-sm">
-          <b>{winnerPlayer.teamUser.gamerTag}</b>
-          <ArrowRight className=" scale-75" />
-          <b className="text-green-600">
-            {
-              updateEloRating(
-                winnerPlayer.leagueUser.elo,
-                loserPlayer.leagueUser.elo,
-              )[0]
-            }
-          </b>
-          <b className="text-green-600">
-            {" (+" +
-              (updateEloRating(
-                winnerPlayer.leagueUser.elo,
-                loserPlayer.leagueUser.elo,
-              )[0] -
-                winnerPlayer.leagueUser.elo) +
-              ")"}
-          </b>
-        </p>
-      )}
-    </>
   );
 }
