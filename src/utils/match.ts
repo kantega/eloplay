@@ -109,6 +109,9 @@ export const addEloToLatestEloList = (eloList: string, eloGain: number) => {
   return JSON.stringify(eloNumberList);
 };
 
+export const getLatestEloList = (eloList: string) =>
+  latestEloGainSchema.parse(JSON.parse(eloList));
+
 export const newLeagueUserStreak = ({
   streak,
   add,
