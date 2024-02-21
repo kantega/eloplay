@@ -119,8 +119,7 @@ export const leagueMatchRouter = createTRPCRouter({
         },
       });
 
-      // todo: add winner and loser profiles and match details
-
+      // todo: optimize this, you can cache the team users and fetch from the cache, not neccaesarily to get them form the db every time
       const leagueMatchesWithProfiles = await Promise.all(
         leagueMatches.map(async (match) => {
           const winnerTeamUser = await ctx.db.teamUser.findFirst({
