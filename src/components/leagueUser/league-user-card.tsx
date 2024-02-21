@@ -4,6 +4,8 @@ import { Card } from "../ui/card";
 import { getLatestEloList } from "@/utils/match";
 import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-history";
 import Image from "next/image";
+import { PingPongShower } from "../ping-pong-shower";
+import { Badge } from "../ui/badge";
 
 export default function LeagueUserCard({
   leagueUser,
@@ -18,12 +20,11 @@ export default function LeagueUserCard({
 
   return (
     <Link href={`/new/leagueUser/${leagueUser.id}`} className="w-96">
-      <Card className="w-96 space-y-4 p-4">
-        <div>
-          <span className="flex flex-row items-end gap-2">
-            <p className="text-md">{leagueName}</p>
-          </span>
-        </div>
+      <Card className="relative w-full space-y-4 overflow-hidden p-4">
+        {leagueUser.streak > 0 && <PingPongShower number={leagueUser.streak} />}
+        <Badge className="absolute right-4 top-4 text-black">
+          {leagueName}
+        </Badge>
         <div className="flex w-full gap-4">
           <div>
             <Image

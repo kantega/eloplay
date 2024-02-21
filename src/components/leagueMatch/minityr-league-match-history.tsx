@@ -18,10 +18,12 @@ function MinityrMatchSymbol({ eloGain }: { eloGain: number }) {
   return (
     <li
       className={`flex h-4 w-4 items-center justify-center rounded ${
-        eloGain > 0 ? "bg-primary" : "bg-red-600"
+        eloGain > 0 ? "bg-primary" : "bg-red-500"
       }`}
     >
-      <p className="text-xs text-white">{eloGain > 0 ? "W" : "L"}</p>
+      <p className="text-xs font-semibold text-black">
+        {eloGain > 0 ? "W" : "L"}
+      </p>
     </li>
   );
 }
