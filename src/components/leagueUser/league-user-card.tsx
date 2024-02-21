@@ -22,7 +22,6 @@ export default function LeagueUserCard({
         <div>
           <span className="flex flex-row items-end gap-2">
             <p className="text-md">{leagueName}</p>
-            <p className="text-xs text-gray-500">League</p>
           </span>
         </div>
         <div className="flex w-full gap-4">
