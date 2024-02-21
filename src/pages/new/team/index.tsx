@@ -6,12 +6,10 @@ import TeamMemberList from "@/components/team/team-member-list";
 import TeamLeagueList from "@/components/league/team-league-list";
 import TeamName from "@/components/team/team-name";
 import CreateLeagueForm from "@/components/league/create-league-form";
-import TeamProfile from "@/components/teamUser/team-profile";
 
 export default function PlayerPage() {
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <TeamProfile />
       <TeamInfo />
     </div>
   );
