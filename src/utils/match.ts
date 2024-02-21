@@ -104,7 +104,7 @@ export const addEloToLatestEloList = (eloList: string, eloGain: number) => {
   const eloNumberList = latestEloGainSchema.parse(JSON.parse(eloList));
 
   eloNumberList.unshift(eloGain);
-  if (eloNumberList.length > 10) eloNumberList.pop();
+  if (eloNumberList.length > 30) eloNumberList.pop();
 
   return JSON.stringify(eloNumberList);
 };
