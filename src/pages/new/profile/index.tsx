@@ -1,6 +1,5 @@
 "use client";
 
-import HeaderLabel from "@/components/header-label";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import TeamProfile from "@/components/teamUser/team-profile";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
@@ -26,7 +25,6 @@ function PersonalLeaguePlayerCards() {
 
   return (
     <>
-      <HeaderLabel headerText={teamUser.gamerTag} label="Team User Profile" />
       <TeamProfile />
       <ul className="space-y-2">
         {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {

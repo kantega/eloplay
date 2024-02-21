@@ -78,7 +78,7 @@ export default function ChangeTeamUserName({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-2/3 items-center gap-2"
+        className="flex w-full items-center gap-2 "
       >
         <FormField
           control={form.control}

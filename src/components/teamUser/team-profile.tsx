@@ -6,14 +6,18 @@ import { Button } from "../ui/button";
 import { PencilLine, X } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { RoleTexts } from "@/server/types/roleTypes";
+import HeaderLabel from "../header-label";
 
 export default function TeamProfile() {
   const { role } = useContext(TeamContext);
 
   return (
-    <div className="flex gap-4">
+    <div className="flex items-end gap-4">
       <TeamUserName />
-      <Badge variant={role === RoleTexts.MEMBER ? "outline" : "default"}>
+      <Badge
+        className="h-fit"
+        variant={role === RoleTexts.MEMBER ? "outline" : "default"}
+      >
         {role}
       </Badge>
     </div>
@@ -28,8 +32,10 @@ function TeamUserName() {
   if (isLoading || !data) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2">
-      {!changeTeamName && <h1 className=" text-md">{data.gamerTag}</h1>}
+    <div className="flex items-end justify-center gap-2">
+      {!changeTeamName && (
+        <HeaderLabel headerText={data.gamerTag} label="Team User Profile" />
+      )}
       {changeTeamName && (
         <ChangeTeamUserName
           teamUserId={data.id}
@@ -38,9 +44,9 @@ function TeamUserName() {
         />
       )}
       <Button
-        className="h-6 w-6"
+        className="h-6 w-6 items-start p-1"
         variant={!changeTeamName ? "ghost" : "destructive"}
-        size="icon"
+        size="sm"
         onClick={() => setChangeTeamName(!changeTeamName)}
       >
         {!changeTeamName ? <PencilLine size={16} /> : <X size={16} />}

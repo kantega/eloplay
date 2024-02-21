@@ -4,14 +4,15 @@ import ChangeTeamName from "./change-team-name";
 import { userIsAdmin } from "@/utils/role";
 import { Button } from "../ui/button";
 import { PencilLine, X } from "lucide-react";
+import HeaderLabel from "../header-label";
 
 export default function TeamName({ teamName }: { teamName: string }) {
   const { role } = useContext(TeamContext);
   const [changeTeamName, setChangeTeamName] = useState(false);
 
   return (
-    <div className="flex items-center justify-center gap-2">
-      {!changeTeamName && <h1 className=" text-5xl">{teamName}</h1>}
+    <div className="flex items-end gap-2">
+      {!changeTeamName && <HeaderLabel headerText={teamName} />}
       {changeTeamName && (
         <ChangeTeamName
           teamName={teamName}
@@ -20,11 +21,12 @@ export default function TeamName({ teamName }: { teamName: string }) {
       )}
       {userIsAdmin(role) && (
         <Button
+          className=" items-start p-4"
           variant={!changeTeamName ? "ghost" : "destructive"}
-          size="icon"
+          size="sm"
           onClick={() => setChangeTeamName(!changeTeamName)}
         >
-          {!changeTeamName ? <PencilLine /> : <X />}
+          {!changeTeamName ? <PencilLine size={16} /> : <X size={16} />}
         </Button>
       )}
     </div>
