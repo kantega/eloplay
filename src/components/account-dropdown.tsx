@@ -19,22 +19,24 @@ import {
 import { signIn, signOut, useSession } from "next-auth/react";
 import { TeamSelector } from "@/contexts/teamContext/team-toggle";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { userIsModerator } from "@/utils/role";
 import { toast } from "./ui/use-toast";
+import { api } from "@/utils/api";
 
 export function AccountDropdown() {
+  const [isOpened, setIsOpened] = useState(false);
   const { role, teamId } = useContext(TeamContext);
   const { data: sessionData } = useSession();
 
   if (!sessionData) return <SignInOrOutButton />;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpened} onOpenChange={() => setIsOpened(!isOpened)}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className=" bg-background-tertiary">
-          <User className="mr-2 h-6 w-6" /> {sessionData.user.name}
+          <ProfileButton />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -42,14 +44,14 @@ export function AccountDropdown() {
           <DropdownMenuItem>
             <TeamSelector />
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
             <Link href="/new/profile" className="flex">
               <User className="mr-2 h-4 w-4" />
               <span>My Profile</span>
             </Link>
           </DropdownMenuItem>
           {userIsModerator(role) && (
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
               <Link href="/new/team" className="flex">
                 <Users className="mr-2 h-4 w-4" />
                 Team Page
@@ -57,7 +59,7 @@ export function AccountDropdown() {
             </DropdownMenuItem>
           )}
           {teamId !== "" && (
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
               <Button
                 onClick={() => {
                   const url = `${window.origin}/new/team/join/${teamId}`;
@@ -76,17 +78,17 @@ export function AccountDropdown() {
               </Button>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
             <Plus className="mr-2 h-4 w-4" />
             <Link href="/new/team/join">Join Team</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
             <Plus className="mr-2 h-4 w-4" />
             <Link href="/new/team/create">Create Team</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
           <GitBranchPlus className="mr-2 h-4 w-4" />
           <span>
             <a href="https://github.com/kantega/tableTennisLeaderboard">
@@ -95,11 +97,24 @@ export function AccountDropdown() {
           </span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
           <SignInOrOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function ProfileButton() {
+  const { teamId } = useContext(TeamContext);
+  const { data, isLoading } = api.teamUser.get.useQuery({ id: teamId });
+
+  if (isLoading || !data) return null;
+
+  return (
+    <>
+      <User className="mr-2 h-6 w-6" /> {data.gamerTag}
+    </>
   );
 }
 
