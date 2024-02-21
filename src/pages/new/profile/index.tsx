@@ -28,7 +28,7 @@ function PersonalLeaguePlayerCards() {
     <>
       <HeaderLabel headerText={teamUser.gamerTag} label="Team User Profile" />
       <TeamProfile />
-      <ul className="flex flex-col items-center space-y-2">
+      <ul className="space-y-2">
         {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
           const { league, leagueUser } = leagueAndLeagueUser;
           if (leagueUser.matchCount === 0) return null;

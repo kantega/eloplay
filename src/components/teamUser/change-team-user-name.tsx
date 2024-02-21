@@ -3,7 +3,6 @@ import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { userIsAdmin } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import {
@@ -40,7 +39,7 @@ export default function ChangeTeamUserName({
   });
 
   const ctx = api.useUtils();
-  const { role, teamId } = useContext(TeamContext);
+  const { teamId } = useContext(TeamContext);
   const updateTeamNameMutate = api.teamUser.update.useMutation({
     onSuccess: async () => {
       void ctx.teamUser.get.invalidate({ id: teamId });
@@ -74,8 +73,6 @@ export default function ChangeTeamUserName({
       id: teamId,
     });
   };
-
-  if (!userIsAdmin(role)) return null;
 
   return (
     <Form {...form}>
