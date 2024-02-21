@@ -1,14 +1,13 @@
 "use client";
 
-import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
-import LeagueUserCard from "@/components/leagueUser/league-user-card";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { api } from "@/utils/api";
+import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
+import SpecificLeagueUser from "@/components/leagueUser/specific-league-user";
+import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useState } from "react";
 
 export default function PlayerPage() {
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { id } = router.query;
 
@@ -16,61 +15,19 @@ export default function PlayerPage() {
 
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <SpecificLeaguePlayer leagueUserId={id} />
-      <LeaguePlayerMatches leagueUserId={id} />
+      <SpecificLeagueUser leagueUserId={id} />
+      <div className="relative w-full">
+        <Input
+          className="sticky top-16 z-10"
+          placeholder="search for opponent..."
+          value={searchQuery}
+          onChange={(value) => {
+            setSearchQuery(value.currentTarget.value);
+          }}
+        />
+        <LeagueUserMatchHistory leagueUserId={id} searchQuery={searchQuery} />
+      </div>
+      <span className="py-6" />
     </div>
-  );
-}
-
-function SpecificLeaguePlayer({ leagueUserId }: { leagueUserId: string }) {
-  const { teamId } = useContext(TeamContext);
-  const { data, isLoading } = api.leagueUser.findById.useQuery({
-    leagueUserId,
-    id: teamId,
-  });
-  if (isLoading || !data) return null;
-
-  const { leagueUser, teamUser, league } = data;
-
-  return (
-    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
-      <LeagueUserCard
-        leagueUser={leagueUser}
-        teamUser={teamUser}
-        leagueName={league.name}
-      />
-      {/* todo: missing match list */}
-    </div>
-  );
-}
-
-function LeaguePlayerMatches({ leagueUserId }: { leagueUserId: string }) {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
-  const { data, isLoading } = api.leagueMatch.getAllById.useQuery({
-    leagueUserId,
-    leagueId,
-    id: teamId,
-  });
-
-  if (isLoading || !data) return null;
-
-  const sortedLeagueMatchesWithProfiles = data.leagueMatchesWithProfiles.sort(
-    (a, b) => b.match.createdAt.getTime() - a.match.createdAt.getTime(),
-  );
-
-  return (
-    <>
-      <ul className="w-full">
-        {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
-          return (
-            <li key={leagueMatchWithProfiles.match.id}>
-              <LeagueMatchCard {...leagueMatchWithProfiles} />
-            </li>
-          );
-        })}
-      </ul>
-      <span className="py-10" />
-    </>
   );
 }

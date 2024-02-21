@@ -1,5 +1,6 @@
 "use client";
 
+import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import { z } from "zod";
 
 const localStorageKey = "shouldFilterUnplayedPlayers";
@@ -43,3 +44,41 @@ export const getNiceDateAndTimeString = (date: Date) => {
     date.getFullYear()
   );
 };
+
+export function filterMatches({
+  matches,
+  searchQuery,
+  winnerId,
+}: {
+  matches: {
+    match: LeagueMatch;
+    winnerTeamUser: TeamUser;
+    loserTeamUser: TeamUser;
+  }[];
+  searchQuery: string;
+  winnerId: string;
+}) {
+  const letters = searchQuery.split("");
+
+  const filteredMatches = matches.filter((match) => {
+    return letters.reduce(
+      (acc, letter) => {
+        if (!acc.state) return { state: acc.state, name: acc.name };
+        const includesLetter = acc.name.includes(letter.toLowerCase());
+        return {
+          state: includesLetter,
+          name: acc.name.replace(letter.toLowerCase(), ""),
+        };
+      },
+      {
+        state: true,
+        name:
+          winnerId !== match.match.winnerId
+            ? match.winnerTeamUser.gamerTag.toLowerCase()
+            : match.loserTeamUser.gamerTag.toLowerCase(),
+      },
+    ).state;
+  });
+
+  return filteredMatches;
+}
