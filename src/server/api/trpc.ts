@@ -151,6 +151,7 @@ export const teamAdminProcedure = t.procedure.use(
     const userIsAdmin = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
+        teamId: id,
         roleId: team.adminRoleId,
       },
     });
@@ -190,24 +191,18 @@ export const teamModeratorProcedure = t.procedure.use(
         message: "Team not found",
       });
 
-    const userIsAdmin = await ctx.db.teamUser.findFirst({
+    const teamUser = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.adminRoleId,
+        teamId: id,
+        OR: [{ roleId: team.moderatorRoleId }, { roleId: team.adminRoleId }],
       },
     });
 
-    const userIsModerator = await ctx.db.teamUser.findFirst({
-      where: {
-        userId: ctx.session.user.id,
-        roleId: team.moderatorRoleId,
-      },
-    });
-
-    if (!userIsAdmin && !userIsModerator)
+    if (!teamUser)
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "User is not an admin or moderator of this team",
+        message: "TeamUser with role moderator or admin not found",
       });
 
     return next({
@@ -239,31 +234,17 @@ export const teamMemberProcedure = t.procedure.use(
         message: "Team not found",
       });
 
-    const userIsAdmin = await ctx.db.teamUser.findFirst({
+    const teamUser = await ctx.db.teamUser.findFirst({
       where: {
         userId: ctx.session.user.id,
-        roleId: team.adminRoleId,
+        teamId: id,
       },
     });
 
-    const userIsModerator = await ctx.db.teamUser.findFirst({
-      where: {
-        userId: ctx.session.user.id,
-        roleId: team.moderatorRoleId,
-      },
-    });
-
-    const userIsMember = await ctx.db.teamUser.findFirst({
-      where: {
-        userId: ctx.session.user.id,
-        roleId: team.memberRoleId,
-      },
-    });
-
-    if (!userIsAdmin && !userIsModerator && !userIsMember)
+    if (!teamUser)
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "User is not a part of this team",
+        message: "TeamUser not found",
       });
 
     return next({
