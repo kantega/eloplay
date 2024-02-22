@@ -25,8 +25,8 @@ export const getRivalsData = (
 
   const sortedRivals = doneRivals.sort((a, b) => b.WR - a.WR);
   return {
-    nemesis: sortedRivals[0],
-    bestFriend: sortedRivals[sortedRivals.length - 1],
+    nemesis: sortedRivals[sortedRivals.length - 1],
+    bestFriend: sortedRivals[0],
   };
 };
 

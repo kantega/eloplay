@@ -29,7 +29,6 @@ export default function LeagueUserRivals({
 
   return (
     <span className="flex flex-col items-center justify-center">
-      <h1 className="m-0 text-2xl">Winrate radar vs opponents</h1>
       <RadarChart
         cx={160}
         cy={160}
