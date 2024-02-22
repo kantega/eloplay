@@ -15,7 +15,10 @@ export default function LeagueUserCards({
           const { league, leagueUser } = leagueAndLeagueUser;
           if (league.matchCount === 0)
             return (
-              <p className="rounded-sm bg-background-tertiary p-4">
+              <p
+                key={leagueUser.id}
+                className="rounded-sm bg-background-tertiary p-4"
+              >
                 No matches found for {league.name}{" "}
               </p>
             );

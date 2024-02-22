@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -15,9 +15,14 @@ import { api } from "@/utils/api";
 import { TeamContext } from "../teamContext/team-provider";
 
 export function LeagueSelector() {
+  const [isClient, setIsClient] = useState(false);
   const { teamId } = useContext(TeamContext);
   const { leagueId, setLeagueId } = useContext(LeagueContext);
   const { data, isLoading } = api.league.findAll.useQuery({ id: teamId });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <Select
@@ -25,7 +30,7 @@ export function LeagueSelector() {
       onValueChange={(v: string) => setLeagueId(v)}
     >
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="" />
+        <SelectValue placeholder={isClient ? "Pick league" : ""} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

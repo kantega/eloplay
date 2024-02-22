@@ -1,6 +1,6 @@
 import { ModeToggle } from "@/contexts/themeContext/theme-toggle";
 import { AccountDropdown } from "./account-dropdown";
-import { LeagueSelector } from "@/contexts/leagueContext/league-toggle";
+import { LeagueSelector } from "@/contexts/leagueContext/league-selector";
 
 export default function NavigationBar() {
   return (

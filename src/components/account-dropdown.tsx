@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { TeamSelector } from "@/contexts/teamContext/team-toggle";
+import { TeamSelector } from "@/contexts/teamContext/team-selector";
 import Link from "next/link";
 import { useContext, useState } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
