@@ -31,6 +31,8 @@ export function InnerLeagueSelector() {
     setIsClient(true);
   }, []);
 
+  if (!isClient) return null;
+
   return (
     <Select value={leagueId} onValueChange={(v: string) => setLeagueId(v)}>
       <SelectTrigger className="w-[180px]">

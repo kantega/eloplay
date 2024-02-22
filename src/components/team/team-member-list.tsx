@@ -33,11 +33,8 @@ export default function TeamMemberList({
       <ul className="flex flex-col justify-center gap-1">
         {sortedTeamUsers.map((teamUser) => {
           return (
-            <>
-              <li
-                key={teamUser.id}
-                className=" flex items-center justify-between gap-4"
-              >
+            <li className="mt-2 w-full" key={teamUser.id}>
+              <div className=" flex items-center justify-between gap-4">
                 <div className="flex w-[80%] justify-between">
                   <Link href={`/new/teamUser/${teamUser.id}`}>
                     {teamUser.gamerTag}
@@ -52,11 +49,11 @@ export default function TeamMemberList({
                   </Badge>
                 </div>
                 <SetRoleUserButton member={teamUser} />
-              </li>
+              </div>
               <div className="relative m-2 w-full">
                 <Separator className=" absolute left-[-3%] top-1/2 w-[100%] bg-background-tertiary" />
               </div>
-            </>
+            </li>
           );
         })}
       </ul>

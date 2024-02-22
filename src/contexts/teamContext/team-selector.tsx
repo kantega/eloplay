@@ -22,6 +22,8 @@ export function TeamSelector() {
     setIsClient(true);
   }, []);
 
+  if (!isClient) return null;
+
   return (
     <Select defaultValue={teamId} onValueChange={(v: string) => setTeamId(v)}>
       <SelectTrigger className="w-[180px]">
