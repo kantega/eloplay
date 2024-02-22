@@ -103,7 +103,13 @@ export function AccountDropdown() {
 }
 
 function ProfileButton() {
-  // todo: bug: if user logs in but no context value is picked you get error
+  const { teamId } = useContext(TeamContext);
+
+  if (teamId === "") return <UserProfileButton />;
+  return <TeamUserProfileButton />;
+}
+
+function TeamUserProfileButton() {
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.teamUser.get.useQuery({ id: teamId });
 
@@ -112,6 +118,17 @@ function ProfileButton() {
   return (
     <>
       <User className="mr-2 h-6 w-6" /> {data.gamerTag}
+    </>
+  );
+}
+
+function UserProfileButton() {
+  const { data: sessionData } = useSession();
+  if (!sessionData) return null;
+
+  return (
+    <>
+      <User className="mr-2 h-6 w-6" /> {sessionData.user.name}
     </>
   );
 }

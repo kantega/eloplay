@@ -15,6 +15,13 @@ import { api } from "@/utils/api";
 import { TeamContext } from "../teamContext/team-provider";
 
 export function LeagueSelector() {
+  const { teamId } = useContext(TeamContext);
+  if (!teamId || teamId === "") return null;
+
+  return <InnerLeagueSelector />;
+}
+
+export function InnerLeagueSelector() {
   const [isClient, setIsClient] = useState(false);
   const { teamId } = useContext(TeamContext);
   const { leagueId, setLeagueId } = useContext(LeagueContext);
