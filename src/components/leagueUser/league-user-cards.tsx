@@ -8,6 +8,10 @@ export default function LeagueUserCards({
   leagueAndLeagueUsers: { league: League; leagueUser: LeagueUser }[];
   teamUser: TeamUser;
 }) {
+  leagueAndLeagueUsers.sort((a, b) => {
+    return b.leagueUser.matchCount - a.leagueUser.matchCount;
+  });
+
   return (
     <>
       <ul className="space-y-2">
