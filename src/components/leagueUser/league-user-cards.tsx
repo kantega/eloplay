@@ -13,6 +13,12 @@ export default function LeagueUserCards({
       <ul className="space-y-2">
         {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
           const { league, leagueUser } = leagueAndLeagueUser;
+          if (league.matchCount === 0)
+            return (
+              <p className="rounded-sm bg-background-tertiary p-4">
+                No matches found for {league.name}{" "}
+              </p>
+            );
           return (
             <li key={leagueUser.id}>
               <LeagueUserCard
