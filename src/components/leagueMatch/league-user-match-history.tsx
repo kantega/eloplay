@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { filterMatches } from "./league-match-util";
 import LeagueUserRivals from "../leagueUser/league-user-rivals";
 import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
+import DeleteLeagueMatchDialog from "./delete-league-match-dialog";
 
 export default function LeagueUserMatchHistory({
   leagueUserId,
@@ -56,7 +57,11 @@ export default function LeagueUserMatchHistory({
         {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
           return (
             <li key={leagueMatchWithProfiles.match.id}>
-              <LeagueMatchCard {...leagueMatchWithProfiles} />
+              <DeleteLeagueMatchDialog
+                leagueMatch={leagueMatchWithProfiles.match}
+              >
+                <LeagueMatchCard {...leagueMatchWithProfiles} />
+              </DeleteLeagueMatchDialog>
             </li>
           );
         })}

@@ -5,9 +5,10 @@ export default function MinityrLeagueMatchHistory({
   eloList: number[];
   length?: number;
 }) {
+  const reverseList = eloList.slice(0, length).reverse();
   return (
     <ul className="flex space-x-1">
-      {eloList.slice(0, length).map((eloGain, index) => {
+      {reverseList.map((eloGain, index) => {
         return <MinityrMatchSymbol key={index} eloGain={eloGain} />;
       })}
     </ul>

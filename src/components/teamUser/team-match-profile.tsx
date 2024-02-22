@@ -19,7 +19,7 @@ export default function TeamMatchProfile({
         quality={100}
       />
       <span className="flex flex-col">
-        <p>{teamUser.gamerTag}</p>
+        <p className="text-md text-left">{teamUser.gamerTag}</p>
         <p className="text-xs text-gray-500">ELO {preElo}</p>
       </span>
     </div>

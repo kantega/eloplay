@@ -46,12 +46,9 @@ export default function LeagueUserCard({
               </span>
             </div>
           </div>
-          <MinityrLeagueMatchHistory
-            eloList={eloGainList}
-            length={eloGainList.length}
-          />
+          <MinityrLeagueMatchHistory eloList={eloGainList} length={15} />
         </div>
-        <div className="bg-background-secondary flex justify-between px-6 py-4">
+        <div className="flex justify-between bg-background-secondary px-6 py-4">
           <StatsText
             value={leagueUser.matchCount - leagueUser.matchLossCount}
             label="wins"

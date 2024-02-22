@@ -109,6 +109,103 @@ export const leagueMatchRouter = createTRPCRouter({
 
       return { leagueMatch };
     }),
+  delete: teamMemberProcedure
+    .input(
+      z
+        .object({
+          leagueMatchId: z.string().min(1),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const leagueMatch = await ctx.db.leagueMatch.findUnique({
+        where: {
+          id: input.leagueMatchId,
+          teamId: input.id,
+        },
+      });
+
+      if (!leagueMatch) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "League match not found",
+        });
+      }
+
+      const leagueWinner = await ctx.db.leagueUser.findFirst({
+        where: {
+          userId: leagueMatch.winnerId,
+          leagueId: leagueMatch.leagueId,
+          teamId: input.id,
+        },
+      });
+
+      if (!leagueWinner) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Winner not found in league",
+        });
+      }
+
+      const leagueLoser = await ctx.db.leagueUser.findFirst({
+        where: {
+          userId: leagueMatch.loserId,
+          leagueId: leagueMatch.leagueId,
+          teamId: input.id,
+        },
+      });
+
+      if (!leagueLoser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Loser not found in league",
+        });
+      }
+
+      await ctx.db.leagueMatch.delete({
+        where: {
+          id: input.leagueMatchId,
+        },
+      });
+
+      const matchNewElos = updateEloRating(
+        leagueMatch.preWinnerElo,
+        leagueMatch.preLoserElo,
+      );
+
+      const winnerEloGain = matchNewElos[0] - leagueMatch.preWinnerElo;
+      const loserEloGain = matchNewElos[1] - leagueMatch.preLoserElo;
+
+      // update stats on league users and league
+      await ctx.db.leagueUser.update({
+        where: {
+          id: leagueWinner.id,
+          teamId: input.id,
+        },
+        data: {
+          elo: leagueWinner.elo - winnerEloGain,
+          matchCount: leagueWinner.matchCount - 1,
+          // todo: fix streak
+          // todo: fix latestEloGain
+        },
+      });
+
+      await ctx.db.leagueUser.update({
+        where: {
+          id: leagueLoser.id,
+          teamId: input.id,
+        },
+        data: {
+          elo: leagueLoser.elo - loserEloGain,
+          matchLossCount: leagueLoser.matchLossCount - 1,
+          matchCount: leagueLoser.matchCount - 1,
+          // todo: fix streak
+          // todo: fix latestEloGain
+        },
+      });
+
+      return true;
+    }),
   getAll: protectedProcedure
     .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .query(async ({ ctx, input }) => {

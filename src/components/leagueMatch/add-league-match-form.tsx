@@ -38,7 +38,7 @@ import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { useSession } from "next-auth/react";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 
-export default function AddMatchForm() {
+export default function AddLeagueMatchForm() {
   const { data: sessionData } = useSession();
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);

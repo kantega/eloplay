@@ -1,9 +1,9 @@
 import HeaderLabel from "@/components/header-label";
-import AddMatchForm from "./AddMatchForm";
 import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import AddLeagueMatchForm from "@/components/leagueMatch/add-league-match-form";
 
 export default function AddMatch() {
   const { teamId } = useContext(TeamContext);
@@ -18,7 +18,7 @@ export default function AddMatch() {
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4">
       <HeaderLabel headerText={data.name} label="ADD LEAGUE MATCH" />
-      <AddMatchForm />
+      <AddLeagueMatchForm />
     </div>
   );
 }

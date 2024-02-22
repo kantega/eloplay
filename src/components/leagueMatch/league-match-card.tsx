@@ -20,7 +20,7 @@ export default function LeagueMatchCard({
 
   return (
     <>
-      <div className="hover:bg-background-tertiary flex w-full justify-between p-2">
+      <div className="flex h-fit w-full items-stretch justify-between rounded-none p-2 hover:bg-background-tertiary">
         <div>
           <TeamMatchProfile
             teamUser={winnerTeamUser}
