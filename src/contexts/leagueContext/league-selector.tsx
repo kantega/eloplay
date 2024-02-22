@@ -31,6 +31,12 @@ export function InnerLeagueSelector() {
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    if (!!data && data.length > 0 && leagueId === "") {
+      setLeagueId(!!data[0] ? data[0].id : "");
+    }
+  }, [data, leagueId, setLeagueId]);
+
   if (!isClient) return null;
 
   return (

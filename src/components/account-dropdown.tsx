@@ -44,13 +44,13 @@ export function AccountDropdown() {
             <TeamSelector />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Link href="/new/teamUser" className="flex">
+            <Link href="/teamUser" className="flex">
               <User className="mr-2 h-4 w-4" />
               <span>My Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Link href="/new/team" className="flex">
+            <Link href="/team" className="flex">
               <Users className="mr-2 h-4 w-4" />
               Team Page
             </Link>
@@ -59,7 +59,7 @@ export function AccountDropdown() {
             <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
               <Button
                 onClick={() => {
-                  const url = `${window.origin}/new/team/join/${teamId}`;
+                  const url = `${window.origin}/team/join/${teamId}`;
                   void navigator.clipboard.writeText(url).then(() => {
                     toast({
                       title: "Copied invite link to clipboard.",
@@ -77,11 +77,11 @@ export function AccountDropdown() {
           )}
           <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
             <Plus className="mr-2 h-4 w-4" />
-            <Link href="/new/team/join">Join Team</Link>
+            <Link href="/team/join">Join Team</Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
             <Plus className="mr-2 h-4 w-4" />
-            <Link href="/new/team/create">Create Team</Link>
+            <Link href="/team/create">Create Team</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -140,7 +140,10 @@ export function SignInOrOutButton() {
     <Button
       className="m-0 p-2"
       variant={sessionData ? "ghost" : "default"}
-      onClick={sessionData ? () => void signOut() : () => void signIn()}
+      onClick={() => {
+        localStorage.clear();
+        sessionData ? void signOut() : void signIn();
+      }}
     >
       <LogOut className="mr-2 h-4 w-4" />
       {sessionData ? "Sign out" : "Sign in"}
@@ -148,7 +151,7 @@ export function SignInOrOutButton() {
   );
 }
 
-export function LogOutButton() {
+export function LogInButton() {
   return (
     <Button className="m-0 p-0" variant="default" onClick={() => void signIn()}>
       <LogOut className="mr-2 h-4 w-4" />
@@ -157,7 +160,7 @@ export function LogOutButton() {
   );
 }
 
-export function LogInButton() {
+export function LogOutButton() {
   return (
     <Button className="m-0 p-0" variant="ghost" onClick={() => void signOut()}>
       <LogOut className="mr-2 h-4 w-4" />

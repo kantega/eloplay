@@ -22,6 +22,13 @@ export function TeamSelector() {
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    // todo: bugfix --- only works if teamId is not set and you open the dropdown menu
+    if (!!data && data.length > 0 && teamId === "") {
+      setTeamId(!!data[0] ? data[0].id : "");
+    }
+  }, [data, setTeamId, teamId]);
+
   if (!isClient) return null;
 
   return (

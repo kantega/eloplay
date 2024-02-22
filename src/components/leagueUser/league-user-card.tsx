@@ -20,7 +20,7 @@ export default function LeagueUserCard({
   const eloGainList = getLatestEloList(leagueUser.latestEloGain);
 
   return (
-    <Link href={`/new/leagueUser/${leagueUser.id}`} className="w-96">
+    <Link href={`/leagueUser/${leagueUser.id}`} className="w-96">
       <Card className="relative w-full space-y-4 overflow-hidden">
         {leagueUser.streak > 0 && <PingPongShower number={leagueUser.streak} />}
         <div className="relative w-full space-y-4 overflow-hidden px-4 py-2">

@@ -1,5 +1,5 @@
 import HeaderLabel from "@/components/header-label";
-import CreateTeamForm from "../../../../components/team/create-team-form";
+import CreateTeamForm from "../../../components/team/create-team-form";
 
 export default function CreateTeamPage() {
   return (

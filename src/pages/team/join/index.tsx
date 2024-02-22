@@ -1,7 +1,7 @@
 "use client";
 
 import HeaderLabel from "@/components/header-label";
-import JoinTeamForm from "../../../../components/team/join-team-form";
+import JoinTeamForm from "../../../components/team/join-team-form";
 
 export default function PlayerPage() {
   return (

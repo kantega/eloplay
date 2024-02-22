@@ -36,7 +36,7 @@ export default function TeamMemberList({
             <li className="mt-2 w-full" key={teamUser.id}>
               <div className=" flex items-center justify-between gap-4">
                 <div className="flex w-[80%] justify-between">
-                  <Link href={`/new/teamUser/${teamUser.id}`}>
+                  <Link href={`/teamUser/${teamUser.id}`}>
                     {teamUser.gamerTag}
                   </Link>
                   <Badge

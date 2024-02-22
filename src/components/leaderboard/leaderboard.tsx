@@ -28,9 +28,7 @@ export default function Leaderboard({
           return (
             <TableRow
               key={player.leagueUser.id}
-              onClick={() =>
-                router.push("/new/leagueUser/" + player.leagueUser.id)
-              }
+              onClick={() => router.push("/leagueUser/" + player.leagueUser.id)}
             >
               <TableCell className="px-0">
                 <div className="relative w-10 overflow-hidden rounded-full">
