@@ -17,7 +17,7 @@ export default function LeagueUserCards({
       <ul className="space-y-2">
         {leagueAndLeagueUsers.map((leagueAndLeagueUser) => {
           const { league, leagueUser } = leagueAndLeagueUser;
-          if (league.matchCount === 0)
+          if (leagueUser.matchCount === 0)
             return (
               <p
                 key={leagueUser.id}

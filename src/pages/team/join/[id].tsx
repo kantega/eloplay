@@ -3,8 +3,9 @@
 import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loading";
 import { api } from "@/utils/api";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { TeamContext } from "@/contexts/teamContext/team-provider";
 
 export default function PlayerPage() {
   const router = useRouter();
@@ -23,30 +24,36 @@ const RequestStatuses = {
   PENDING: "PENDING",
   SUCCESS: "SUCCESS",
   ERROR: "ERROR",
+  NOTSENT: "NOTSENT",
 } as const;
 
 type RequestStatus = (typeof RequestStatuses)[keyof typeof RequestStatuses];
 
 function JoinTeamByInviteLink({ id }: { id: string }) {
+  const { setTeamId } = useContext(TeamContext);
+  const router = useRouter();
   const [sentRequest, setSentRequest] = useState(false);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>(
-    RequestStatuses.PENDING,
+    RequestStatuses.NOTSENT,
   );
   const { data, isLoading } = api.team.findById.useQuery({
     id,
   });
   const joinTeamMutation = api.team.join.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       toast({
         title: "Success",
         description: "Welcome, your are part of the team!",
-        variant: "default",
+        variant: "success",
       });
+      setTeamId(data.id);
       setRequestStatus(RequestStatuses.SUCCESS);
+      void router.push("/leaderboard");
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors;
       console.log(errorMessage);
+      setSentRequest(false);
       setRequestStatus(RequestStatuses.ERROR);
       toast({
         title: "Error",
@@ -60,11 +67,16 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
   });
 
   useEffect(() => {
-    if (!sentRequest) {
+    if (
+      !sentRequest &&
+      (requestStatus === RequestStatuses.NOTSENT ||
+        requestStatus === RequestStatuses.ERROR)
+    ) {
       joinTeamMutation.mutate({ id });
       setSentRequest(true);
+      setRequestStatus(RequestStatuses.PENDING);
     }
-  }, [id, joinTeamMutation, sentRequest]);
+  }, [id, joinTeamMutation, requestStatus, sentRequest]);
 
   if (!data || isLoading) return <LoadingSpinner />;
 

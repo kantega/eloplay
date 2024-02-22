@@ -16,8 +16,9 @@ import HeaderLabel from "@/components/header-label";
 export default function Home() {
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
-  const [shouldFilterUnplayedPlayers, setShouldFilterUnplayedPlayers] =
-    useState(getLocalStorageShouldFilterUnplayedPlayers());
+  const [showInactivePlayers, setShowInactivePlayers] = useState(
+    getLocalStorageShouldFilterUnplayedPlayers(),
+  );
   // todo: bug cant set value and read value
 
   const { data, isLoading } = api.leagueUser.findAllByLeagueId.useQuery({
@@ -34,12 +35,12 @@ export default function Home() {
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">
       <HeaderLabel headerText={leagueData.name} label="LEADERBOARD" />
       <FilterUnplayedPlayers
-        shouldFilterUnplayedPlayers={shouldFilterUnplayedPlayers}
-        setShouldFilterUnplayedPlayers={setShouldFilterUnplayedPlayers}
+        shouldFilterUnplayedPlayers={showInactivePlayers}
+        setShouldFilterUnplayedPlayers={setShowInactivePlayers}
       />
       <Leaderboard
         data={data.leagueUsersAndTeamUsers}
-        shouldFilterUnplayedPlayers={shouldFilterUnplayedPlayers}
+        showInactivePlayers={showInactivePlayers}
       />
     </div>
   );
@@ -62,7 +63,7 @@ function FilterUnplayedPlayers({
           setLocalStorageShouldFilterUnplayedPlayers(value);
         }}
       />
-      <Label htmlFor="airplane-mode">Remove unplayed players</Label>
+      <Label htmlFor="airplane-mode">Show inactive players</Label>
     </div>
   );
 }

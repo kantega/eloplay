@@ -8,16 +8,16 @@ import MinityrStreakSymbol from "../leagueMatch/minityr-streak-symbol";
 
 export default function Leaderboard({
   data,
-  shouldFilterUnplayedPlayers,
+  showInactivePlayers,
 }: {
   data: { leagueUser: LeagueUser; teamUser: TeamUser }[];
-  shouldFilterUnplayedPlayers: boolean;
+  showInactivePlayers: boolean;
 }) {
   const router = useRouter();
 
   data.sort(sortPlayers);
   const newData = data.filter((player) =>
-    shouldFilterUnplayedPlayers ? player.leagueUser.matchCount > 0 : true,
+    showInactivePlayers ? true : player.leagueUser.matchCount > 0,
   );
 
   return (

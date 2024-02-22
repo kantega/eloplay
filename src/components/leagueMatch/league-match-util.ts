@@ -4,7 +4,7 @@ import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import { z } from "zod";
 
 const localStorageKey = "shouldFilterUnplayedPlayers";
-const defaultValue = true;
+const defaultValue = false;
 
 export const getLocalStorageShouldFilterUnplayedPlayers = () => {
   if (typeof window !== "undefined") {

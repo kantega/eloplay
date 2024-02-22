@@ -64,7 +64,8 @@ export default function LeagueUserCard({
             }
             label="winrate"
           />
-          <StatsText value={leagueUser.streak} label="streak" />
+          {/* todo: brukertest, vil vi ha negativ streak? */}
+          <StatsText value={Math.max(leagueUser.streak, 0)} label="streak" />
         </div>
         <LeagueUserEloGraph leagueUserId={leagueUser.id} />
       </Card>

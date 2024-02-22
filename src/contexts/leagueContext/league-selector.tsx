@@ -13,9 +13,16 @@ import {
 import { LeagueContext } from "./league-provider";
 import { api } from "@/utils/api";
 import { TeamContext } from "../teamContext/team-provider";
+import { useRouter } from "next/router";
 
 export function LeagueSelector() {
   const { teamId } = useContext(TeamContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (teamId === "") void router.push("/");
+  }, [router, teamId]);
+
   if (!teamId || teamId === "") return null;
 
   return <InnerLeagueSelector />;
