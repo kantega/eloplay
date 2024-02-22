@@ -2,8 +2,15 @@ import Head from "next/head";
 import NavigationBar from "../components/navigation-bar";
 import { Toaster } from "@/components/ui/toaster";
 import SettingsBar from "@/components/settings-bar";
+import { useSession } from "next-auth/react";
+import { SignInOrOutButton } from "@/components/account-dropdown";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { data: sessionData } = useSession();
+
+  if (!sessionData) {
+    return <Homepage />;
+  }
   return (
     <>
       <Head>
@@ -18,5 +25,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <NavigationBar />
       </main>
     </>
+  );
+}
+
+function Homepage() {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <h1 className="text-4xl font-bold">
+        <SignInOrOutButton />
+      </h1>
+    </div>
   );
 }

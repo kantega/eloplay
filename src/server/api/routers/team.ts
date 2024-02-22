@@ -4,6 +4,7 @@ import {
   teamModeratorProcedure,
   protectedProcedure,
   teamAdminProcedure,
+  publicProcedure,
 } from "@/server/api/trpc";
 import { CreateTeam, JoinTeam, teamIdSchema } from "@/server/types/teamTypes";
 import { RoleTexts } from "@/server/types/roleTypes";
@@ -188,15 +189,11 @@ export const teamRouter = createTRPCRouter({
     return filtedTeams;
   }),
 
-  getRoleByUserId: protectedProcedure
+  getRoleByUserId: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.session || !ctx.session.user) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-
-      //todo: if user is not part of the team, just say that it is a member?
-      if (input.id === "") return RoleTexts.MEMBER;
+      if (!ctx.session || !ctx.session.user || input.id === "")
+        return RoleTexts.NOTMEMBER;
 
       const team = await ctx.db.team.findUnique({
         where: {

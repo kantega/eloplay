@@ -133,12 +133,12 @@ function UserProfileButton() {
   );
 }
 
-function SignInOrOutButton() {
+export function SignInOrOutButton() {
   const { data: sessionData } = useSession();
 
   return (
     <Button
-      className="m-0 p-0"
+      className="m-0 p-2"
       variant={sessionData ? "ghost" : "default"}
       onClick={sessionData ? () => void signOut() : () => void signIn()}
     >
