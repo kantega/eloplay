@@ -6,6 +6,8 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext } from "react";
 import { filterMatches } from "./league-match-util";
+import LeagueUserRivals from "../leagueUser/league-user-rivals";
+import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
 
 export default function LeagueUserMatchHistory({
   leagueUserId,
@@ -41,14 +43,24 @@ export default function LeagueUserMatchHistory({
   );
 
   return (
-    <ul className="w-full">
-      {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
-        return (
-          <li key={leagueMatchWithProfiles.match.id}>
-            <LeagueMatchCard {...leagueMatchWithProfiles} />
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <LeagueUserRivals
+        userId={leagueUserData.leagueUser.userId}
+        leagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}
+      />
+      <LeagueUserRadarGraph
+        userId={leagueUserData.leagueUser.userId}
+        leagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}
+      />
+      <ul className="w-full">
+        {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
+          return (
+            <li key={leagueMatchWithProfiles.match.id}>
+              <LeagueMatchCard {...leagueMatchWithProfiles} />
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
