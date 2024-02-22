@@ -25,10 +25,7 @@ export function LeagueSelector() {
   }, []);
 
   return (
-    <Select
-      defaultValue={leagueId}
-      onValueChange={(v: string) => setLeagueId(v)}
-    >
+    <Select value={leagueId} onValueChange={(v: string) => setLeagueId(v)}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={isClient ? "Pick league" : ""} />
       </SelectTrigger>

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   getLocalStorageLeague,
+  getLocalStorageLeagueLast,
   setLocalStorageLeague,
 } from "./league-context-util";
 import { RoleTexts, type RoleText } from "@/server/types/roleTypes";
@@ -17,7 +18,7 @@ interface LeagueProps {
 }
 
 const LeagueContext = createContext<LeagueProps>({
-  leagueId: getLocalStorageLeague(),
+  leagueId: getLocalStorageLeagueLast(),
   setLeagueId: (id: string) => console.log(id),
   role: RoleTexts.MEMBER,
   setRole: (role: RoleText) => console.log(role),
@@ -26,7 +27,7 @@ const LeagueContext = createContext<LeagueProps>({
 function LeagueProvider({ children }: { children: React.ReactNode }) {
   const { teamId } = useContext(TeamContext);
   const [leagueId, setLeagueIdState] = useState<string>(
-    getLocalStorageLeague(),
+    getLocalStorageLeague(teamId),
   );
   const { data } = api.team.getRoleByUserId.useQuery({
     id: teamId,
@@ -38,9 +39,13 @@ function LeagueProvider({ children }: { children: React.ReactNode }) {
     setRole(!!data ? data : RoleTexts.MEMBER);
   }, [data]);
 
+  useEffect(() => {
+    setLeagueIdState(getLocalStorageLeague(teamId));
+  }, [teamId]);
+
   const setLeagueId = (id: string) => {
     setLeagueIdState(id);
-    setLocalStorageLeague(id);
+    setLocalStorageLeague(id, teamId);
   };
 
   return (
