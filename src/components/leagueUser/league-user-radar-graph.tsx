@@ -1,4 +1,3 @@
-import { type TeamUser, type LeagueMatch } from "@prisma/client";
 import {
   Radar,
   RadarChart,
@@ -7,19 +6,14 @@ import {
   PolarRadiusAxis,
 } from "recharts";
 import { getRadarData } from "./league-user-utils";
-
-export interface LeagueMatchWithProfiles {
-  winnerTeamUser: TeamUser;
-  loserTeamUser: TeamUser;
-  match: LeagueMatch;
-}
+import { type LeagueMatchWithProfiles } from "./league-user-types";
 
 interface Props {
   userId: string;
   leagueMatchesWithProfiles: LeagueMatchWithProfiles[];
 }
 
-export default function LeagueUserRivals({
+export default function LeagueUserRadarGraph({
   userId,
   leagueMatchesWithProfiles,
 }: Props) {

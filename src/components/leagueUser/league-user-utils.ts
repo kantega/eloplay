@@ -1,4 +1,4 @@
-import { type LeagueMatchWithProfiles } from "./league-user-radar-graph";
+import { type LeagueMatchWithProfiles } from "./league-user-types";
 
 export interface RadarData {
   subject: string;

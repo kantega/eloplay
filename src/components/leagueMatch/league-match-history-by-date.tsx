@@ -1,7 +1,7 @@
 import LeagueMatchCard from "./league-match-card";
 import DeleteLeagueMatchDialog from "./delete-league-match-dialog";
 import { bucketByDate, checkForSpecialDateText } from "./league-match-util";
-import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-radar-graph";
+import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 
 export default function LeagueMatchHistoryByDate({
   sortedLeagueMatchesWithProfiles,

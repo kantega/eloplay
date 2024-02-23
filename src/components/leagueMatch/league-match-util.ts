@@ -1,6 +1,6 @@
 import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import { z } from "zod";
-import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-radar-graph";
+import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 
 const localStorageKey = "shouldFilterUnplayedPlayers";
 const defaultValue = false;
