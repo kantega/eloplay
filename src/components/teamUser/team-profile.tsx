@@ -34,7 +34,7 @@ function TeamUserName() {
   return (
     <div className="flex items-end justify-center gap-2">
       {!changeTeamName && (
-        <HeaderLabel headerText={data.gamerTag} label="Team User Profile" />
+        <HeaderLabel headerText={data.gamerTag} label="TEAM USER PROFILE" />
       )}
       {changeTeamName && (
         <ChangeTeamUserName

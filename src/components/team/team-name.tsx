@@ -12,7 +12,9 @@ export default function TeamName({ teamName }: { teamName: string }) {
 
   return (
     <div className="flex items-end gap-2">
-      {!changeTeamName && <HeaderLabel headerText={teamName} />}
+      {!changeTeamName && (
+        <HeaderLabel headerText={teamName} label="TEAM NAME" />
+      )}
       {changeTeamName && (
         <ChangeTeamName
           teamName={teamName}

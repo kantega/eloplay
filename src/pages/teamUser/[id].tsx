@@ -32,7 +32,7 @@ function PersonalLeaguePlayerCards({ id }: { id: string }) {
 
   return (
     <>
-      <HeaderLabel headerText={teamUser.gamerTag} label="Team User Profile" />
+      <HeaderLabel headerText={teamUser.gamerTag} label="TEAM USER PROFILE" />
       <LeagueUserCards
         leagueAndLeagueUsers={leagueAndLeagueUsers}
         teamUser={teamUser}
