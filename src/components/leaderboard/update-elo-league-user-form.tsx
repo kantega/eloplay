@@ -17,6 +17,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { Input } from "../ui/input";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { Check, X } from "lucide-react";
+import LoadingSpinner from "../loading";
 
 export const UpdateElo = z.object({
   elo: z.number().min(1).max(9999),
@@ -100,12 +101,17 @@ export default function UpdateEloLeagueUserForm({
         </form>
       </Form>
       <Button
+        disabled={updateEloForLeagueUser.isLoading}
         className=" aspect-square h-6 w-6"
         variant={"destructive"}
         size="icon"
         onClick={() => setEdit(false)}
       >
-        <X size={16} />
+        {updateEloForLeagueUser.isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <X size={16} />
+        )}
       </Button>
     </div>
   );

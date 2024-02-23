@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
+import LoadingSpinner from "../loading";
 
 export default function JoinTeamForm() {
   const form = useForm<z.infer<typeof teamIdSchema>>({
@@ -71,7 +72,9 @@ export default function JoinTeamForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Join team</Button>
+          <Button disabled={joinTeamMutation.isLoading} type="submit">
+            {joinTeamMutation.isLoading ? <LoadingSpinner /> : "Join team"}
+          </Button>
         </form>
       </Form>
     </div>

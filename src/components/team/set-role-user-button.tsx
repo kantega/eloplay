@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { userIsModerator } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
+import LoadingSpinner from "../loading";
 
 export default function SetRoleUserButton({
   member,
@@ -58,11 +59,13 @@ export default function SetRoleUserButton({
             });
           }}
         >
-          {member.role === RoleTexts.MEMBER ? (
-            <ArrowBigUp className="text-primary" />
-          ) : (
-            <ArrowBigDown className="text-red-500" />
-          )}
+          {isLoading && <LoadingSpinner />}
+          {!isLoading &&
+            (member.role === RoleTexts.MEMBER ? (
+              <ArrowBigUp className="text-primary" />
+            ) : (
+              <ArrowBigDown className="text-red-500" />
+            ))}
         </Button>
       )}
     </>

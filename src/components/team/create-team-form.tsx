@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateTeam } from "@/server/api/routers/team/team-types";
+import LoadingSpinner from "../loading";
 
 export default function CreateTeamForm() {
   const form = useForm<z.infer<typeof CreateTeam>>({
@@ -71,7 +72,9 @@ export default function CreateTeamForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Create team </Button>
+          <Button disabled={createTeam.isLoading} type="submit">
+            {createTeam.isLoading ? <LoadingSpinner /> : "Create team"}
+          </Button>
         </form>
       </Form>
     </div>

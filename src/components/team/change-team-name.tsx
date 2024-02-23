@@ -16,6 +16,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import LoadingSpinner from "../loading";
 
 const ChangeTeamNameType = z.object({
   name: z.string().min(1, {
@@ -86,8 +87,13 @@ export default function ChangeTeamName({
             </FormItem>
           )}
         />
-        <Button type="submit" size="icon" className=" aspect-square">
-          <Check />
+        <Button
+          disabled={updateTeamNameMutate.isLoading}
+          type="submit"
+          size="icon"
+          className=" aspect-square"
+        >
+          {updateTeamNameMutate.isLoading ? <LoadingSpinner /> : <Check />}
         </Button>
       </form>
     </Form>

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { type LeagueMatch } from "@prisma/client";
+import LoadingSpinner from "../loading";
 
 export default function DeleteLeagueMatchDialog({
   children,
@@ -68,7 +69,7 @@ export default function DeleteLeagueMatchDialog({
         <DialogFooter>
           <Button
             className="w-full"
-            disabled={value.toLowerCase() !== "delete"}
+            disabled={value.toLowerCase() !== "delete" || deleteMatch.isLoading}
             type="submit"
             variant="destructive"
             onClick={() => {
@@ -78,6 +79,7 @@ export default function DeleteLeagueMatchDialog({
               });
             }}
           >
+            {deleteMatch.isLoading ? <LoadingSpinner /> : <TrashIcon />}
             <TrashIcon />
           </Button>
         </DialogFooter>
