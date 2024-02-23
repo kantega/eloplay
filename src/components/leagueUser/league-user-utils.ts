@@ -91,10 +91,13 @@ const getAggregatedList = (
 export const sortAndFilterForInactivePlayers = (
   leagueUsers: LeagueUserAndTeamUser[],
   showInactivePlayers: boolean,
+  userId: string,
 ) => {
   leagueUsers.sort(sortPlayers);
   return leagueUsers.filter((player) =>
-    showInactivePlayers ? true : player.leagueUser.matchCount > 0,
+    showInactivePlayers
+      ? true
+      : player.leagueUser.matchCount > 0 || player.leagueUser.userId === userId,
   );
 };
 

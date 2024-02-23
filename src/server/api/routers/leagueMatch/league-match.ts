@@ -24,6 +24,13 @@ export const leagueMatchRouter = createTRPCRouter({
         .extend(teamIdSchema.shape),
     )
     .mutation(async ({ ctx, input }) => {
+      if (input.winnerId === input.loserId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Winner and loser cannot be the same",
+        });
+      }
+
       const leagueWinner = await ctx.db.leagueUser.findFirst({
         where: {
           userId: input.winnerId,

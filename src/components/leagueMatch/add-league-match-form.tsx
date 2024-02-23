@@ -90,11 +90,12 @@ export default function AddLeagueMatchForm() {
     createMatchMutate.mutate({ ...data, teamId, leagueId });
   }
 
-  if (!data || isLoading) return null;
+  if (!data || isLoading || !sessionData) return null;
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,
     showInactivePlayers,
+    sessionData.user.id,
   );
 
   const winnerPlayer = filtedLeagueUsers.find(
@@ -300,7 +301,7 @@ export default function AddLeagueMatchForm() {
               {createMatchMutate.isLoading ? <LoadingSpinner /> : "Add match"}
             </Button>
           )}
-          {!!winnerPlayer && !!loserPlayer && (
+          {!!winnerPlayer && !!loserPlayer && loserPlayer !== winnerPlayer && (
             <LeagueMatchCard
               winnerTeamUser={winnerPlayer.teamUser}
               loserTeamUser={loserPlayer.teamUser}
