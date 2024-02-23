@@ -1,6 +1,6 @@
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { getLatestEloList } from "@/utils/match";
+import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { useContext } from "react";
 import { Tooltip, YAxis, AreaChart, Area, ResponsiveContainer } from "recharts";
 

@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { type TeamUser, type LeagueUser } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { getLatestEloList } from "@/utils/match";
+import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-history";
 import MinityrStreakSymbol from "../leagueMatch/minityr-streak-symbol";
 

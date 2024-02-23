@@ -5,7 +5,10 @@ import {
 } from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/types/teamTypes";
 import { updateEloRating } from "@/utils/elo";
-import { addEloToLatestEloList, newLeagueUserStreak } from "@/utils/match";
+import {
+  addEloToLatestEloList,
+  newLeagueUserStreak,
+} from "@/server/api/routers/leagueMatch/league-match-utils";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 

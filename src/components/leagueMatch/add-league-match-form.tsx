@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { type CreateLeagueMatch, CreateMatch } from "@/server/types/matchTypes";
+import { CreateLeagueMatch } from "@/server/api/routers/leagueMatch/league-match-types";
 import { useContext, useState } from "react";
 import { sortTeamUsersByGamerTag } from "@/utils/player";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
@@ -50,7 +50,7 @@ export default function AddLeagueMatchForm() {
     leagueId,
   });
   const form = useForm<z.infer<typeof CreateLeagueMatch>>({
-    resolver: zodResolver(CreateMatch),
+    resolver: zodResolver(CreateLeagueMatch),
     defaultValues: {
       winnerId: sessionData?.user.id ?? "",
       loserId: sessionData?.user.id ?? "",
@@ -276,7 +276,6 @@ export default function AddLeagueMatchForm() {
           <Button
             type="submit"
             className="m-auto w-full justify-center text-black"
-            onClick={() => onSubmit(form.getValues())} //todo: theres a bug here, i have to manually call the onSubmit function
           >
             Add match
           </Button>

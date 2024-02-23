@@ -1,4 +1,4 @@
-import { latestEloGainSchema } from "@/server/types/matchTypes";
+import { latestEloGainSchema } from "@/server/api/routers/leagueMatch/league-match-types";
 import { type RoleText } from "@/server/types/roleTypes";
 import { type TableTennisMatch, type TeamUser } from "@prisma/client";
 

@@ -11,7 +11,7 @@ import { RoleTexts } from "@/server/types/roleTypes";
 import { type Team } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { type TeamMemberProps } from "@/utils/match";
+import { type TeamMemberProps } from "@/server/api/routers/leagueMatch/league-match-utils";
 
 export const teamRouter = createTRPCRouter({
   create: protectedProcedure

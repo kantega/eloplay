@@ -1,6 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { RoleTexts } from "@/server/types/roleTypes";
-import { type TeamMemberProps, filterTeamUsers } from "@/utils/match";
+import {
+  type TeamMemberProps,
+  filterTeamUsers,
+} from "@/server/api/routers/leagueMatch/league-match-utils";
 import { Input } from "@/components/ui/input";
 import SetRoleUserButton from "@/components/team/set-role-user-button";
 import { useState } from "react";

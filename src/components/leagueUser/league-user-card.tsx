@@ -1,7 +1,7 @@
 import { type TeamUser, type LeagueUser } from "@prisma/client";
 import Link from "next/link";
 import { Card } from "../ui/card";
-import { getLatestEloList } from "@/utils/match";
+import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-history";
 import Image from "next/image";
 import { PingPongShower } from "../ping-pong-shower";
