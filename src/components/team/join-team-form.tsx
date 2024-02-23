@@ -15,13 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { JoinTeam } from "@/server/api/routers/team/team-types";
+import { teamIdSchema } from "@/server/api/routers/team/team-types";
 
 export default function JoinTeamForm() {
-  const form = useForm<z.infer<typeof JoinTeam>>({
-    resolver: zodResolver(JoinTeam),
+  const form = useForm<z.infer<typeof teamIdSchema>>({
+    resolver: zodResolver(teamIdSchema),
     defaultValues: {
-      id: "",
+      teamId: "",
     },
   });
   const joinTeamMutation = api.team.join.useMutation({
@@ -47,7 +47,7 @@ export default function JoinTeamForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof JoinTeam>) {
+  function onSubmit(data: z.infer<typeof teamIdSchema>) {
     joinTeamMutation.mutate(data);
   }
 
@@ -60,7 +60,7 @@ export default function JoinTeamForm() {
         >
           <FormField
             control={form.control}
-            name="id"
+            name="teamId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Team{"'"}s ID</FormLabel>

@@ -6,11 +6,7 @@ import {
   teamAdminProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import {
-  CreateTeam,
-  JoinTeam,
-  teamIdSchema,
-} from "@/server/api/routers/team/team-types";
+import { CreateTeam, teamIdSchema } from "@/server/api/routers/team/team-types";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { type Team } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -63,74 +59,76 @@ export const teamRouter = createTRPCRouter({
       return team;
     }),
 
-  join: protectedProcedure.input(JoinTeam).mutation(async ({ ctx, input }) => {
-    const team = await ctx.db.team.findUnique({
-      where: {
-        id: input.id,
-      },
-    });
-
-    if (!team)
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Team not found",
+  join: protectedProcedure
+    .input(teamIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      const team = await ctx.db.team.findUnique({
+        where: {
+          id: input.teamId,
+        },
       });
 
-    const userId = ctx.session.user.id;
-
-    const userIsMember = await ctx.db.teamUser.findFirst({
-      where: {
-        userId: userId,
-        teamId: team.id,
-        OR: [
-          { roleId: team.adminRoleId },
-          { roleId: team.moderatorRoleId },
-          { roleId: team.memberRoleId },
-        ],
-      },
-    });
-
-    if (userIsMember) return team;
-
-    await ctx.db.teamUser.create({
-      data: {
-        teamId: team.id,
-        userId: userId,
-        roleId: team.memberRoleId,
-        gamerTag: ctx.session.user.name ?? "No name",
-        image: ctx.session.user.image ?? "https://github.com/shadcn.png",
-      },
-    });
-
-    // add user to all leagues of the team
-    const allLeagues = await ctx.db.league.findMany({
-      where: {
-        teamId: input.id,
-      },
-    });
-
-    await Promise.all(
-      allLeagues.map(async (league) => {
-        const leagueUser = await ctx.db.leagueUser.create({
-          data: {
-            userId: ctx.session.user.id,
-            teamId: team.id,
-            leagueId: league.id,
-          },
+      if (!team)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team not found",
         });
-        return leagueUser;
-      }),
-    );
 
-    return team;
-  }),
+      const userId = ctx.session.user.id;
+
+      const userIsMember = await ctx.db.teamUser.findFirst({
+        where: {
+          userId: userId,
+          teamId: team.id,
+          OR: [
+            { roleId: team.adminRoleId },
+            { roleId: team.moderatorRoleId },
+            { roleId: team.memberRoleId },
+          ],
+        },
+      });
+
+      if (userIsMember) return team;
+
+      await ctx.db.teamUser.create({
+        data: {
+          teamId: team.id,
+          userId: userId,
+          roleId: team.memberRoleId,
+          gamerTag: ctx.session.user.name ?? "No name",
+          image: ctx.session.user.image ?? "https://github.com/shadcn.png",
+        },
+      });
+
+      // add user to all leagues of the team
+      const allLeagues = await ctx.db.league.findMany({
+        where: {
+          teamId: input.teamId,
+        },
+      });
+
+      await Promise.all(
+        allLeagues.map(async (league) => {
+          const leagueUser = await ctx.db.leagueUser.create({
+            data: {
+              userId: ctx.session.user.id,
+              teamId: team.id,
+              leagueId: league.id,
+            },
+          });
+          return leagueUser;
+        }),
+      );
+
+      return team;
+    }),
 
   findById: teamMemberProcedure
-    .input(JoinTeam)
+    .input(teamIdSchema)
     .query(async ({ ctx, input }) => {
       const team = await ctx.db.team.findUnique({
         where: {
-          id: input.id,
+          id: input.teamId,
         },
       });
 
@@ -142,7 +140,7 @@ export const teamRouter = createTRPCRouter({
 
       const teamUsers = await ctx.db.teamUser.findMany({
         where: {
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
