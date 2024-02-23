@@ -28,6 +28,7 @@ export const teamUserRouter = createTRPCRouter({
               where: {
                 userId: teamUser.userId,
                 leagueId: input.leagueId,
+                teamId: input.teamId,
               },
             });
 
@@ -51,6 +52,7 @@ export const teamUserRouter = createTRPCRouter({
       await ctx.db.teamUser.update({
         where: {
           id: input.teamUserId,
+          teamId: input.teamId,
         },
         data: {
           gamerTag: input.gamerTag,

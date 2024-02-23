@@ -168,6 +168,7 @@ export const leagueMatchRouter = createTRPCRouter({
       await ctx.db.leagueMatch.delete({
         where: {
           id: input.leagueMatchId,
+          teamId: input.teamId,
         },
       });
 
@@ -344,7 +345,7 @@ export const leagueMatchRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const leagueUser = await ctx.db.leagueUser.findUnique({
-        where: { id: input.leagueUserId },
+        where: { id: input.leagueUserId, teamId: input.teamId },
       });
 
       if (!leagueUser) {

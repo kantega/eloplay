@@ -81,6 +81,7 @@ export const teamRouter = createTRPCRouter({
     const userIsMember = await ctx.db.teamUser.findFirst({
       where: {
         userId: userId,
+        teamId: team.id,
         OR: [
           { roleId: team.adminRoleId },
           { roleId: team.moderatorRoleId },
@@ -269,6 +270,7 @@ export const teamRouter = createTRPCRouter({
       if (input.newRole === RoleTexts.MODERATOR) {
         return await ctx.db.teamUser.update({
           where: {
+            teamId: input.teamId,
             id: input.teamUserId,
           },
           data: {
@@ -280,6 +282,7 @@ export const teamRouter = createTRPCRouter({
       if (input.newRole === RoleTexts.MEMBER) {
         return await ctx.db.teamUser.update({
           where: {
+            teamId: input.teamId,
             id: input.teamUserId,
           },
           data: {

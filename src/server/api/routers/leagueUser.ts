@@ -37,6 +37,7 @@ export const leagueUserRouter = createTRPCRouter({
       const league = await ctx.db.league.findUnique({
         where: {
           id: leagueUser.leagueId,
+          teamId: input.teamId,
         },
       });
 
@@ -56,6 +57,7 @@ export const leagueUserRouter = createTRPCRouter({
       const leagueUser = await ctx.db.leagueUser.findUnique({
         where: {
           id: input.leagueUserId,
+          teamId: input.teamId,
         },
       });
 
@@ -68,6 +70,7 @@ export const leagueUserRouter = createTRPCRouter({
       const teamUser = await ctx.db.teamUser.findFirst({
         where: {
           userId: leagueUser.userId,
+          teamId: input.teamId,
         },
       });
 
@@ -80,6 +83,7 @@ export const leagueUserRouter = createTRPCRouter({
       const league = await ctx.db.league.findUnique({
         where: {
           id: leagueUser.leagueId,
+          teamId: input.teamId,
         },
       });
 
@@ -120,6 +124,7 @@ export const leagueUserRouter = createTRPCRouter({
             const league = await ctx.db.league.findUnique({
               where: {
                 id: leagueUser.leagueId,
+                teamId: input.teamId,
               },
             });
 
@@ -142,6 +147,7 @@ export const leagueUserRouter = createTRPCRouter({
       const leagueUsers = await ctx.db.leagueUser.findMany({
         where: {
           leagueId: input.leagueId,
+          teamId: input.teamId,
         },
       });
 
@@ -177,6 +183,7 @@ export const leagueUserRouter = createTRPCRouter({
       const teamUser = await ctx.db.teamUser.findUnique({
         where: {
           id: input.teamUserId,
+          teamId: input.teamId,
         },
       });
 
@@ -199,6 +206,7 @@ export const leagueUserRouter = createTRPCRouter({
             const league = await ctx.db.league.findUnique({
               where: {
                 id: leagueUser.leagueId,
+                teamId: input.teamId,
               },
             });
 

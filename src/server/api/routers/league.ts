@@ -79,17 +79,18 @@ export const leagueRouter = createTRPCRouter({
   delete: teamAdminProcedure
     .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.leagueUser.deleteMany({
-        where: { leagueId: input.leagueId },
+      await ctx.db.leagueMatch.deleteMany({
+        where: { leagueId: input.leagueId, teamId: input.teamId },
       });
 
-      await ctx.db.leagueMatch.deleteMany({
-        where: { leagueId: input.leagueId },
+      await ctx.db.leagueUser.deleteMany({
+        where: { leagueId: input.leagueId, teamId: input.teamId },
       });
 
       return ctx.db.league.delete({
         where: {
           id: input.leagueId,
+          teamId: input.teamId,
         },
       });
     }),
@@ -103,6 +104,7 @@ export const leagueRouter = createTRPCRouter({
       const league = await ctx.db.league.update({
         where: {
           id: input.leagueId,
+          teamId: input.teamId,
         },
         data: {
           name: input.name,
