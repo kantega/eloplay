@@ -26,12 +26,12 @@ export default function CreateTeamForm() {
   });
   const createTeam = api.team.create.useMutation({
     onSuccess: async () => {
-      form.reset();
       toast({
         title: "Success",
-        description: "Added player.",
+        description: `Team ${form.getValues("name")} created.`,
         variant: "default",
       });
+      form.reset();
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors;

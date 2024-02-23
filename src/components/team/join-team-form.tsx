@@ -28,8 +28,8 @@ export default function JoinTeamForm() {
     onSuccess: async () => {
       form.reset();
       toast({
-        title: "Success",
-        description: "Added player.",
+        title: "Joined team",
+        description: "Welcom to the best team in the world!",
         variant: "default",
       });
     },

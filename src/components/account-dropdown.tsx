@@ -64,7 +64,7 @@ export function AccountDropdown() {
                     toast({
                       title: "Copied invite link to clipboard.",
                       description:
-                        "You can now share the link with your friends.",
+                        "Share the team invite link to connect users to your team.",
                       variant: "success",
                     });
                   });
@@ -134,26 +134,22 @@ function UserProfileButton() {
 }
 
 export function SignInOrOutButton() {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
 
-  return (
-    <Button
-      className="m-0 p-2"
-      variant={sessionData ? "ghost" : "default"}
-      onClick={() => {
-        localStorage.clear();
-        sessionData ? void signOut() : void signIn();
-      }}
-    >
-      <LogOut className="mr-2 h-4 w-4" />
-      {sessionData ? "Sign out" : "Sign in"}
-    </Button>
-  );
+  if (status === "loading") return null;
+  return sessionData ? <LogOutButton /> : <LogInButton />;
 }
 
 export function LogInButton() {
   return (
-    <Button className="m-0 p-0" variant="default" onClick={() => void signIn()}>
+    <Button
+      className="m-0 p-2"
+      variant="default"
+      onClick={() => {
+        localStorage.clear();
+        void signIn();
+      }}
+    >
       <LogOut className="mr-2 h-4 w-4" />
       Sign in
     </Button>
@@ -162,7 +158,14 @@ export function LogInButton() {
 
 export function LogOutButton() {
   return (
-    <Button className="m-0 p-0" variant="ghost" onClick={() => void signOut()}>
+    <Button
+      className="m-0 p-2"
+      variant="ghost"
+      onClick={() => {
+        localStorage.clear();
+        void signOut();
+      }}
+    >
       <LogOut className="mr-2 h-4 w-4" />
       Sign out
     </Button>

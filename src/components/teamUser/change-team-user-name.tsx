@@ -46,8 +46,8 @@ export default function ChangeTeamUserName({
       setChangeTeamUserName(false);
 
       toast({
-        title: "Success",
-        description: "Team name updated.",
+        title: "Team user name updated",
+        description: "Team user name updated.",
         variant: "success",
       });
     },

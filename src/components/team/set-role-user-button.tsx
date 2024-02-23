@@ -19,8 +19,8 @@ export default function SetRoleUserButton({
       void ctx.team.findById.invalidate({ id: teamId });
 
       toast({
-        title: "Success",
-        description: "Member role updated.",
+        title: "Member role updated",
+        description: `Member is now ${role === RoleTexts.MEMBER ? RoleTexts.MODERATOR : RoleTexts.MEMBER}.`,
         variant: "default",
       });
     },

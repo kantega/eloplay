@@ -61,7 +61,7 @@ export default function AddLeagueMatchForm() {
       form.reset();
       toast({
         title: "Success",
-        description: "Match registered.",
+        description: `New match registered.`,
         variant: "default",
       });
     },

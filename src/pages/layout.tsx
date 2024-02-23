@@ -12,10 +12,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") return null;
 
-  if (router.pathname === "/team/join/[id]" && !sessionData)
+  if (router.pathname === "/team/join/[id]" && !sessionData) {
+    localStorage.clear();
     return void signIn();
+  }
 
   if (!sessionData?.user && router.pathname === "/") {
+    localStorage.clear();
     return <Homepage />;
   }
 
