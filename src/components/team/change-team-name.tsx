@@ -66,7 +66,7 @@ export default function ChangeTeamName({
   });
 
   const onSubmit = (data: { name: string }) => {
-    updateTeamNameMutate.mutate({ name: data.name, teamId: teamId });
+    updateTeamNameMutate.mutate({ name: data.name, teamId });
   };
 
   if (!userIsAdmin(role)) return null;

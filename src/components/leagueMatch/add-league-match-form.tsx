@@ -46,7 +46,7 @@ export default function AddLeagueMatchForm() {
   const [popoverLoserOpen, setPopoverLoserOpen] = useState(false);
 
   const { data, isLoading } = api.teamUser.getAll.useQuery({
-    teamId: teamId,
+    teamId,
     leagueId,
   });
   const form = useForm<z.infer<typeof CreateLeagueMatch>>({
@@ -80,7 +80,7 @@ export default function AddLeagueMatchForm() {
   });
 
   function onSubmit(data: z.infer<typeof CreateLeagueMatch>) {
-    createMatchMutate.mutate({ ...data, teamId: teamId, leagueId });
+    createMatchMutate.mutate({ ...data, teamId, leagueId });
   }
 
   if (!data || isLoading) return null;

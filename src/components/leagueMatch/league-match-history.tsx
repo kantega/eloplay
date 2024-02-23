@@ -11,7 +11,7 @@ export default function LeagueMatchHistory() {
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.leagueMatch.getAll.useQuery({
     leagueId,
-    teamId: teamId,
+    teamId,
   });
 
   if (isLoading || !data) return null;

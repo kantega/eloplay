@@ -9,7 +9,7 @@ export default function AddMatch() {
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const { data, isLoading } = api.league.find.useQuery({
-    teamId: teamId,
+    teamId,
     leagueId,
   });
 

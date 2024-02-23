@@ -39,7 +39,7 @@ function TeamProvider({ children }: { children: React.ReactNode }) {
   return (
     <TeamContext.Provider
       value={{
-        teamId: teamId,
+        teamId,
         setTeamId,
         role,
         setRole,

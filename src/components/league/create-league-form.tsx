@@ -31,7 +31,7 @@ export default function CreateLeagueForm() {
   });
   const createLeague = api.league.create.useMutation({
     onSuccess: async () => {
-      void ctx.league.findAll.invalidate({ teamId: teamId });
+      void ctx.league.findAll.invalidate({ teamId });
       form.reset();
 
       toast({
@@ -55,7 +55,7 @@ export default function CreateLeagueForm() {
   });
 
   function onSubmit(data: z.infer<typeof CreateTeam>) {
-    createLeague.mutate({ ...data, teamId: teamId });
+    createLeague.mutate({ ...data, teamId });
   }
 
   if (!userIsModerator(role)) return null;

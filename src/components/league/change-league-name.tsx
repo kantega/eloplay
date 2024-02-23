@@ -43,7 +43,7 @@ export default function ChangeLeagueName({
   const { role, teamId } = useContext(TeamContext);
   const updateTeamNameMutate = api.league.updateName.useMutation({
     onSuccess: async () => {
-      void ctx.league.findAll.invalidate({ teamId: teamId });
+      void ctx.league.findAll.invalidate({ teamId });
       setChangeLeagueName(false);
 
       toast({
@@ -70,7 +70,7 @@ export default function ChangeLeagueName({
   const onSubmit = (data: { name: string }) => {
     updateTeamNameMutate.mutate({
       name: data.name,
-      teamId: teamId,
+      teamId,
       leagueId: leagueId,
     });
   };

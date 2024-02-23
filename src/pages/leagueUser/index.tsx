@@ -14,7 +14,7 @@ export default function PlayerPage() {
   const { leagueId } = useContext(LeagueContext);
   const { data, isLoading } = api.leagueUser.get.useQuery({
     leagueId,
-    teamId: teamId,
+    teamId,
   });
   if (isLoading || !data) return null;
 

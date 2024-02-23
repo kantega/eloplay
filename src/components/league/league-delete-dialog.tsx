@@ -28,7 +28,7 @@ export default function LeagueDeleteDialog({
   const ctx = api.useUtils();
   const deleteLeagueMutate = api.league.delete.useMutation({
     onSuccess: async () => {
-      void ctx.league.findAll.invalidate({ teamId: teamId });
+      void ctx.league.findAll.invalidate({ teamId });
 
       toast({
         title: "Success",
@@ -80,7 +80,7 @@ export default function LeagueDeleteDialog({
             onClick={() => {
               deleteLeagueMutate.mutate({
                 leagueId: league.id,
-                teamId: teamId,
+                teamId,
               });
             }}
           >

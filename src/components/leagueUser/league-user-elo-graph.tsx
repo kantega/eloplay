@@ -11,7 +11,7 @@ interface Props {
 export default function LeagueUserEloGraph({ leagueUserId }: Props) {
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.leagueUser.findById.useQuery({
-    teamId: teamId,
+    teamId,
     leagueUserId: leagueUserId,
   });
 

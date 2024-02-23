@@ -10,7 +10,7 @@ export default function LeagueActivityPage() {
   const { leagueId } = useContext(LeagueContext);
 
   const { data: leagueData, isLoading: leagueIsLoading } =
-    api.league.find.useQuery({ leagueId, teamId: teamId });
+    api.league.find.useQuery({ leagueId, teamId });
 
   if (leagueIsLoading || !leagueData) return null;
 
