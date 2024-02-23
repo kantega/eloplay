@@ -37,6 +37,8 @@ import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { useSession } from "next-auth/react";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
+import { getLocalStorageShowInactivePlayers } from "./league-match-util";
+import ShowInactivePlayersToggle from "./show-inactive-players-toggle";
 
 export default function AddLeagueMatchForm() {
   const { data: sessionData } = useSession();
@@ -44,6 +46,9 @@ export default function AddLeagueMatchForm() {
   const { leagueId } = useContext(LeagueContext);
   const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
   const [popoverLoserOpen, setPopoverLoserOpen] = useState(false);
+  const [showInactivePlayers, setShowInactivePlayers] = useState(
+    getLocalStorageShowInactivePlayers(),
+  );
 
   const { data, isLoading } = api.leagueUser.findAllByLeagueId.useQuery({
     teamId,
@@ -88,7 +93,7 @@ export default function AddLeagueMatchForm() {
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,
-    true,
+    showInactivePlayers,
   );
 
   const winnerPlayer = filtedLeagueUsers.find(
@@ -100,112 +105,36 @@ export default function AddLeagueMatchForm() {
   );
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="relative flex h-full w-full flex-col items-center justify-center gap-4 space-y-6"
-      >
-        <Button
-          className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
-          onClick={() => {
-            const tempValue = form.getValues("winnerId");
-            form.setValue("winnerId", form.getValues("loserId"));
-            form.setValue("loserId", tempValue);
-          }}
+    <>
+      <ShowInactivePlayersToggle
+        showInactivePlayers={showInactivePlayers}
+        setShowInactivePlayers={setShowInactivePlayers}
+      />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="relative flex h-full w-full flex-col items-center justify-center gap-4 space-y-6"
         >
-          <ArrowLeftRight />
-        </Button>
-        <div className="flex w-full flex-col gap-4">
-          <FormField
-            control={form.control}
-            name="winnerId"
-            render={({ field }) => (
-              <FormItem className="flex w-full flex-col">
-                <FormLabel>Winner</FormLabel>
-                <Popover
-                  open={popoverWinnerOpen}
-                  onOpenChange={setPopoverWinnerOpen}
-                >
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "w-full justify-between",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value
-                          ? filtedLeagueUsers.find(
-                              (player) =>
-                                player.teamUser.userId === field.value,
-                            )?.teamUser.gamerTag
-                          : "Select player"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="h-52 p-0">
-                    <Command>
-                      <CommandInput
-                        className="placeholder-primary"
-                        placeholder="Pick winner..."
-                      />
-                      <CommandEmpty>No player found.</CommandEmpty>
-                      <CommandGroup className="overflow-y-scroll">
-                        {filtedLeagueUsers.map((player) => (
-                          <CommandItem
-                            value={player.teamUser.gamerTag}
-                            key={player.teamUser.userId}
-                            onSelect={() => {
-                              if (
-                                player.teamUser.userId ===
-                                form.getValues("loserId")
-                              )
-                                form.setValue("loserId", "");
-
-                              form.setValue(
-                                "loserId",
-                                form.getValues("loserId"),
-                              );
-                              form.setValue("winnerId", player.teamUser.userId);
-                              setPopoverWinnerOpen(false);
-                              if (form.getValues("loserId") === "")
-                                setPopoverLoserOpen(true);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                player.teamUser.userId === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                            {player.teamUser.gamerTag}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        {form.watch("winnerId") !== "" && (
-          <div className="flex w-full flex-col">
+          <Button
+            className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
+            onClick={() => {
+              const tempValue = form.getValues("winnerId");
+              form.setValue("winnerId", form.getValues("loserId"));
+              form.setValue("loserId", tempValue);
+            }}
+          >
+            <ArrowLeftRight />
+          </Button>
+          <div className="flex w-full flex-col gap-4">
             <FormField
               control={form.control}
-              name="loserId"
+              name="winnerId"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Loser</FormLabel>
+                <FormItem className="flex w-full flex-col">
+                  <FormLabel>Winner</FormLabel>
                   <Popover
-                    open={popoverLoserOpen}
-                    onOpenChange={setPopoverLoserOpen}
+                    open={popoverWinnerOpen}
+                    onOpenChange={setPopoverWinnerOpen}
                   >
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -227,45 +156,49 @@ export default function AddLeagueMatchForm() {
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="h-52 w-[200px] p-0">
+                    <PopoverContent className="h-52 p-0">
                       <Command>
                         <CommandInput
-                          className="placeholder-red-600"
-                          placeholder="Velg taper..."
+                          className="placeholder-primary"
+                          placeholder="Pick winner..."
                         />
                         <CommandEmpty>No player found.</CommandEmpty>
                         <CommandGroup className="overflow-y-scroll">
-                          {filtedLeagueUsers.map((player) => {
-                            if (
-                              player.teamUser.userId ===
-                              form.getValues("winnerId")
-                            )
-                              return null;
+                          {filtedLeagueUsers.map((player) => (
+                            <CommandItem
+                              value={player.teamUser.gamerTag}
+                              key={player.teamUser.userId}
+                              onSelect={() => {
+                                if (
+                                  player.teamUser.userId ===
+                                  form.getValues("loserId")
+                                )
+                                  form.setValue("loserId", "");
 
-                            return (
-                              <CommandItem
-                                value={player.teamUser.gamerTag}
-                                key={player.teamUser.userId}
-                                onSelect={() => {
-                                  form.setValue(
-                                    "loserId",
-                                    player.teamUser.userId,
-                                  );
-                                  setPopoverLoserOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    player.teamUser.userId === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
-                                {player.teamUser.gamerTag}
-                              </CommandItem>
-                            );
-                          })}
+                                form.setValue(
+                                  "loserId",
+                                  form.getValues("loserId"),
+                                );
+                                form.setValue(
+                                  "winnerId",
+                                  player.teamUser.userId,
+                                );
+                                setPopoverWinnerOpen(false);
+                                if (form.getValues("loserId") === "")
+                                  setPopoverLoserOpen(true);
+                              }}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  player.teamUser.userId === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0",
+                                )}
+                              />
+                              {player.teamUser.gamerTag}
+                            </CommandItem>
+                          ))}
                         </CommandGroup>
                       </Command>
                     </PopoverContent>
@@ -275,27 +208,108 @@ export default function AddLeagueMatchForm() {
               )}
             />
           </div>
-        )}
-        {loserPlayer !== winnerPlayer && (
-          <Button
-            type="submit"
-            className="m-auto w-full justify-center text-black"
-          >
-            Add match
-          </Button>
-        )}
-        {!!winnerPlayer && !!loserPlayer && (
-          <LeagueMatchCard
-            winnerTeamUser={winnerPlayer.teamUser}
-            loserTeamUser={loserPlayer.teamUser}
-            match={{
-              preWinnerElo: winnerPlayer.leagueUser.elo,
-              preLoserElo: loserPlayer.leagueUser.elo,
-            }}
-            includeSeparator={false}
-          />
-        )}
-      </form>
-    </Form>
+          {form.watch("winnerId") !== "" && (
+            <div className="flex w-full flex-col">
+              <FormField
+                control={form.control}
+                name="loserId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Loser</FormLabel>
+                    <Popover
+                      open={popoverLoserOpen}
+                      onOpenChange={setPopoverLoserOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              "w-full justify-between",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            {field.value
+                              ? filtedLeagueUsers.find(
+                                  (player) =>
+                                    player.teamUser.userId === field.value,
+                                )?.teamUser.gamerTag
+                              : "Select player"}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="h-52 w-[200px] p-0">
+                        <Command>
+                          <CommandInput
+                            className="placeholder-red-600"
+                            placeholder="Velg taper..."
+                          />
+                          <CommandEmpty>No player found.</CommandEmpty>
+                          <CommandGroup className="overflow-y-scroll">
+                            {filtedLeagueUsers.map((player) => {
+                              if (
+                                player.teamUser.userId ===
+                                form.getValues("winnerId")
+                              )
+                                return null;
+
+                              return (
+                                <CommandItem
+                                  value={player.teamUser.gamerTag}
+                                  key={player.teamUser.userId}
+                                  onSelect={() => {
+                                    form.setValue(
+                                      "loserId",
+                                      player.teamUser.userId,
+                                    );
+                                    setPopoverLoserOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      player.teamUser.userId === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                  {player.teamUser.gamerTag}
+                                </CommandItem>
+                              );
+                            })}
+                          </CommandGroup>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+          {loserPlayer !== winnerPlayer && (
+            <Button
+              type="submit"
+              className="m-auto w-full justify-center text-black"
+            >
+              Add match
+            </Button>
+          )}
+          {!!winnerPlayer && !!loserPlayer && (
+            <LeagueMatchCard
+              winnerTeamUser={winnerPlayer.teamUser}
+              loserTeamUser={loserPlayer.teamUser}
+              match={{
+                preWinnerElo: winnerPlayer.leagueUser.elo,
+                preLoserElo: loserPlayer.leagueUser.elo,
+              }}
+              includeSeparator={false}
+            />
+          )}
+        </form>
+      </Form>
+    </>
   );
 }

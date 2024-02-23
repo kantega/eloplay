@@ -5,10 +5,10 @@ import {
   type LeagueMatchWithProfiles,
 } from "../leagueUser/league-user-types";
 
-const localStorageKey = "shouldFilterUnplayedPlayers";
+const localStorageKey = "showInactivePlayers";
 const defaultValue = false;
 
-export const getLocalStorageShouldFilterUnplayedPlayers = () => {
+export const getLocalStorageShowInactivePlayers = () => {
   if (typeof window !== "undefined") {
     const value = localStorage.getItem(localStorageKey);
     if (!value) return defaultValue;
@@ -18,7 +18,7 @@ export const getLocalStorageShouldFilterUnplayedPlayers = () => {
 };
 
 // todo: bug cant set value and read value
-export const setLocalStorageShouldFilterUnplayedPlayers = (value: boolean) => {
+export const setLocalStorageShowInactivePlayers = (value: boolean) => {
   if (typeof window !== "undefined") {
     localStorage.setItem(localStorageKey, JSON.stringify(value));
   }
