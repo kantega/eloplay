@@ -80,7 +80,6 @@ export default function DeleteLeagueMatchDialog({
             }}
           >
             {deleteMatch.isLoading ? <LoadingSpinner /> : <TrashIcon />}
-            <TrashIcon />
           </Button>
         </DialogFooter>
       </DialogContent>
