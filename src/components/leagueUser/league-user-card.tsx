@@ -21,10 +21,10 @@ export default function LeagueUserCard({
 
   return (
     <Link href={`/leagueUser/${leagueUser.id}`} className="w-96">
-      <Card className="relative w-full space-y-4 overflow-hidden">
+      <Card className="relative w-full overflow-hidden">
         {leagueUser.streak > 0 && <PingPongShower number={leagueUser.streak} />}
         <div className="relative w-full space-y-4 overflow-hidden px-4 py-2">
-          <Badge className="absolute right-4 top-4 text-black">
+          <Badge className="absolute right-2 top-2 text-black">
             {leagueName}
           </Badge>
           <div className="flex w-full gap-4">
