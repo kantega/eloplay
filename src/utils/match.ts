@@ -5,6 +5,7 @@ export const sortMatchesByDate = (a: TableTennisMatch, b: TableTennisMatch) => {
 };
 
 export const getMatchStats = (matches: TableTennisMatch[], id: string) => {
+  if(matches.length === 0) return { winrate: 0, winstreak: 0 };
   const winrate = Math.ceil(
     (matches.filter((match) => match.winner === id).length / matches.length) *
       100,
