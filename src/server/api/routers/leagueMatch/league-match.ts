@@ -3,7 +3,7 @@ import {
   protectedProcedure,
   teamMemberProcedure,
 } from "@/server/api/trpc";
-import { teamIdSchema } from "@/server/types/teamTypes";
+import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { updateEloRating } from "@/utils/elo";
 import {
   addEloToLatestEloList,
@@ -28,7 +28,7 @@ export const leagueMatchRouter = createTRPCRouter({
         where: {
           userId: input.winnerId,
           leagueId: input.leagueId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -43,7 +43,7 @@ export const leagueMatchRouter = createTRPCRouter({
         where: {
           userId: input.loserId,
           leagueId: input.leagueId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -61,7 +61,7 @@ export const leagueMatchRouter = createTRPCRouter({
           leagueId: input.leagueId,
           winnerId: input.winnerId,
           loserId: input.loserId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -71,7 +71,7 @@ export const leagueMatchRouter = createTRPCRouter({
       await ctx.db.leagueUser.update({
         where: {
           id: leagueWinner.id,
-          teamId: input.id,
+          teamId: input.teamId,
         },
         data: {
           elo: matchNewElos[0],
@@ -87,7 +87,7 @@ export const leagueMatchRouter = createTRPCRouter({
       await ctx.db.leagueUser.update({
         where: {
           id: leagueLoser.id,
-          teamId: input.id,
+          teamId: input.teamId,
         },
         data: {
           elo: matchNewElos[1],
@@ -102,7 +102,7 @@ export const leagueMatchRouter = createTRPCRouter({
       });
 
       await ctx.db.league.update({
-        where: { id: input.leagueId, teamId: input.id },
+        where: { id: input.leagueId, teamId: input.teamId },
         data: {
           matchCount: {
             increment: 1,
@@ -124,7 +124,7 @@ export const leagueMatchRouter = createTRPCRouter({
       const leagueMatch = await ctx.db.leagueMatch.findUnique({
         where: {
           id: input.leagueMatchId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -139,7 +139,7 @@ export const leagueMatchRouter = createTRPCRouter({
         where: {
           userId: leagueMatch.winnerId,
           leagueId: leagueMatch.leagueId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -154,7 +154,7 @@ export const leagueMatchRouter = createTRPCRouter({
         where: {
           userId: leagueMatch.loserId,
           leagueId: leagueMatch.leagueId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -183,7 +183,7 @@ export const leagueMatchRouter = createTRPCRouter({
       await ctx.db.leagueUser.update({
         where: {
           id: leagueWinner.id,
-          teamId: input.id,
+          teamId: input.teamId,
         },
         data: {
           elo: leagueWinner.elo - winnerEloGain,
@@ -196,7 +196,7 @@ export const leagueMatchRouter = createTRPCRouter({
       await ctx.db.leagueUser.update({
         where: {
           id: leagueLoser.id,
-          teamId: input.id,
+          teamId: input.teamId,
         },
         data: {
           elo: leagueLoser.elo - loserEloGain,
@@ -215,7 +215,7 @@ export const leagueMatchRouter = createTRPCRouter({
       const leagueMatches = await ctx.db.leagueMatch.findMany({
         where: {
           leagueId: input.leagueId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -225,7 +225,7 @@ export const leagueMatchRouter = createTRPCRouter({
           const winnerTeamUser = await ctx.db.teamUser.findFirst({
             where: {
               userId: match.winnerId,
-              teamId: input.id,
+              teamId: input.teamId,
             },
           });
 
@@ -239,7 +239,7 @@ export const leagueMatchRouter = createTRPCRouter({
           const loserTeamUser = await ctx.db.teamUser.findFirst({
             where: {
               userId: match.loserId,
-              teamId: input.id,
+              teamId: input.teamId,
             },
           });
 
@@ -269,14 +269,14 @@ export const leagueMatchRouter = createTRPCRouter({
         where: {
           leagueId: input.leagueId,
           OR: [{ winnerId: userId }, { loserId: userId }],
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
       const teamUser = await ctx.db.teamUser.findFirst({
         where: {
           userId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -296,7 +296,7 @@ export const leagueMatchRouter = createTRPCRouter({
             loserTeamUser = await ctx.db.teamUser.findFirst({
               where: {
                 userId: match.loserId,
-                teamId: input.id,
+                teamId: input.teamId,
               },
             });
           } else {
@@ -304,7 +304,7 @@ export const leagueMatchRouter = createTRPCRouter({
             winnerTeamUser = await ctx.db.teamUser.findFirst({
               where: {
                 userId: match.winnerId,
-                teamId: input.id,
+                teamId: input.teamId,
               },
             });
           }
@@ -359,7 +359,7 @@ export const leagueMatchRouter = createTRPCRouter({
       const teamUser = await ctx.db.teamUser.findFirst({
         where: {
           userId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -374,7 +374,7 @@ export const leagueMatchRouter = createTRPCRouter({
         where: {
           leagueId: input.leagueId,
           OR: [{ winnerId: userId }, { loserId: userId }],
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -387,7 +387,7 @@ export const leagueMatchRouter = createTRPCRouter({
             loserTeamUser = await ctx.db.teamUser.findFirst({
               where: {
                 userId: match.loserId,
-                teamId: input.id,
+                teamId: input.teamId,
               },
             });
           } else {
@@ -395,7 +395,7 @@ export const leagueMatchRouter = createTRPCRouter({
             winnerTeamUser = await ctx.db.teamUser.findFirst({
               where: {
                 userId: match.winnerId,
-                teamId: input.id,
+                teamId: input.teamId,
               },
             });
           }

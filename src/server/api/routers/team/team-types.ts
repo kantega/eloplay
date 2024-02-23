@@ -12,4 +12,4 @@ export const JoinTeam = z.object({
   }),
 });
 
-export const teamIdSchema = z.object({ id: z.string().min(1) });
+export const teamIdSchema = z.object({ teamId: z.string().min(1) });

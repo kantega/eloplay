@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { teamIdSchema } from "@/server/types/teamTypes";
+import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { type TeamUserWithLeagueUser } from "@/utils/player";
 import { z } from "zod";
 
@@ -7,7 +7,7 @@ export const teamUserRouter = createTRPCRouter({
   get: protectedProcedure.input(teamIdSchema).query(async ({ ctx, input }) => {
     return await ctx.db.teamUser.findFirst({
       where: {
-        teamId: input.id,
+        teamId: input.teamId,
         userId: ctx.session.user.id,
       },
     });
@@ -17,7 +17,7 @@ export const teamUserRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const teamUsers = await ctx.db.teamUser.findMany({
         where: {
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 

@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { CreateTeam } from "@/server/types/teamTypes";
+import { CreateTeam } from "@/server/api/routers/team/team-types";
 import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { userIsModerator } from "@/utils/role";
@@ -31,7 +31,7 @@ export default function CreateLeagueForm() {
   });
   const createLeague = api.league.create.useMutation({
     onSuccess: async () => {
-      void ctx.league.findAll.invalidate({ id: teamId });
+      void ctx.league.findAll.invalidate({ teamId: teamId });
       form.reset();
 
       toast({
@@ -55,7 +55,7 @@ export default function CreateLeagueForm() {
   });
 
   function onSubmit(data: z.infer<typeof CreateTeam>) {
-    createLeague.mutate({ ...data, id: teamId });
+    createLeague.mutate({ ...data, teamId: teamId });
   }
 
   if (!userIsModerator(role)) return null;

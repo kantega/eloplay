@@ -4,7 +4,7 @@ import {
   teamMemberProcedure,
   teamModeratorProcedure,
 } from "@/server/api/trpc";
-import { teamIdSchema } from "@/server/types/teamTypes";
+import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -15,13 +15,13 @@ export const leagueRouter = createTRPCRouter({
       const league = await ctx.db.league.create({
         data: {
           name: input.name,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
       const team = await ctx.db.team.findUnique({
         where: {
-          id: input.id,
+          id: input.teamId,
         },
       });
 
@@ -63,7 +63,7 @@ export const leagueRouter = createTRPCRouter({
       return await ctx.db.league.findUnique({
         where: {
           id: input.leagueId,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
     }),
@@ -72,7 +72,7 @@ export const leagueRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return ctx.db.league.findMany({
         where: {
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
     }),

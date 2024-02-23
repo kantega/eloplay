@@ -32,7 +32,7 @@ export function InnerLeagueSelector() {
   const [isClient, setIsClient] = useState(false);
   const { teamId } = useContext(TeamContext);
   const { leagueId, setLeagueId } = useContext(LeagueContext);
-  const { data, isLoading } = api.league.findAll.useQuery({ id: teamId });
+  const { data, isLoading } = api.league.findAll.useQuery({ teamId: teamId });
 
   useEffect(() => {
     setIsClient(true);

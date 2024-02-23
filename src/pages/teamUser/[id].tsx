@@ -24,7 +24,7 @@ function PersonalLeaguePlayerCards({ id }: { id: string }) {
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.leagueUser.findAllById.useQuery({
     teamUserId: id,
-    id: teamId,
+    teamId: teamId,
   });
   if (isLoading || !data) return null;
 

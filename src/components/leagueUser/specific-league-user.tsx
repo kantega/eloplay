@@ -11,7 +11,7 @@ export default function SpecificLeagueUser({
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.leagueUser.findById.useQuery({
     leagueUserId,
-    id: teamId,
+    teamId: teamId,
   });
   if (isLoading || !data) return null;
 

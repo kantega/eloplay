@@ -111,7 +111,7 @@ function ProfileButton() {
 
 function TeamUserProfileButton() {
   const { teamId } = useContext(TeamContext);
-  const { data, isLoading } = api.teamUser.get.useQuery({ id: teamId });
+  const { data, isLoading } = api.teamUser.get.useQuery({ teamId: teamId });
 
   if (isLoading || !data) return null;
 

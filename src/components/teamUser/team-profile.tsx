@@ -26,7 +26,7 @@ export default function TeamProfile() {
 
 function TeamUserName() {
   const { teamId } = useContext(TeamContext);
-  const { data, isLoading } = api.teamUser.get.useQuery({ id: teamId });
+  const { data, isLoading } = api.teamUser.get.useQuery({ teamId: teamId });
   const [changeTeamName, setChangeTeamName] = useState(false);
 
   if (isLoading || !data) return null;

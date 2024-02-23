@@ -42,7 +42,7 @@ export default function ChangeTeamUserName({
   const { teamId } = useContext(TeamContext);
   const updateTeamNameMutate = api.teamUser.update.useMutation({
     onSuccess: async () => {
-      void ctx.teamUser.get.invalidate({ id: teamId });
+      void ctx.teamUser.get.invalidate({ teamId: teamId });
       setChangeTeamUserName(false);
 
       toast({
@@ -70,7 +70,7 @@ export default function ChangeTeamUserName({
     updateTeamNameMutate.mutate({
       gamerTag: data.name,
       teamUserId,
-      id: teamId,
+      teamId: teamId,
     });
   };
 

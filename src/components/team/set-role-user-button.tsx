@@ -53,7 +53,7 @@ export default function SetRoleUserButton({
                 member.role === RoleTexts.MEMBER
                   ? RoleTexts.MODERATOR
                   : RoleTexts.MEMBER,
-              id: teamId,
+              teamId: teamId,
             });
           }}
         >

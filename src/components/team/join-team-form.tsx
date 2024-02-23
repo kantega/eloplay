@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { JoinTeam } from "@/server/types/teamTypes";
+import { JoinTeam } from "@/server/api/routers/team/team-types";
 
 export default function JoinTeamForm() {
   const form = useForm<z.infer<typeof JoinTeam>>({

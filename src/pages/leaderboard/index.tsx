@@ -23,10 +23,10 @@ export default function Home() {
 
   const { data, isLoading } = api.leagueUser.findAllByLeagueId.useQuery({
     leagueId,
-    id: teamId,
+    teamId: teamId,
   });
   const { data: leagueData, isLoading: leagueIsLoading } =
-    api.league.find.useQuery({ leagueId, id: teamId });
+    api.league.find.useQuery({ leagueId, teamId: teamId });
 
   if (isLoading || !data) return null;
   if (leagueIsLoading || !leagueData) return null;

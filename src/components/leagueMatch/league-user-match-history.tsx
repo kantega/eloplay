@@ -21,12 +21,12 @@ export default function LeagueUserMatchHistory({
   const { data: leagueUserData, isLoading: leagueUserIsLoading } =
     api.leagueUser.findById.useQuery({
       leagueUserId,
-      id: teamId,
+      teamId: teamId,
     });
   const { data, isLoading } = api.leagueMatch.getAllById.useQuery({
     leagueUserId,
     leagueId,
-    id: teamId,
+    teamId: teamId,
   });
 
   if (isLoading || !data) return null;

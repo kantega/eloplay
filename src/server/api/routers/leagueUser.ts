@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { teamIdSchema } from "@/server/types/teamTypes";
+import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { type TeamUser, type League, type LeagueUser } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -12,7 +12,7 @@ export const leagueUserRouter = createTRPCRouter({
         where: {
           leagueId: input.leagueId,
           userId: ctx.session.user.id,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 
@@ -97,7 +97,7 @@ export const leagueUserRouter = createTRPCRouter({
       const teamUser = await ctx.db.teamUser.findFirst({
         where: {
           userId: ctx.session.user.id,
-          teamId: input.id,
+          teamId: input.teamId,
         },
       });
 

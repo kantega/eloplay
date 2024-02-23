@@ -6,7 +6,11 @@ import {
   teamAdminProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { CreateTeam, JoinTeam, teamIdSchema } from "@/server/types/teamTypes";
+import {
+  CreateTeam,
+  JoinTeam,
+  teamIdSchema,
+} from "@/server/api/routers/team/team-types";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { type Team } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -252,7 +256,7 @@ export const teamRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const team = await ctx.db.team.findUnique({
         where: {
-          id: input.id,
+          id: input.teamId,
         },
       });
 
@@ -295,7 +299,7 @@ export const teamRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const team = await ctx.db.team.findUnique({
         where: {
-          id: input.id,
+          id: input.teamId,
         },
       });
 
@@ -307,7 +311,7 @@ export const teamRouter = createTRPCRouter({
 
       await ctx.db.team.update({
         where: {
-          id: input.id,
+          id: input.teamId,
         },
         data: {
           name: input.name,

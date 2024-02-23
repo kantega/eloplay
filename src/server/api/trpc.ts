@@ -15,7 +15,7 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
-import { teamIdSchema } from "../types/teamTypes";
+import { teamIdSchema } from "./routers/team/team-types";
 
 /**
  * 1. CONTEXT
@@ -134,7 +134,7 @@ export const teamAdminProcedure = t.procedure.use(
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { id } = teamIdSchema.parse(rawInput);
+    const { teamId: id } = teamIdSchema.parse(rawInput);
 
     const team = await ctx.db.team.findUnique({
       where: {
@@ -177,7 +177,7 @@ export const teamModeratorProcedure = t.procedure.use(
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { id } = teamIdSchema.parse(rawInput);
+    const { teamId: id } = teamIdSchema.parse(rawInput);
 
     const team = await ctx.db.team.findUnique({
       where: {
@@ -220,7 +220,7 @@ export const teamMemberProcedure = t.procedure.use(
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    const { id } = teamIdSchema.parse(rawInput);
+    const { teamId: id } = teamIdSchema.parse(rawInput);
 
     const team = await ctx.db.team.findUnique({
       where: {

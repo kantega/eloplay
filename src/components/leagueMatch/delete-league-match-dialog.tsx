@@ -27,16 +27,16 @@ export default function DeleteLeagueMatchDialog({
     onSuccess: async () => {
       // todo: bugfix: this is not making the ui rerender or fetch new data
       await ctx.leagueMatch.getAll.invalidate({
-        id: leagueMatch.teamId,
+        teamId: leagueMatch.teamId,
         leagueId: leagueMatch.leagueId,
       });
       await ctx.leagueMatch.getAllById.invalidate({
-        id: leagueMatch.teamId,
+        teamId: leagueMatch.teamId,
         leagueUserId: leagueMatch.winnerId,
         leagueId: leagueMatch.leagueId,
       });
       await ctx.leagueMatch.getAllById.invalidate({
-        id: leagueMatch.teamId,
+        teamId: leagueMatch.teamId,
         leagueUserId: leagueMatch.loserId,
         leagueId: leagueMatch.leagueId,
       });
@@ -73,7 +73,7 @@ export default function DeleteLeagueMatchDialog({
             variant="destructive"
             onClick={() => {
               deleteMatch.mutate({
-                id: leagueMatch.teamId,
+                teamId: leagueMatch.teamId,
                 leagueMatchId: leagueMatch.id,
               });
             }}
