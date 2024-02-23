@@ -9,9 +9,9 @@ import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils
 import { useContext, useState } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { RoleTexts } from "@/server/types/roleTypes";
-import { Button } from "../ui/button";
 import { PencilLine } from "lucide-react";
 import UpdateEloLeagueUserForm from "./update-elo-league-user-form";
+import TooltipButton from "../ui/text-tooltip";
 
 export default function Leaderboard({
   leagueUsers,
@@ -119,16 +119,16 @@ function LeagueUserElo({
   return (
     <div className="relative flex flex-col items-end">
       <p className="text-xl">{elo}</p>
-      <p className="text-sm text-gray-500">
-        ELO
+      <p className="space-x-1 text-sm text-gray-500">
+        <b>ELO</b>
         {role === RoleTexts.ADMIN && (
-          <Button
-            size="sm"
-            className=" m-0 aspect-square h-fit w-fit bg-transparent p-0 pl-2"
+          <TooltipButton
+            text={"ADMIN INTERFACE"}
+            className=" m-0 aspect-square h-fit w-fit bg-transparent pl-2 text-primary"
             onClick={() => setEdit(!edit)}
           >
-            <PencilLine size={12} />
-          </Button>
+            <PencilLine size={12} className="p-0 text-foreground" />
+          </TooltipButton>
         )}
       </p>
     </div>
