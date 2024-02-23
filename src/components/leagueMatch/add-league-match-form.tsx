@@ -39,6 +39,7 @@ import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 import { getLocalStorageShowInactivePlayers } from "./league-match-util";
 import ShowInactivePlayersToggle from "./show-inactive-players-toggle";
+import LoadingSpinner from "../loading";
 
 export default function AddLeagueMatchForm() {
   const { data: sessionData } = useSession();
@@ -291,10 +292,11 @@ export default function AddLeagueMatchForm() {
           )}
           {loserPlayer !== winnerPlayer && (
             <Button
+              disabled={createMatchMutate.isLoading}
               type="submit"
               className="m-auto w-full justify-center text-black"
             >
-              Add match
+              {createMatchMutate.isLoading ? <LoadingSpinner /> : "Add match"}
             </Button>
           )}
           {!!winnerPlayer && !!loserPlayer && (
