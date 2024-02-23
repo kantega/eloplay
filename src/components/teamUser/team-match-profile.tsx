@@ -18,7 +18,7 @@ export default function TeamMatchProfile({
         height={40}
         quality={100}
       />
-      <span className="flex flex-col">
+      <span className="flex flex-col text-start">
         <p className="text-md text-left">{teamUser.gamerTag}</p>
         <p className="text-xs text-gray-500">ELO {preElo}</p>
       </span>
