@@ -4,10 +4,7 @@ import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext } from "react";
-import LeagueMatchCard from "./league-match-card";
-import DeleteLeagueMatchDialog from "./delete-league-match-dialog";
-// import { getNiceDateString } from "./league-match-util";
-// todo: add date separators to the match history list
+import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 
 export default function LeagueMatchHistory() {
   const { leagueId } = useContext(LeagueContext);
@@ -25,19 +22,9 @@ export default function LeagueMatchHistory() {
 
   return (
     <>
-      <ul>
-        {sortedLeagueMatchesWithProfiles.map((leagueMatchWithProfiles) => {
-          return (
-            <li key={leagueMatchWithProfiles.match.id}>
-              <DeleteLeagueMatchDialog
-                leagueMatch={leagueMatchWithProfiles.match}
-              >
-                <LeagueMatchCard {...leagueMatchWithProfiles} />
-              </DeleteLeagueMatchDialog>
-            </li>
-          );
-        })}
-      </ul>
+      <LeagueMatchHistoryByDate
+        sortedLeagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}
+      />
       <span className="py-10" />
     </>
   );

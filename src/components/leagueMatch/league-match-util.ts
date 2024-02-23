@@ -1,7 +1,6 @@
-"use client";
-
 import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import { z } from "zod";
+import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-radar-graph";
 
 const localStorageKey = "shouldFilterUnplayedPlayers";
 const defaultValue = false;
@@ -81,4 +80,31 @@ export function filterMatches({
   });
 
   return filteredMatches;
+}
+
+export function bucketByDate(
+  leagueMatchesWithProfiles: LeagueMatchWithProfiles[],
+) {
+  const buckets: Record<string, LeagueMatchWithProfiles[]> = {};
+  leagueMatchesWithProfiles.forEach((leagueMatchWithProfiles) => {
+    const date = getNiceDateString(leagueMatchWithProfiles.match.createdAt);
+    if (!buckets[date]) {
+      buckets[date] = [];
+    }
+    buckets[date]?.push(leagueMatchWithProfiles);
+  });
+  return buckets;
+}
+
+export function checkForSpecialDateText(date: string) {
+  if (date === getNiceDateString(new Date())) {
+    return "Today";
+  }
+  if (
+    date ===
+    getNiceDateString(new Date(new Date().valueOf() - 1000 * 60 * 60 * 24))
+  ) {
+    return "Yesterday";
+  }
+  return date;
 }
