@@ -8,6 +8,7 @@ import { filterMatches } from "./league-match-util";
 import LeagueUserRivals from "../leagueUser/league-user-rivals";
 import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
+import LoadingSpinner from "../loading";
 
 export default function LeagueUserMatchHistory({
   leagueUserId,
@@ -29,8 +30,8 @@ export default function LeagueUserMatchHistory({
     teamId,
   });
 
-  if (isLoading || !data) return null;
-  if (leagueUserIsLoading || !leagueUserData) return null;
+  if (isLoading || leagueUserIsLoading) return <LoadingSpinner />;
+  if (!leagueUserData || !data) return null;
 
   const filteredMatches = filterMatches({
     matches: data.leagueMatchesWithProfiles,

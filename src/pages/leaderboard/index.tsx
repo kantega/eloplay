@@ -8,6 +8,7 @@ import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { getLocalStorageShowInactivePlayers } from "@/components/leagueMatch/league-match-util";
 import HeaderLabel from "@/components/header-label";
 import ShowInactivePlayersToggle from "@/components/leagueMatch/show-inactive-players-toggle";
+import LoadingSpinner from "@/components/loading";
 
 export default function Home() {
   const { teamId } = useContext(TeamContext);
@@ -24,7 +25,8 @@ export default function Home() {
   const { data: leagueData, isLoading: leagueIsLoading } =
     api.league.get.useQuery({ leagueId, teamId });
 
-  if (isLoading || !data) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
   if (leagueIsLoading || !leagueData) return null;
 
   return (

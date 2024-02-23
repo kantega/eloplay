@@ -11,7 +11,7 @@ export default function Homepage() {
       <SignInButtonTopRight />
       <TextRevealCard
         className="min-h-fit w-fit border-none bg-background text-5xl text-primary"
-        text={"KANTEGA PRESENTS"}
+        text={"KANTEGA PRESENTS ..."}
         revealText={"  KANTEGA ELOPLAY  "}
       />
       {/* <HeroScrollDemo /> */}

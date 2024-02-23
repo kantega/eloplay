@@ -2,6 +2,7 @@
 
 import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
+import LoadingSpinner from "@/components/loading";
 import { Input } from "@/components/ui/input";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
@@ -16,7 +17,9 @@ export default function PlayerPage() {
     leagueId,
     teamId,
   });
-  if (isLoading || !data) return null;
+
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   const { leagueUser, teamUser, league } = data;
 

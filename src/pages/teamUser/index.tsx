@@ -1,6 +1,7 @@
 "use client";
 
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
+import LoadingSpinner from "@/components/loading";
 import TeamProfile from "@/components/teamUser/team-profile";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
@@ -19,7 +20,8 @@ function PersonalLeaguePlayerCards() {
   const { data, isLoading } = api.leagueUser.getAll.useQuery({
     teamId,
   });
-  if (isLoading || !data) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   const { leagueAndLeagueUsers, teamUser } = data;
 

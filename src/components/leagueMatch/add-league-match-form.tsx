@@ -90,7 +90,7 @@ export default function AddLeagueMatchForm() {
     createMatchMutate.mutate({ ...data, teamId, leagueId });
   }
 
-  if (!data || isLoading || !sessionData) return null;
+  if (!data || isLoading || !sessionData) return <LoadingSpinner />;
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,

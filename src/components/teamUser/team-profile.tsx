@@ -7,6 +7,7 @@ import { PencilLine, X } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { RoleTexts } from "@/server/types/roleTypes";
 import HeaderLabel from "../header-label";
+import LoadingSpinner from "../loading";
 
 export default function TeamProfile() {
   const { role } = useContext(TeamContext);
@@ -29,7 +30,8 @@ function TeamUserName() {
   const { data, isLoading } = api.teamUser.get.useQuery({ teamId });
   const [changeTeamName, setChangeTeamName] = useState(false);
 
-  if (isLoading || !data) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   return (
     <div className="flex items-end justify-center gap-2">

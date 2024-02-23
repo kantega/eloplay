@@ -2,6 +2,7 @@
 
 import HeaderLabel from "@/components/header-label";
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
+import LoadingSpinner from "@/components/loading";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
@@ -26,7 +27,8 @@ function PersonalLeaguePlayerCards({ id }: { id: string }) {
     teamUserId: id,
     teamId,
   });
-  if (isLoading || !data) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   const { leagueAndLeagueUsers, teamUser } = data;
 

@@ -4,6 +4,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import AddLeagueMatchForm from "@/components/leagueMatch/add-league-match-form";
+import LoadingSpinner from "@/components/loading";
 
 export default function AddMatch() {
   const { teamId } = useContext(TeamContext);
@@ -13,7 +14,8 @@ export default function AddMatch() {
     leagueId,
   });
 
-  if (isLoading || !data) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4">

@@ -3,6 +3,7 @@ import { api } from "@/utils/api";
 import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { useContext } from "react";
 import { Tooltip, YAxis, AreaChart, Area, ResponsiveContainer } from "recharts";
+import LoadingSpinner from "../loading";
 
 interface Props {
   leagueUserId: string;
@@ -15,7 +16,8 @@ export default function LeagueUserEloGraph({ leagueUserId }: Props) {
     leagueUserId: leagueUserId,
   });
 
-  if (!data || isLoading) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   const { graphData, min, max } = makeGraphData(
     getLatestEloList(data.leagueUser.latestEloGain),

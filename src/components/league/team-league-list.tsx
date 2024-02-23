@@ -7,12 +7,13 @@ import { Button } from "../ui/button";
 import { userIsAdmin, userIsModerator } from "@/utils/role";
 import ChangeLeagueName from "./change-league-name";
 import LeagueDeleteDialog from "./league-delete-dialog";
+import LoadingSpinner from "../loading";
 
 export default function TeamLeagueList() {
   const { teamId } = useContext(TeamContext);
   const { data, isLoading } = api.league.getAll.useQuery({ teamId });
 
-  if (isLoading || !data) return null;
+  if (isLoading || !data) return <LoadingSpinner />;
 
   return (
     <ul className="flex flex-col justify-center gap-1">

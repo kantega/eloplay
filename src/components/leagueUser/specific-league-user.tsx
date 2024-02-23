@@ -2,6 +2,7 @@ import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext } from "react";
+import LoadingSpinner from "../loading";
 
 export default function SpecificLeagueUser({
   leagueUserId,
@@ -13,7 +14,8 @@ export default function SpecificLeagueUser({
     leagueUserId,
     teamId,
   });
-  if (isLoading || !data) return null;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   const { leagueUser, teamUser, league } = data;
 

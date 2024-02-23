@@ -78,7 +78,8 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
     }
   }, [id, joinTeamMutation, requestStatus, sentRequest]);
 
-  if (!data || isLoading) return <LoadingSpinner />;
+  if (isLoading) return <LoadingSpinner />;
+  if (!data) return null;
 
   return (
     <>
