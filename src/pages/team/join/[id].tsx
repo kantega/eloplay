@@ -37,7 +37,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
     RequestStatuses.NOTSENT,
   );
   const { data, isLoading } = api.team.findById.useQuery({
-    id,
+    teamId: id,
   });
   const joinTeamMutation = api.team.join.useMutation({
     onSuccess: async (data) => {
@@ -72,7 +72,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
       (requestStatus === RequestStatuses.NOTSENT ||
         requestStatus === RequestStatuses.ERROR)
     ) {
-      joinTeamMutation.mutate({ id });
+      joinTeamMutation.mutate({ teamId: id });
       setSentRequest(true);
       setRequestStatus(RequestStatuses.PENDING);
     }
