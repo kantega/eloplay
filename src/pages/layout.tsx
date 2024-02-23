@@ -2,15 +2,23 @@ import Head from "next/head";
 import NavigationBar from "../components/navigation-bar";
 import { Toaster } from "@/components/ui/toaster";
 import SettingsBar from "@/components/settings-bar";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Homepage from "@/components/home-page";
+import { useRouter } from "next/router";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
+  const router = useRouter();
 
-  if (!sessionData) {
+  if (status === "loading") return null;
+
+  if (router.pathname === "/team/join/[id]" && !sessionData)
+    return void signIn();
+
+  if (!sessionData?.user && router.pathname === "/") {
     return <Homepage />;
   }
+
   return (
     <>
       <Head>

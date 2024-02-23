@@ -16,7 +16,6 @@ export const TextRevealCard = ({
   className?: string;
 }) => {
   const [widthPercentage, setWidthPercentage] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   const cardRef = useRef<HTMLDivElement | any>(null);
   const [left, setLeft] = useState(0);
   const [localWidth, setLocalWidth] = useState(0);
@@ -24,23 +23,16 @@ export const TextRevealCard = ({
 
   useEffect(() => {
     if (cardRef.current) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { left, width: localWidth } =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         cardRef.current.getBoundingClientRect();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setLeft(left);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setLocalWidth(localWidth);
     }
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function mouseMoveHandler(event: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     event.preventDefault();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { clientX } = event;
     if (cardRef.current) {
       const relativeX = clientX - left;
@@ -64,7 +56,7 @@ export const TextRevealCard = ({
       onMouseMove={mouseMoveHandler}
       ref={cardRef}
       className={cn(
-        "relative w-[max(350px,100%)] overflow-hidden rounded-lg border border-white/[0.08] bg-[#1d1c20] p-8",
+        "relative w-full overflow-hidden rounded-lg border border-white/[0.08] bg-[#1d1c20] p-8",
         className,
       )}
     >
@@ -86,7 +78,7 @@ export const TextRevealCard = ({
                 }
           }
           transition={isMouseOver ? { duration: 0 } : { duration: 0.4 }}
-          className="absolute z-20 bg-background  will-change-transform"
+          className="absolute z-20 bg-background will-change-transform"
         >
           <p
             style={{
@@ -108,7 +100,7 @@ export const TextRevealCard = ({
         ></motion.div>
 
         <div className=" overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,white,transparent)]">
-          <p className="bg-[#323238] bg-clip-text py-10 text-3xl font-bold text-transparent">
+          <p className="bg-[#323238] bg-clip-text py-10 text-3xl font-bold text-transparent ">
             {text}
           </p>
           <MemoizedStars />
@@ -150,7 +142,6 @@ const Stars = () => {
   const random = () => Math.random();
   return (
     <div className="absolute inset-0">
-      {/*  eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
       {[...Array(140)].map((_, i) => (
         <motion.span
           key={`star-${i}`}
