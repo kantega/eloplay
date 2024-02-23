@@ -102,7 +102,7 @@ model TeamUser {
 
 model League {
     id         String        @id @default(cuid())
-    name       String        @unique
+    name       String
     teamId     String
     Team       Team          @relation(fields: [teamId], references: [id])
     LeagueUser LeagueUser[]
@@ -110,6 +110,8 @@ model League {
     createdAt  DateTime      @default(now())
     updatedAt  DateTime      @updatedAt
     Match      LeagueMatch[]
+
+    @@unique([teamId, name])
 }
 
 model LeagueUser {
