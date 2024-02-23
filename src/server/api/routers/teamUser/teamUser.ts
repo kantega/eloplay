@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
-import { type TeamUserWithLeagueUser } from "@/utils/player";
+import { type TeamUserAndLeagueUser } from "@/server/api/routers/teamUser/teamUser-types";
 import { z } from "zod";
 
 export const teamUserRouter = createTRPCRouter({
@@ -36,7 +36,7 @@ export const teamUserRouter = createTRPCRouter({
           }),
         )
       ).filter(
-        (teamAndLeagueUser): teamAndLeagueUser is TeamUserWithLeagueUser =>
+        (teamAndLeagueUser): teamAndLeagueUser is TeamUserAndLeagueUser =>
           teamAndLeagueUser.leagueUser !== null,
       );
 

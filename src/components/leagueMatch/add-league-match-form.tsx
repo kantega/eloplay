@@ -32,11 +32,11 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateLeagueMatch } from "@/server/api/routers/leagueMatch/league-match-types";
 import { useContext, useState } from "react";
-import { sortTeamUsersByGamerTag } from "@/utils/player";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { useSession } from "next-auth/react";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
+import { sortTeamUsersByGamerTag } from "./league-match-util";
 
 export default function AddLeagueMatchForm() {
   const { data: sessionData } = useSession();

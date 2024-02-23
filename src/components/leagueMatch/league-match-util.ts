@@ -1,6 +1,7 @@
 import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import { z } from "zod";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
+import { type TeamUserAndLeagueUser } from "@/server/api/routers/teamUser/teamUser-types";
 
 const localStorageKey = "shouldFilterUnplayedPlayers";
 const defaultValue = false;
@@ -108,3 +109,16 @@ export function checkForSpecialDateText(date: string) {
   }
   return date;
 }
+
+export const sortTeamUsersByGamerTag = (players: TeamUserAndLeagueUser[]) => {
+  return players.sort(sortTeamUserByGamerTag);
+};
+
+export const sortTeamUserByGamerTag = (
+  a: TeamUserAndLeagueUser,
+  b: TeamUserAndLeagueUser,
+) => {
+  if (a.teamUser.gamerTag > b.teamUser.gamerTag) return 1;
+  if (a.teamUser.gamerTag < b.teamUser.gamerTag) return -1;
+  return 0;
+};
