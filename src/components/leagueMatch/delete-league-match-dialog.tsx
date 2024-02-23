@@ -30,12 +30,12 @@ export default function DeleteLeagueMatchDialog({
         teamId: leagueMatch.teamId,
         leagueId: leagueMatch.leagueId,
       });
-      await ctx.leagueMatch.getAllById.invalidate({
+      await ctx.leagueMatch.getAllByLeagueUserId.invalidate({
         teamId: leagueMatch.teamId,
         leagueUserId: leagueMatch.winnerId,
         leagueId: leagueMatch.leagueId,
       });
-      await ctx.leagueMatch.getAllById.invalidate({
+      await ctx.leagueMatch.getAllByLeagueUserId.invalidate({
         teamId: leagueMatch.teamId,
         leagueUserId: leagueMatch.loserId,
         leagueId: leagueMatch.leagueId,

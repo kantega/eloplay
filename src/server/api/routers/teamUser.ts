@@ -1,9 +1,10 @@
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, teamMemberProcedure } from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const teamUserRouter = createTRPCRouter({
-  get: protectedProcedure.input(teamIdSchema).query(async ({ ctx, input }) => {
+  get: teamMemberProcedure.input(teamIdSchema).query(async ({ ctx, input }) => {
     return await ctx.db.teamUser.findFirst({
       where: {
         teamId: input.teamId,
@@ -11,16 +12,25 @@ export const teamUserRouter = createTRPCRouter({
       },
     });
   }),
-  update: protectedProcedure
-    .input(
-      z
-        .object({ gamerTag: z.string().min(1), teamUserId: z.string().min(1) })
-        .extend(teamIdSchema.shape),
-    )
+  updateGamerTag: teamMemberProcedure
+    .input(z.object({ gamerTag: z.string().min(1) }).extend(teamIdSchema.shape))
     .mutation(async ({ ctx, input }) => {
+      const teamUser = await ctx.db.teamUser.findFirst({
+        where: {
+          teamId: input.teamId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      if (!teamUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team user not found",
+        });
+
       await ctx.db.teamUser.update({
         where: {
-          id: input.teamUserId,
+          id: teamUser.id,
           teamId: input.teamId,
         },
         data: {

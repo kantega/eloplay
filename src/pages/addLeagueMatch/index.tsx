@@ -8,7 +8,7 @@ import AddLeagueMatchForm from "@/components/leagueMatch/add-league-match-form";
 export default function AddMatch() {
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
-  const { data, isLoading } = api.league.find.useQuery({
+  const { data, isLoading } = api.league.get.useQuery({
     teamId,
     leagueId,
   });

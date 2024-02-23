@@ -17,12 +17,12 @@ export default function Home() {
   );
   // todo: bug cant set value and read value
 
-  const { data, isLoading } = api.leagueUser.findAllByLeagueId.useQuery({
+  const { data, isLoading } = api.leagueUser.getAllByLeagueId.useQuery({
     leagueId,
     teamId,
   });
   const { data: leagueData, isLoading: leagueIsLoading } =
-    api.league.find.useQuery({ leagueId, teamId });
+    api.league.get.useQuery({ leagueId, teamId });
 
   if (isLoading || !data) return null;
   if (leagueIsLoading || !leagueData) return null;

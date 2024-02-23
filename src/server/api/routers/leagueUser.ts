@@ -49,7 +49,7 @@ export const leagueUserRouter = createTRPCRouter({
 
       return { leagueUser, teamUser, league };
     }),
-  findById: protectedProcedure
+  getById: protectedProcedure
     .input(
       z.object({ leagueUserId: z.string().min(1) }).extend(teamIdSchema.shape),
     )
@@ -95,7 +95,7 @@ export const leagueUserRouter = createTRPCRouter({
 
       return { leagueUser, teamUser, league };
     }),
-  findAll: protectedProcedure
+  getAll: protectedProcedure
     .input(teamIdSchema)
     .query(async ({ ctx, input }) => {
       const teamUser = await ctx.db.teamUser.findFirst({
@@ -141,7 +141,7 @@ export const leagueUserRouter = createTRPCRouter({
       return { leagueAndLeagueUsers, teamUser };
     }),
 
-  findAllByLeagueId: protectedProcedure
+  getAllByLeagueId: protectedProcedure
     .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .query(async ({ ctx, input }) => {
       const leagueUsers = await ctx.db.leagueUser.findMany({
@@ -175,7 +175,7 @@ export const leagueUserRouter = createTRPCRouter({
 
       return { leagueUsersAndTeamUsers };
     }),
-  findAllById: protectedProcedure
+  getAllById: protectedProcedure
     .input(
       z.object({ teamUserId: z.string().min(1) }).extend(teamIdSchema.shape),
     )

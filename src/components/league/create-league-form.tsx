@@ -31,7 +31,7 @@ export default function CreateLeagueForm() {
   });
   const createLeague = api.league.create.useMutation({
     onSuccess: async () => {
-      void ctx.league.findAll.invalidate({ teamId });
+      void ctx.league.getAll.invalidate({ teamId });
       form.reset();
 
       toast({

@@ -123,7 +123,7 @@ export const teamRouter = createTRPCRouter({
       return team;
     }),
 
-  findById: teamMemberProcedure
+  getById: teamMemberProcedure
     .input(teamIdSchema)
     .query(async ({ ctx, input }) => {
       const team = await ctx.db.team.findUnique({
@@ -164,7 +164,7 @@ export const teamRouter = createTRPCRouter({
         teamUsers: teamUsersWithRole,
       };
     }),
-  findAll: protectedProcedure.query(async ({ ctx }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     const teamUsers = await ctx.db.teamUser.findMany({
       where: {
         userId: ctx.session.user.id,
@@ -243,7 +243,7 @@ export const teamRouter = createTRPCRouter({
           message: "User is not an part of this team",
         });
     }),
-  setRoleForMember: teamModeratorProcedure
+  updateRoleForMember: teamModeratorProcedure
     .input(
       z
         .object({
@@ -289,7 +289,7 @@ export const teamRouter = createTRPCRouter({
         });
       }
     }),
-  changeTeamName: teamAdminProcedure
+  updateTeamName: teamAdminProcedure
     .input(
       z
         .object({

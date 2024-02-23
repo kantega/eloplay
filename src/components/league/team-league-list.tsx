@@ -10,7 +10,7 @@ import LeagueDeleteDialog from "./league-delete-dialog";
 
 export default function TeamLeagueList() {
   const { teamId } = useContext(TeamContext);
-  const { data, isLoading } = api.league.findAll.useQuery({ teamId });
+  const { data, isLoading } = api.league.getAll.useQuery({ teamId });
 
   if (isLoading || !data) return null;
 

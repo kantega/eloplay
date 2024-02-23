@@ -14,9 +14,9 @@ export default function SetRoleUserButton({
 }) {
   const { role, teamId } = useContext(TeamContext);
   const ctx = api.useUtils();
-  const { mutateAsync } = api.team.setRoleForMember.useMutation({
+  const { mutateAsync } = api.team.updateRoleForMember.useMutation({
     onSuccess: async () => {
-      void ctx.team.findById.invalidate({ id: teamId });
+      void ctx.team.getById.invalidate({ id: teamId });
 
       toast({
         title: "Member role updated",

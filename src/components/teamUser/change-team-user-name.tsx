@@ -23,11 +23,9 @@ const ChangeTeamNameType = z.object({
 });
 
 export default function ChangeTeamUserName({
-  teamUserId,
   teamUserName,
   setChangeTeamUserName,
 }: {
-  teamUserId: string;
   teamUserName: string;
   setChangeTeamUserName: (value: boolean) => void;
 }) {
@@ -40,7 +38,7 @@ export default function ChangeTeamUserName({
 
   const ctx = api.useUtils();
   const { teamId } = useContext(TeamContext);
-  const updateTeamNameMutate = api.teamUser.update.useMutation({
+  const updateTeamNameMutate = api.teamUser.updateGamerTag.useMutation({
     onSuccess: async () => {
       void ctx.teamUser.get.invalidate({ teamId });
       setChangeTeamUserName(false);
@@ -69,7 +67,6 @@ export default function ChangeTeamUserName({
   const onSubmit = (data: { name: string }) => {
     updateTeamNameMutate.mutate({
       gamerTag: data.name,
-      teamUserId,
       teamId,
     });
   };

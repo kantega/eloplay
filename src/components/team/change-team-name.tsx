@@ -39,9 +39,9 @@ export default function ChangeTeamName({
 
   const ctx = api.useUtils();
   const { role, teamId } = useContext(TeamContext);
-  const updateTeamNameMutate = api.team.changeTeamName.useMutation({
+  const updateTeamNameMutate = api.team.updateTeamName.useMutation({
     onSuccess: async () => {
-      void ctx.team.findById.invalidate({ id: teamId });
+      void ctx.team.getById.invalidate({ id: teamId });
       setChangeTeamName(false);
 
       toast({

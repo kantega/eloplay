@@ -210,7 +210,7 @@ export const leagueMatchRouter = createTRPCRouter({
 
       return true;
     }),
-  getAll: protectedProcedure
+  getAll: teamMemberProcedure
     .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .query(async ({ ctx, input }) => {
       const leagueMatches = await ctx.db.leagueMatch.findMany({
@@ -334,7 +334,7 @@ export const leagueMatchRouter = createTRPCRouter({
 
       return { leagueMatchesWithProfiles };
     }),
-  getAllById: protectedProcedure
+  getAllByLeagueUserId: protectedProcedure
     .input(
       z
         .object({

@@ -50,7 +50,7 @@ export default function AddLeagueMatchForm() {
     getLocalStorageShowInactivePlayers(),
   );
 
-  const { data, isLoading } = api.leagueUser.findAllByLeagueId.useQuery({
+  const { data, isLoading } = api.leagueUser.getAllByLeagueId.useQuery({
     teamId,
     leagueId,
   });

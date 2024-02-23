@@ -16,7 +16,7 @@ export default function ProfilePage() {
 
 function PersonalLeaguePlayerCards() {
   const { teamId } = useContext(TeamContext);
-  const { data, isLoading } = api.leagueUser.findAll.useQuery({
+  const { data, isLoading } = api.leagueUser.getAll.useQuery({
     teamId,
   });
   if (isLoading || !data) return null;

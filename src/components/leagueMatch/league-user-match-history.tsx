@@ -19,11 +19,11 @@ export default function LeagueUserMatchHistory({
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const { data: leagueUserData, isLoading: leagueUserIsLoading } =
-    api.leagueUser.findById.useQuery({
+    api.leagueUser.getById.useQuery({
       leagueUserId,
       teamId,
     });
-  const { data, isLoading } = api.leagueMatch.getAllById.useQuery({
+  const { data, isLoading } = api.leagueMatch.getAllByLeagueUserId.useQuery({
     leagueUserId,
     leagueId,
     teamId,

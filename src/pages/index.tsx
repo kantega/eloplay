@@ -39,7 +39,7 @@ function GoToTeamFromTeamList() {
 
 function TeamList() {
   const { setTeamId } = useContext(TeamContext);
-  const { data, isLoading } = api.team.findAll.useQuery();
+  const { data, isLoading } = api.team.getAll.useQuery();
 
   if (isLoading || !data) return null;
   if (data.length === 0) return null;

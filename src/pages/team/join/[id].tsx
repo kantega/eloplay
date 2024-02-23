@@ -36,7 +36,7 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
   const [requestStatus, setRequestStatus] = useState<RequestStatus>(
     RequestStatuses.NOTSENT,
   );
-  const { data, isLoading } = api.team.findById.useQuery({
+  const { data, isLoading } = api.team.getById.useQuery({
     teamId: id,
   });
   const joinTeamMutation = api.team.join.useMutation({

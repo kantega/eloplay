@@ -18,7 +18,7 @@ export default function PlayerPage() {
 
 function TeamInfo() {
   const { teamId, role } = useContext(TeamContext);
-  const { data, isLoading } = api.team.findById.useQuery({
+  const { data, isLoading } = api.team.getById.useQuery({
     teamId,
   });
 

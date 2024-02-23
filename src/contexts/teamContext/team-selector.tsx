@@ -16,7 +16,7 @@ import { api } from "@/utils/api";
 export function TeamSelector() {
   const [isClient, setIsClient] = useState(false);
   const { teamId, setTeamId } = useContext(TeamContext);
-  const { data, isLoading } = api.team.findAll.useQuery();
+  const { data, isLoading } = api.team.getAll.useQuery();
 
   useEffect(() => {
     setIsClient(true);
