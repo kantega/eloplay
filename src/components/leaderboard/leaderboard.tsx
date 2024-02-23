@@ -22,8 +22,8 @@ export default function Leaderboard({
   );
 
   return (
-    <Table className="w-[min(500px,100%)]">
-      <TableBody>
+    <Table className="m-0 w-[min(700px,100%)] p-0">
+      <TableBody className="m-0 p-0">
         {filtedLeagueUsers.map((player, index) => {
           const eloGainList = getLatestEloList(player.leagueUser.latestEloGain);
           return (
