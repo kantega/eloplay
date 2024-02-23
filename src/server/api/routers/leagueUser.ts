@@ -1,4 +1,8 @@
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  teamAdminProcedure,
+} from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { type TeamUser, type League, type LeagueUser } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -221,5 +225,41 @@ export const leagueUserRouter = createTRPCRouter({
       );
 
       return { leagueAndLeagueUsers, teamUser };
+    }),
+
+  updateElo: teamAdminProcedure
+    .input(
+      z
+        .object({
+          leagueUserId: z.string().min(1),
+          elo: z.number().min(0).max(10000),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const leagueUser = await ctx.db.leagueUser.findUnique({
+        where: {
+          id: input.leagueUserId,
+          teamId: input.teamId,
+        },
+      });
+
+      if (!leagueUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "League user not found",
+        });
+
+      await ctx.db.leagueUser.update({
+        where: {
+          id: input.leagueUserId,
+          teamId: input.teamId,
+        },
+        data: {
+          elo: input.elo,
+        },
+      });
+
+      return { success: true };
     }),
 });
