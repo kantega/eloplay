@@ -1,4 +1,7 @@
-import { type LeagueMatchWithProfiles } from "./league-user-types";
+import {
+  type LeagueUserAndTeamUser,
+  type LeagueMatchWithProfiles,
+} from "./league-user-types";
 
 export interface RadarData {
   subject: string;
@@ -84,3 +87,18 @@ const getAggregatedList = (
 
   return aggregatedList;
 };
+
+export const sortAndFilterForInactivePlayers = (
+  leagueUsers: LeagueUserAndTeamUser[],
+  showInactivePlayers: boolean,
+) => {
+  leagueUsers.sort(sortPlayers);
+  return leagueUsers.filter((player) =>
+    showInactivePlayers ? true : player.leagueUser.matchCount > 0,
+  );
+};
+
+const sortPlayers = (
+  playerA: LeagueUserAndTeamUser,
+  playerB: LeagueUserAndTeamUser,
+) => playerB.leagueUser.elo - playerA.leagueUser.elo;

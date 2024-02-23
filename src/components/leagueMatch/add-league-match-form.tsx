@@ -36,7 +36,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { useSession } from "next-auth/react";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
-import { sortTeamUsersByGamerTag } from "./league-match-util";
+import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 
 export default function AddLeagueMatchForm() {
   const { data: sessionData } = useSession();
@@ -45,10 +45,11 @@ export default function AddLeagueMatchForm() {
   const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
   const [popoverLoserOpen, setPopoverLoserOpen] = useState(false);
 
-  const { data, isLoading } = api.teamUser.getAll.useQuery({
+  const { data, isLoading } = api.leagueUser.findAllByLeagueId.useQuery({
     teamId,
     leagueId,
   });
+
   const form = useForm<z.infer<typeof CreateLeagueMatch>>({
     resolver: zodResolver(CreateLeagueMatch),
     defaultValues: {
@@ -85,13 +86,16 @@ export default function AddLeagueMatchForm() {
 
   if (!data || isLoading) return null;
 
-  const players = sortTeamUsersByGamerTag(data);
+  const filtedLeagueUsers = sortAndFilterForInactivePlayers(
+    data.leagueUsersAndTeamUsers,
+    true,
+  );
 
-  const winnerPlayer = players.find(
+  const winnerPlayer = filtedLeagueUsers.find(
     (player) => player.teamUser.userId === form.getValues("winnerId"),
   );
 
-  const loserPlayer = players.find(
+  const loserPlayer = filtedLeagueUsers.find(
     (player) => player.teamUser.userId === form.getValues("loserId"),
   );
 
@@ -133,7 +137,7 @@ export default function AddLeagueMatchForm() {
                         )}
                       >
                         {field.value
-                          ? players.find(
+                          ? filtedLeagueUsers.find(
                               (player) =>
                                 player.teamUser.userId === field.value,
                             )?.teamUser.gamerTag
@@ -150,7 +154,7 @@ export default function AddLeagueMatchForm() {
                       />
                       <CommandEmpty>No player found.</CommandEmpty>
                       <CommandGroup className="overflow-y-scroll">
-                        {players.map((player) => (
+                        {filtedLeagueUsers.map((player) => (
                           <CommandItem
                             value={player.teamUser.gamerTag}
                             key={player.teamUser.userId}
@@ -214,7 +218,7 @@ export default function AddLeagueMatchForm() {
                           )}
                         >
                           {field.value
-                            ? players.find(
+                            ? filtedLeagueUsers.find(
                                 (player) =>
                                   player.teamUser.userId === field.value,
                               )?.teamUser.gamerTag
@@ -231,7 +235,7 @@ export default function AddLeagueMatchForm() {
                         />
                         <CommandEmpty>No player found.</CommandEmpty>
                         <CommandGroup className="overflow-y-scroll">
-                          {players.map((player) => {
+                          {filtedLeagueUsers.map((player) => {
                             if (
                               player.teamUser.userId ===
                               form.getValues("winnerId")

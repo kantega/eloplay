@@ -1,7 +1,7 @@
 import { createTRPCRouter } from "@/server/api/trpc";
 import { teamRouter } from "./routers/team/team";
 import { leagueRouter } from "./routers/league";
-import { teamUserRouter } from "./routers/teamUser/teamUser";
+import { teamUserRouter } from "./routers/teamUser";
 import { leagueUserRouter } from "./routers/leagueUser";
 import { leagueMatchRouter } from "./routers/leagueMatch/league-match";
 

@@ -39,7 +39,7 @@ export default function Home() {
         setShouldFilterUnplayedPlayers={setShowInactivePlayers}
       />
       <Leaderboard
-        data={data.leagueUsersAndTeamUsers}
+        leagueUsers={data.leagueUsersAndTeamUsers}
         showInactivePlayers={showInactivePlayers}
       />
     </div>

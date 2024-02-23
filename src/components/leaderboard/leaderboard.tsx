@@ -1,29 +1,30 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { type TeamUser, type LeagueUser } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-history";
 import MinityrStreakSymbol from "../leagueMatch/minityr-streak-symbol";
+import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
+import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 
 export default function Leaderboard({
-  data,
+  leagueUsers,
   showInactivePlayers,
 }: {
-  data: { leagueUser: LeagueUser; teamUser: TeamUser }[];
+  leagueUsers: LeagueUserAndTeamUser[];
   showInactivePlayers: boolean;
 }) {
   const router = useRouter();
 
-  data.sort(sortPlayers);
-  const newData = data.filter((player) =>
-    showInactivePlayers ? true : player.leagueUser.matchCount > 0,
+  const filtedLeagueUsers = sortAndFilterForInactivePlayers(
+    leagueUsers,
+    showInactivePlayers,
   );
 
   return (
     <Table className="w-[min(500px,100%)]">
       <TableBody>
-        {newData.map((player, index) => {
+        {filtedLeagueUsers.map((player, index) => {
           const eloGainList = getLatestEloList(player.leagueUser.latestEloGain);
           return (
             <TableRow
@@ -77,8 +78,3 @@ export default function Leaderboard({
     </Table>
   );
 }
-
-const sortPlayers = (
-  playerA: { leagueUser: LeagueUser; teamUser: TeamUser },
-  playerB: { leagueUser: LeagueUser; teamUser: TeamUser },
-) => playerB.leagueUser.elo - playerA.leagueUser.elo;
