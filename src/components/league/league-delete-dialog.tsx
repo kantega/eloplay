@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { useContext, useState } from "react";
 import { toast } from "../ui/use-toast";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
+import LoadingSpinner from "../loading";
 
 export default function LeagueDeleteDialog({
   league,
@@ -74,7 +75,9 @@ export default function LeagueDeleteDialog({
         <DialogFooter>
           <Button
             className="w-full"
-            disabled={value.toLowerCase() !== "delete"}
+            disabled={
+              value.toLowerCase() !== "delete" || deleteLeagueMutate.isLoading
+            }
             type="submit"
             variant="destructive"
             onClick={() => {
@@ -84,7 +87,7 @@ export default function LeagueDeleteDialog({
               });
             }}
           >
-            <TrashIcon />
+            {deleteLeagueMutate.isLoading ? <LoadingSpinner /> : <TrashIcon />}
           </Button>
         </DialogFooter>
       </DialogContent>

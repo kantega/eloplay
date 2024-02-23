@@ -32,37 +32,39 @@ function LeagueItem({ league }: { league: League }) {
       key={league.id}
       className=" flex w-full items-center justify-between gap-4"
     >
-      <div className="flex w-[80%] justify-between">
+      <div className="flex w-[100%] justify-between">
         {!changeLeagueName && <h1 className=" text-md">{league.name}</h1>}
-        {changeLeagueName && (
-          <ChangeLeagueName
-            leagueId={league.id}
-            leagueName={league.name}
-            setChangeLeagueName={setChangeLeagueName}
-          />
-        )}
-        {userIsModerator(role) && (
-          <Button
-            className=" aspect-square h-6 w-6"
-            variant={!changeLeagueName ? "ghost" : "destructive"}
-            size="icon"
-            onClick={() => setChangeLeagueName(!changeLeagueName)}
-          >
-            {!changeLeagueName ? <PencilLine size={16} /> : <X size={10} />}
-          </Button>
+        <span className="flex items-center space-x-2">
+          {changeLeagueName && (
+            <ChangeLeagueName
+              leagueId={league.id}
+              leagueName={league.name}
+              setChangeLeagueName={setChangeLeagueName}
+            />
+          )}
+          {userIsModerator(role) && (
+            <Button
+              className=" aspect-square h-6 w-6"
+              variant={!changeLeagueName ? "ghost" : "destructive"}
+              size="icon"
+              onClick={() => setChangeLeagueName(!changeLeagueName)}
+            >
+              {!changeLeagueName ? <PencilLine size={16} /> : <X size={10} />}
+            </Button>
+          )}
+        </span>
+        {userIsAdmin(role) && !changeLeagueName && (
+          <LeagueDeleteDialog league={league}>
+            <Button
+              className=" aspect-square h-6 w-6"
+              variant="outline"
+              size="icon"
+            >
+              <X size={16} />
+            </Button>
+          </LeagueDeleteDialog>
         )}
       </div>
-      {userIsAdmin(role) && !changeLeagueName && (
-        <LeagueDeleteDialog league={league}>
-          <Button
-            className=" aspect-square h-6 w-6"
-            variant="outline"
-            size="icon"
-          >
-            <X size={16} />
-          </Button>
-        </LeagueDeleteDialog>
-      )}
     </li>
   );
 }

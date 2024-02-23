@@ -14,7 +14,7 @@ export default function SetRoleUserButton({
 }) {
   const { role, teamId } = useContext(TeamContext);
   const ctx = api.useUtils();
-  const { mutateAsync } = api.team.updateRoleForMember.useMutation({
+  const { mutateAsync, isLoading } = api.team.updateRoleForMember.useMutation({
     onSuccess: async () => {
       void ctx.team.getById.invalidate({ teamId });
 
@@ -43,6 +43,7 @@ export default function SetRoleUserButton({
     <>
       {member.role !== RoleTexts.ADMIN && userIsModerator(role) && (
         <Button
+          disabled={isLoading}
           className="h-8 w-8 items-start p-1"
           variant="ghost"
           size="sm"

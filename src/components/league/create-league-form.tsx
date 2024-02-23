@@ -19,6 +19,7 @@ import { CreateTeam } from "@/server/api/routers/team/team-types";
 import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { userIsModerator } from "@/utils/role";
+import LoadingSpinner from "../loading";
 
 export default function CreateLeagueForm() {
   const { role, teamId } = useContext(TeamContext);
@@ -79,7 +80,9 @@ export default function CreateLeagueForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Create league </Button>
+        <Button disabled={createLeague.isLoading} type="submit">
+          {createLeague.isLoading ? <LoadingSpinner /> : "Create league"}
+        </Button>
       </form>
     </Form>
   );

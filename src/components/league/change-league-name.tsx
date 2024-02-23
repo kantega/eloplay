@@ -95,7 +95,12 @@ export default function ChangeLeagueName({
             </FormItem>
           )}
         />
-        <Button type="submit" size="icon" className=" aspect-square h-6 w-6">
+        <Button
+          disabled={updateTeamNameMutate.isLoading}
+          type="submit"
+          size="icon"
+          className=" aspect-square h-6 w-6"
+        >
           <Check size={16} />
         </Button>
       </form>
