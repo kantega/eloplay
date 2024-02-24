@@ -46,10 +46,10 @@ export default function Leaderboard({
                 }
               >
                 <div className="relative w-10 overflow-hidden rounded-full">
-                  <p className="absolute top-1 z-50 text-3xl text-primary">
+                  <p className="absolute top-1 z-30 text-3xl text-primary">
                     {index + 1}
                   </p>
-                  <div className="absolute z-30 h-full w-full bg-[#0000004D]" />
+                  <div className="absolute z-20 h-full w-full bg-[#0000004D]" />
                   <Image
                     className="rounded-full"
                     src={player.teamUser.image}
