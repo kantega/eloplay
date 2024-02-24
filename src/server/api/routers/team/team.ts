@@ -63,7 +63,15 @@ export const teamRouter = createTRPCRouter({
         },
       });
 
-      return { team, league };
+      const leagueUser = await ctx.db.leagueUser.create({
+        data: {
+          userId: ctx.session.user.id,
+          teamId: team.id,
+          leagueId: league.id,
+        },
+      });
+
+      return { team, league, leagueUser };
     }),
 
   join: protectedProcedure
