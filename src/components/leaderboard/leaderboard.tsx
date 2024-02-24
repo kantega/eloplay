@@ -49,7 +49,7 @@ export default function Leaderboard({
                   <p className="absolute top-1 z-50 text-3xl text-primary">
                     {index + 1}
                   </p>
-                  <div className="absolute z-30 h-full w-full bg-[#333a]" />
+                  <div className="absolute z-30 h-full w-full bg-[#0000004D]" />
                   <Image
                     className="rounded-full"
                     src={player.teamUser.image}
