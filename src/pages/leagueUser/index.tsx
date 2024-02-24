@@ -30,6 +30,7 @@ export default function PlayerPage() {
         teamUser={teamUser}
         leagueName={league.name}
       />
+
       <div className="relative w-full">
         <Input
           className="sticky top-16 z-10"

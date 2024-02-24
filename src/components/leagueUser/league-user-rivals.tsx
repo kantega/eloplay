@@ -16,6 +16,8 @@ export default function LeagueUserRivals({
   userId,
   leagueMatchesWithProfiles,
 }: Props) {
+  if (leagueMatchesWithProfiles.length <= 0) return null;
+
   const { nemesis, bestFriend } = getRivalsData(
     leagueMatchesWithProfiles,
     userId,

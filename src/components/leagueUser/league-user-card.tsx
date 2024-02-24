@@ -18,6 +18,12 @@ export default function LeagueUserCard({
   leagueName: string;
 }) {
   const eloGainList = getLatestEloList(leagueUser.latestEloGain);
+  if (leagueUser.matchCount <= 0)
+    return (
+      <p key={leagueUser.id} className="rounded-sm bg-background-tertiary p-4">
+        No matches found for league: {leagueName}
+      </p>
+    );
 
   return (
     <Link href={`/leagueUser/${leagueUser.id}`} className="w-96">
