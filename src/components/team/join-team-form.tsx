@@ -57,7 +57,7 @@ export default function JoinTeamForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full items-end gap-4 space-y-6 "
+          className="w-full items-end gap-4 space-y-6 "
         >
           <FormField
             control={form.control}
@@ -72,7 +72,11 @@ export default function JoinTeamForm() {
               </FormItem>
             )}
           />
-          <Button disabled={joinTeamMutation.isLoading} type="submit">
+          <Button
+            className="w-full"
+            disabled={joinTeamMutation.isLoading}
+            type="submit"
+          >
             {joinTeamMutation.isLoading ? <LoadingSpinner /> : "Join team"}
           </Button>
         </form>

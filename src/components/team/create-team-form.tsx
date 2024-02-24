@@ -17,21 +17,32 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateTeam } from "@/server/api/routers/team/team-types";
 import LoadingSpinner from "../loading";
+import { useContext } from "react";
+import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 
 export default function CreateTeamForm() {
+  const { setTeamId } = useContext(TeamContext);
+  const { setLeagueId } = useContext(LeagueContext);
+
   const form = useForm<z.infer<typeof CreateTeam>>({
     resolver: zodResolver(CreateTeam),
     defaultValues: {
       name: "",
+      leagueName: "",
     },
   });
   const createTeam = api.team.create.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       toast({
         title: "Success",
         description: `Team ${form.getValues("name")} created.`,
         variant: "default",
       });
+
+      setTeamId(data.team.id);
+      setLeagueId(data.league.id);
+
       form.reset();
     },
     onError: (e) => {
@@ -57,7 +68,7 @@ export default function CreateTeamForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex w-full items-end gap-4 space-y-6 "
+          className="w-full items-end gap-4 space-y-6 "
         >
           <FormField
             control={form.control}
@@ -66,13 +77,30 @@ export default function CreateTeamForm() {
               <FormItem>
                 <FormLabel>Team{"'"}s name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Navn..." {...field} />
+                  <Input placeholder="Team's name..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button disabled={createTeam.isLoading} type="submit">
+          <FormField
+            control={form.control}
+            name="leagueName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Your teams first new league{"'"}s name</FormLabel>
+                <FormControl>
+                  <Input placeholder="League's name..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            className="w-full"
+            disabled={createTeam.isLoading}
+            type="submit"
+          >
             {createTeam.isLoading ? <LoadingSpinner /> : "Create team"}
           </Button>
         </form>

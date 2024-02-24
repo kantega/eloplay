@@ -19,19 +19,19 @@ export const teamRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const adminRole = await ctx.db.role.create({
         data: {
-          name: input.name + "-admin",
+          name: RoleTexts.ADMIN,
         },
       });
 
       const moderatorRole = await ctx.db.role.create({
         data: {
-          name: input.name + "-moderator",
+          name: RoleTexts.MODERATOR,
         },
       });
 
       const memberRole = await ctx.db.role.create({
         data: {
-          name: input.name + "-member",
+          name: RoleTexts.MEMBER,
         },
       });
 
@@ -56,7 +56,14 @@ export const teamRouter = createTRPCRouter({
         },
       });
 
-      return team;
+      const league = await ctx.db.league.create({
+        data: {
+          name: input.leagueName,
+          teamId: team.id,
+        },
+      });
+
+      return { team, league };
     }),
 
   join: protectedProcedure
