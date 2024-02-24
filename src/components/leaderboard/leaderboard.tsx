@@ -40,7 +40,7 @@ export default function Leaderboard({
           return (
             <TableRow key={player.leagueUser.id}>
               <TableCell
-                className="px-0"
+                className="w-14 px-0"
                 onClick={() =>
                   router.push("/leagueUser/" + player.leagueUser.id)
                 }
@@ -61,7 +61,7 @@ export default function Leaderboard({
                 </div>
               </TableCell>
               <TableCell
-                className="px-0"
+                className="px-0 "
                 onClick={() =>
                   router.push("/leagueUser/" + player.leagueUser.id)
                 }
