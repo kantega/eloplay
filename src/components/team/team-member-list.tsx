@@ -24,8 +24,9 @@ export default function TeamMemberList({
   );
 
   return (
-    <>
+    <div className="relative w-full space-y-4">
       <Input
+        className="sticky top-14 z-10"
         placeholder="search for member..."
         value={searchQuery}
         onChange={(value) => {
@@ -60,6 +61,6 @@ export default function TeamMemberList({
           );
         })}
       </ul>
-    </>
+    </div>
   );
 }
