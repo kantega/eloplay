@@ -9,6 +9,7 @@ import { getLocalStorageShowInactivePlayers } from "@/components/leagueMatch/lea
 import HeaderLabel from "@/components/header-label";
 import ShowInactivePlayersToggle from "@/components/leagueMatch/show-inactive-players-toggle";
 import LoadingSpinner from "@/components/loading";
+import MessageBox from "@/components/message-box";
 
 export default function Home() {
   const { teamId } = useContext(TeamContext);
@@ -25,9 +26,17 @@ export default function Home() {
   const { data: leagueData, isLoading: leagueIsLoading } =
     api.league.get.useQuery({ leagueId, teamId });
 
-  if (isLoading) return <LoadingSpinner />;
-  if (!data) return null;
-  if (leagueIsLoading || !leagueData) return null;
+  if (isLoading || leagueIsLoading) return <LoadingSpinner />;
+  if (!data || data.leagueUsersAndTeamUsers.length === 0 || !leagueData)
+    return (
+      <MessageBox>
+        No league was found.
+        <br />
+        You should select a league or create a new one.
+      </MessageBox>
+    );
+
+  console.log(leagueData);
 
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">

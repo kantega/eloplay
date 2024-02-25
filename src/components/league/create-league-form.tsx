@@ -15,17 +15,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { CreateTeam } from "@/server/api/routers/team/team-types";
 import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { userIsModerator } from "@/utils/role";
 import LoadingSpinner from "../loading";
+import { CreateLeague } from "@/server/api/routers/league/league-types";
 
 export default function CreateLeagueForm() {
   const { role, teamId } = useContext(TeamContext);
   const ctx = api.useUtils();
-  const form = useForm<z.infer<typeof CreateTeam>>({
-    resolver: zodResolver(CreateTeam),
+  const form = useForm<z.infer<typeof CreateLeague>>({
+    resolver: zodResolver(CreateLeague),
     defaultValues: {
       name: "",
     },
@@ -55,7 +55,7 @@ export default function CreateLeagueForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof CreateTeam>) {
+  function onSubmit(data: z.infer<typeof CreateLeague>) {
     createLeague.mutate({ ...data, teamId });
   }
 

@@ -6,6 +6,7 @@ import { api } from "@/utils/api";
 import { useContext } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 import LoadingSpinner from "../loading";
+import MessageBox from "../message-box";
 
 export default function LeagueMatchHistory({
   leagueName,
@@ -28,11 +29,11 @@ export default function LeagueMatchHistory({
   return (
     <>
       {sortedLeagueMatchesWithProfiles.length === 0 && (
-        <p className="rounded-sm bg-background-tertiary p-4">
+        <MessageBox>
           No matches found for {leagueName}.
           <br />
           Maybe you should play some games?
-        </p>
+        </MessageBox>
       )}
       <LeagueMatchHistoryByDate
         sortedLeagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}

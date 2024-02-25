@@ -20,10 +20,12 @@ import LoadingSpinner from "../loading";
 import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useRouter } from "next/router";
 
 export default function CreateTeamForm() {
   const { setTeamId } = useContext(TeamContext);
   const { setLeagueId } = useContext(LeagueContext);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof CreateTeam>>({
     resolver: zodResolver(CreateTeam),
@@ -43,6 +45,7 @@ export default function CreateTeamForm() {
       setTeamId(data.team.id);
       setLeagueId(data.league.id);
 
+      void router.push("/leaderboard").then(() => router.reload());
       form.reset();
     },
     onError: (e) => {

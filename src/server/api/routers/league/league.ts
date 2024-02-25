@@ -7,10 +7,11 @@ import {
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { CreateLeague } from "./league-types";
 
 export const leagueRouter = createTRPCRouter({
   create: teamModeratorProcedure
-    .input(z.object({ name: z.string().min(1) }).extend(teamIdSchema.shape))
+    .input(CreateLeague.extend(teamIdSchema.shape))
     .mutation(async ({ ctx, input }) => {
       const league = await ctx.db.league.create({
         data: {
