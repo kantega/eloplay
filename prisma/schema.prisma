@@ -7,34 +7,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model TableTennisPlayer {
-    id        String   @id @default(cuid())
-    name      String
-    elo       Int      @default(1200)
-    office    String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@unique([name, office])
-    @@index([name])
-    @@index([id])
-}
-
-model TableTennisMatch {
-    id            String   @id @default(cuid())
-    player1Id     String
-    player2Id     String
-    winner        String
-    prePlayer1Elo Int
-    prePlayer2Elo Int
-    createdAt     DateTime @default(now())
-    updatedAt     DateTime @updatedAt
-
-    @@index([player1Id])
-    @@index([player2Id])
-    @@index([winner])
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -63,13 +35,17 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+    id                String        @id @default(cuid())
+    name              String?
+    email             String?       @unique
+    emailVerified     DateTime?
+    image             String?
+    accounts          Account[]
+    sessions          Session[]
+    TeamUser          TeamUser[]
+    Elo               LeagueUser[]
+    WinnerLeagueMatch LeagueMatch[] @relation("match_winner_id")
+    LoserLeagueMatch  LeagueMatch[] @relation("match_loser_id")
 }
 
 model VerificationToken {
@@ -78,4 +54,100 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Role {
+    id            String     @id @default(cuid())
+    name          String
+    createdAt     DateTime   @default(now())
+    TeamUser      TeamUser[]
+    AdminTeam     Team?      @relation("team_role_adminId")
+    ModeratorTeam Team?      @relation("team_role_moderatorId")
+    MemberTeam    Team?      @relation("team_role_memberId")
+}
+
+model Team {
+    id              String        @id @default(cuid())
+    name            String
+    image           String?
+    description     String?
+    password        String?
+    createdAt       DateTime      @default(now())
+    adminRoleId     String        @unique
+    moderatorRoleId String        @unique
+    memberRoleId    String        @unique
+    RoleAdmin       Role          @relation("team_role_adminId", fields: [adminRoleId], references: [id])
+    RoleModerator   Role          @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
+    RoleMember      Role          @relation("team_role_memberId", fields: [memberRoleId], references: [id])
+    League          League[]
+    TeamUser        TeamUser[]
+    LeagueUser      LeagueUser[]
+    LeagueMatch     LeagueMatch[]
+}
+
+model TeamUser {
+    id        String   @id @default(cuid())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    team      Team     @relation(fields: [teamId], references: [id])
+    teamId    String
+    role      Role     @relation(fields: [roleId], references: [id])
+    roleId    String
+    image     String   @default("https://github.com/shadcn.png")
+    gamerTag  String   @default("GamerTagTeamUser")
+    createdAt DateTime @default(now())
+
+    @@unique([userId, teamId])
+}
+
+model League {
+    id         String        @id @default(cuid())
+    name       String
+    teamId     String
+    Team       Team          @relation(fields: [teamId], references: [id])
+    LeagueUser LeagueUser[]
+    matchCount Int           @default(0)
+    createdAt  DateTime      @default(now())
+    updatedAt  DateTime      @updatedAt
+    Match      LeagueMatch[]
+
+    @@unique([teamId, name])
+}
+
+model LeagueUser {
+    id             String   @id @default(cuid())
+    userId         String
+    user           User     @relation(fields: [userId], references: [id])
+    teamId         String
+    team           Team     @relation(fields: [teamId], references: [id])
+    leagueId       String
+    league         League   @relation(fields: [leagueId], references: [id])
+    elo            Int      @default(1200)
+    streak         Int      @default(0)
+    matchLossCount Int      @default(0)
+    matchCount     Int      @default(0)
+    latestEloGain  String   @default("[]") //todo: hmmm, this is actually a list. Always use zod to validate its structure
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    @@unique([userId, leagueId])
+}
+
+model LeagueMatch {
+    id           String   @id @default(cuid())
+    winnerId     String
+    loserId      String
+    WinnerUser   User     @relation("match_winner_id", fields: [winnerId], references: [id])
+    LoserUser    User     @relation("match_loser_id", fields: [loserId], references: [id])
+    teamId       String
+    team         Team     @relation(fields: [teamId], references: [id])
+    leagueId     String
+    league       League   @relation(fields: [leagueId], references: [id])
+    preWinnerElo Int
+    preLoserElo  Int
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    @@index([winnerId])
+    @@index([loserId])
 }

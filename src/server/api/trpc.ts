@@ -15,6 +15,7 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import { teamIdSchema } from "./routers/team/team-types";
 
 /**
  * 1. CONTEXT
@@ -126,3 +127,131 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+export const teamAdminProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { teamId: id } = teamIdSchema.parse(rawInput);
+
+    const team = await ctx.db.team.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!team)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found",
+      });
+
+    const userIsAdmin = await ctx.db.teamUser.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        teamId: id,
+        roleId: team.adminRoleId,
+      },
+    });
+
+    if (!userIsAdmin)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "User is not an admin of this team",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);
+
+export const teamModeratorProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { teamId: id } = teamIdSchema.parse(rawInput);
+
+    const team = await ctx.db.team.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!team)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found",
+      });
+
+    const teamUser = await ctx.db.teamUser.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        teamId: id,
+        OR: [{ roleId: team.moderatorRoleId }, { roleId: team.adminRoleId }],
+      },
+    });
+
+    if (!teamUser)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "TeamUser with role moderator or admin not found",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);
+
+export const teamMemberProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { teamId: id } = teamIdSchema.parse(rawInput);
+
+    const team = await ctx.db.team.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!team)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found",
+      });
+
+    const teamUser = await ctx.db.teamUser.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        teamId: id,
+      },
+    });
+
+    if (!teamUser)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "TeamUser not found",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);

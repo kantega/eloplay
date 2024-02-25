@@ -5,9 +5,11 @@ import { api } from "@/utils/api";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/contexts/themeContext/theme-provider";
 import Layout from "./layout";
-import { LocationProvider } from "@/contexts/locationContext/location-provider";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { TeamProvider } from "@/contexts/teamContext/team-provider";
+import { LeagueProvider } from "@/contexts/leagueContext/league-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -15,13 +17,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <LocationProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </LocationProvider>
-      </ThemeProvider>
+      <TooltipProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TeamProvider>
+            <LeagueProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </LeagueProvider>
+          </TeamProvider>
+        </ThemeProvider>
+      </TooltipProvider>
     </SessionProvider>
   );
 };
