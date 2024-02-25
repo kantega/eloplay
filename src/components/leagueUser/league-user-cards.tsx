@@ -1,5 +1,6 @@
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import { type League, type LeagueUser, type TeamUser } from "@prisma/client";
+import MessageBox from "../message-box";
 
 export default function LeagueUserCards({
   leagueAndLeagueUsers,
@@ -11,6 +12,10 @@ export default function LeagueUserCards({
   leagueAndLeagueUsers.sort((a, b) => {
     return b.leagueUser.matchCount - a.leagueUser.matchCount;
   });
+
+  if (leagueAndLeagueUsers.length === 0) {
+    return <MessageBox>No league were found.</MessageBox>;
+  }
 
   return (
     <>

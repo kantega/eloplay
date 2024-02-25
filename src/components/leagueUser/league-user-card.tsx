@@ -7,6 +7,7 @@ import Image from "next/image";
 import { PingPongShower } from "../ping-pong-shower";
 import { Badge } from "../ui/badge";
 import LeagueUserEloGraph from "./league-user-elo-graph";
+import MessageBox from "../message-box";
 
 export default function LeagueUserCard({
   leagueUser,
@@ -19,11 +20,7 @@ export default function LeagueUserCard({
 }) {
   const eloGainList = getLatestEloList(leagueUser.latestEloGain);
   if (leagueUser.matchCount <= 0)
-    return (
-      <p key={leagueUser.id} className="rounded-sm bg-background-tertiary p-4">
-        No matches found for league: {leagueName}
-      </p>
-    );
+    return <MessageBox>No matches found for league: {leagueName}</MessageBox>;
 
   return (
     <Link href={`/leagueUser/${leagueUser.id}`} className="w-96">

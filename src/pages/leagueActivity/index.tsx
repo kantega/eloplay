@@ -5,6 +5,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import HeaderLabel from "@/components/header-label";
 import LoadingSpinner from "@/components/loading";
+import MessageBox from "@/components/message-box";
 
 export default function LeagueActivityPage() {
   const { teamId } = useContext(TeamContext);
@@ -14,7 +15,7 @@ export default function LeagueActivityPage() {
     api.league.get.useQuery({ leagueId, teamId });
 
   if (leagueIsLoading) return <LoadingSpinner />;
-  if (!leagueData) return null;
+  if (!leagueData) return <MessageBox>No league was found.</MessageBox>;
 
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">

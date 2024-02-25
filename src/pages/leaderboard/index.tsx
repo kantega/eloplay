@@ -28,15 +28,7 @@ export default function Home() {
 
   if (isLoading || leagueIsLoading) return <LoadingSpinner />;
   if (!data || data.leagueUsersAndTeamUsers.length === 0 || !leagueData)
-    return (
-      <MessageBox>
-        No league was found.
-        <br />
-        You should select a league or create a new one.
-      </MessageBox>
-    );
-
-  console.log(leagueData);
+    return <MessageBox>No league was found.</MessageBox>;
 
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">
