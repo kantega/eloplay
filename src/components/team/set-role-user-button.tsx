@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
-import { userIsModerator } from "@/utils/role";
+import { userIsAdmin } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 import LoadingSpinner from "../loading";
 
@@ -42,7 +42,7 @@ export default function SetRoleUserButton({
 
   return (
     <>
-      {member.role !== RoleTexts.ADMIN && userIsModerator(role) && (
+      {member.role !== RoleTexts.ADMIN && userIsAdmin(role) && (
         <Button
           disabled={isLoading}
           className="h-8 w-8 items-start p-1"

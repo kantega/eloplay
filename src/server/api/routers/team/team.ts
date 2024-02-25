@@ -1,7 +1,6 @@
 import {
   createTRPCRouter,
   teamMemberProcedure,
-  teamModeratorProcedure,
   protectedProcedure,
   teamAdminProcedure,
   publicProcedure,
@@ -255,7 +254,7 @@ export const teamRouter = createTRPCRouter({
       if (!userIsAdmin && !userIsModerator && !userIsMember)
         return RoleTexts.NOTMEMBER;
     }),
-  updateRoleForMember: teamModeratorProcedure
+  updateRoleForMember: teamAdminProcedure
     .input(
       z
         .object({
@@ -265,12 +264,6 @@ export const teamRouter = createTRPCRouter({
         .extend(teamIdSchema.shape),
     )
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session.user.id === input.teamUserId)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "You can't change your own role",
-        });
-
       const team = await ctx.db.team.findUnique({
         where: {
           id: input.teamId,
@@ -286,6 +279,9 @@ export const teamRouter = createTRPCRouter({
       if (input.newRole === RoleTexts.MODERATOR) {
         return await ctx.db.teamUser.update({
           where: {
+            NOT: {
+              userId: ctx.session.user.id,
+            },
             teamId: input.teamId,
             id: input.teamUserId,
           },
@@ -298,6 +294,9 @@ export const teamRouter = createTRPCRouter({
       if (input.newRole === RoleTexts.MEMBER) {
         return await ctx.db.teamUser.update({
           where: {
+            NOT: {
+              userId: ctx.session.user.id,
+            },
             teamId: input.teamId,
             id: input.teamUserId,
           },

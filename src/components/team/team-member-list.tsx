@@ -16,7 +16,6 @@ export default function TeamMemberList({
   teamUsers: TeamMemberProps[];
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-
   const filteredTeamUsers = filterTeamUsers(teamUsers, searchQuery);
 
   const sortedTeamUsers = filteredTeamUsers.sort((a, b) =>
