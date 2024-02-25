@@ -12,8 +12,8 @@ export const getLocalStorageTeam = () => {
   return defaultValue;
 };
 
-export const setLocalStorageTeam = (location: string) => {
+export const setLocalStorageTeam = (teamId: string) => {
   if (typeof window !== "undefined") {
-    localStorage.setItem(localStorageKey, location);
+    localStorage.setItem(localStorageKey, teamId);
   }
 };

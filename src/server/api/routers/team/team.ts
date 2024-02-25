@@ -253,10 +253,7 @@ export const teamRouter = createTRPCRouter({
       if (userIsMember) return RoleTexts.MEMBER;
 
       if (!userIsAdmin && !userIsModerator && !userIsMember)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "User is not an part of this team",
-        });
+        return RoleTexts.NOTMEMBER;
     }),
   updateRoleForMember: teamModeratorProcedure
     .input(
@@ -268,6 +265,12 @@ export const teamRouter = createTRPCRouter({
         .extend(teamIdSchema.shape),
     )
     .mutation(async ({ ctx, input }) => {
+      if (ctx.session.user.id === input.teamUserId)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can't change your own role",
+        });
+
       const team = await ctx.db.team.findUnique({
         where: {
           id: input.teamId,
@@ -335,5 +338,156 @@ export const teamRouter = createTRPCRouter({
       });
 
       return team;
+    }),
+
+  transferTeamOwnerShip: teamAdminProcedure
+    .input(
+      z
+        .object({
+          newAdminUserId: z.string(),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const team = await ctx.db.team.findUnique({
+        where: {
+          id: input.teamId,
+        },
+      });
+
+      if (!team)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team not found",
+        });
+
+      const newAdminUser = await ctx.db.teamUser.findFirst({
+        where: {
+          userId: input.newAdminUserId,
+        },
+      });
+
+      if (!newAdminUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+
+      const oldAdminUser = await ctx.db.teamUser.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+          teamId: input.teamId,
+          roleId: team.adminRoleId,
+        },
+      });
+
+      if (!oldAdminUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Admin not found",
+        });
+
+      await ctx.db.teamUser.update({
+        where: {
+          id: newAdminUser.id,
+          userId: input.newAdminUserId,
+          teamId: input.teamId,
+        },
+        data: {
+          roleId: team.adminRoleId,
+        },
+      });
+
+      await ctx.db.teamUser.update({
+        where: {
+          id: oldAdminUser.id,
+        },
+        data: {
+          roleId: team.moderatorRoleId,
+        },
+      });
+
+      return true;
+    }),
+
+  delete: teamAdminProcedure
+    .input(teamIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      const team = await ctx.db.team.findUnique({
+        where: {
+          id: input.teamId,
+        },
+      });
+
+      if (!team)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team not found",
+        });
+
+      // todo: fix deletion of team with prisma cascade?
+
+      await ctx.db.leagueMatch.deleteMany({
+        where: {
+          teamId: input.teamId,
+        },
+      });
+
+      await ctx.db.leagueUser.deleteMany({
+        where: {
+          teamId: input.teamId,
+        },
+      });
+
+      await ctx.db.league.deleteMany({
+        where: {
+          teamId: input.teamId,
+        },
+      });
+
+      await ctx.db.teamUser.deleteMany({
+        where: {
+          teamId: input.teamId,
+        },
+      });
+
+      await ctx.db.team.delete({
+        where: {
+          id: input.teamId,
+        },
+      });
+
+      return team;
+    }),
+
+  leaveTeam: teamMemberProcedure
+    .input(teamIdSchema)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+
+      // todo: create a message/match history for the other player in the match
+      await ctx.db.leagueMatch.deleteMany({
+        where: {
+          teamId: input.teamId,
+          OR: [{ winnerId: userId }, { loserId: userId }],
+        },
+      });
+
+      await ctx.db.leagueUser.deleteMany({
+        where: {
+          teamId: input.teamId,
+          userId: userId,
+        },
+      });
+
+      // todo: theres only one teamUser with the same teamId and userId, why is unique annotation not working?
+      await ctx.db.teamUser.deleteMany({
+        where: {
+          teamId: input.teamId,
+          userId: userId,
+        },
+      });
+
+      return true;
     }),
 });

@@ -90,7 +90,7 @@ export default function ChangeLeagueName({
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Navn..." {...field} />
+                <Input placeholder="Name..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

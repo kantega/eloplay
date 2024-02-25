@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-history";
@@ -41,9 +41,10 @@ export default function Leaderboard({
             <TableRow key={player.leagueUser.id}>
               <TableCell
                 className="w-14 px-0"
-                onClick={() =>
-                  router.push("/leagueUser/" + player.leagueUser.id)
-                }
+                onClick={async () => {
+                  await router.push("/leagueUser/" + player.leagueUser.id);
+                  router.reload();
+                }}
               >
                 <div className="relative w-10 overflow-hidden rounded-full">
                   <p className="absolute top-1 z-30 text-3xl text-primary">
@@ -62,9 +63,10 @@ export default function Leaderboard({
               </TableCell>
               <TableCell
                 className="px-0 "
-                onClick={() =>
-                  router.push("/leagueUser/" + player.leagueUser.id)
-                }
+                onClick={async () => {
+                  await router.push("/leagueUser/" + player.leagueUser.id);
+                  router.reload();
+                }}
               >
                 <div className="flex flex-col items-start">
                   <p className="text-xl">{player.teamUser.gamerTag}</p>
@@ -80,9 +82,10 @@ export default function Leaderboard({
               </TableCell>
               <TableCell
                 className="px-0"
-                onClick={() =>
-                  router.push("/leagueUser/" + player.leagueUser.id)
-                }
+                onClick={async () => {
+                  await router.push("/leagueUser/" + player.leagueUser.id);
+                  router.reload();
+                }}
               >
                 {Math.abs(player.leagueUser.streak) > 3 && (
                   <MinityrStreakSymbol streak={player.leagueUser.streak} />

@@ -23,11 +23,13 @@ import { useContext, useState } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { toast } from "./ui/use-toast";
 import { api } from "@/utils/api";
+import { useRouter } from "next/router";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
   const { teamId } = useContext(TeamContext);
   const { data: sessionData } = useSession();
+  const router = useRouter();
 
   if (!sessionData) return <SignInOrOutButton />;
 
@@ -39,52 +41,57 @@ export function AccountDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <TeamSelector />
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Link href="/teamUser" className="flex">
-              <User className="mr-2 h-4 w-4" />
-              <span>My Profile</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Link href="/team" className="flex">
-              <Users className="mr-2 h-4 w-4" />
-              Team Page
-            </Link>
-          </DropdownMenuItem>
-          {teamId !== "" && (
-            <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-              <Button
-                onClick={() => {
-                  const url = `${window.origin}/team/join/${teamId}`;
-                  void navigator.clipboard.writeText(url).then(() => {
-                    toast({
-                      title: "Copied invite link to clipboard.",
-                      description:
-                        "Share the team invite link to connect users to your team.",
-                      variant: "success",
-                    });
-                  });
-                }}
-              >
-                <UserPlus className="mr-2 h-4 w-4" />
-                Copy Invite link
-              </Button>
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Plus className="mr-2 h-4 w-4" />
-            <Link href="/team/join">Join Team</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-            <Plus className="mr-2 h-4 w-4" />
-            <Link href="/team/create">Create Team</Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        {router.pathname !== "/" && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <TeamSelector />
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+                <Link href="/teamUser" className="flex">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>My Profile</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+                <Link href="/team" className="flex">
+                  <Users className="mr-2 h-4 w-4" />
+                  Team Page
+                </Link>
+              </DropdownMenuItem>
+              {teamId !== "" && (
+                <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+                  <Button
+                    onClick={() => {
+                      const url = `${window.origin}/team/join/${teamId}`;
+                      void navigator.clipboard.writeText(url).then(() => {
+                        toast({
+                          title: "Copied invite link to clipboard.",
+                          description:
+                            "Share the team invite link to connect users to your team.",
+                          variant: "success",
+                        });
+                      });
+                    }}
+                  >
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Copy Invite link
+                  </Button>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+                <Plus className="mr-2 h-4 w-4" />
+                <Link href="/team/join">Join Team</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+                <Plus className="mr-2 h-4 w-4" />
+                <Link href="/team/create">Create Team</Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
         <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
           <GitBranchPlus className="mr-2 h-4 w-4" />
           <span>
@@ -157,13 +164,15 @@ export function LogInButton() {
 }
 
 export function LogOutButton() {
+  const router = useRouter();
   return (
     <Button
       className="m-0 p-2"
       variant="ghost"
-      onClick={() => {
+      onClick={async () => {
         localStorage.clear();
-        void signOut();
+        await signOut();
+        await router.push("/").then(() => router.reload());
       }}
     >
       <LogOut className="mr-2 h-4 w-4" />

@@ -11,12 +11,11 @@ export default function MinityrLeagueMatchHistory({
   return (
     <ul className="flex space-x-1">
       {[...Array(amountOfNoneMatches)].map((value, index) => (
-        <li key={value + "" + index}>
-          <li
-            className={`flex h-4 w-4 items-center justify-center rounded border-2`}
-          >
-            <p className="text-xs font-semibold text-gray-500">?</p>
-          </li>
+        <li
+          key={value + "" + index}
+          className={`flex h-4 w-4 items-center justify-center rounded border-2`}
+        >
+          <p className="text-xs font-semibold text-gray-500">?</p>
         </li>
       ))}
       {reverseList.map((eloGain, index) => {

@@ -6,6 +6,11 @@ import { signIn, useSession } from "next-auth/react";
 import Homepage from "@/components/home-page";
 import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
+import { useContext } from "react";
+import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { api } from "@/utils/api";
+import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import LoadingSpinner from "@/components/loading";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,19 +18,53 @@ const inter = Inter({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { teamId, setTeamId } = useContext(TeamContext);
+  const { setLeagueId } = useContext(LeagueContext);
   const { data: sessionData, status } = useSession();
+  const { data, isLoading } = api.team.getAll.useQuery();
+
   const router = useRouter();
 
-  if (status === "loading") return null;
+  // wait for session to load
+  if (status === "loading") return <LoadingSpinner />;
 
-  if (router.pathname === "/team/join/[id]" && !sessionData) {
-    localStorage.clear();
+  // you clicked a join team link, but you are not logged in, redirect to login
+  if (!sessionData && router.pathname === "/team/join/[id]")
     return void signIn();
-  }
 
-  if (!sessionData?.user && router.pathname === "/") {
-    localStorage.clear();
+  // you are not logged in and not at join team link, show homepage
+  if (!sessionData && router.pathname !== "/team/join/[id]")
     return <Homepage />;
+
+  // your logged in, in a team, there are teams, at homepage, redirect to leaderboard page
+  if (
+    !!sessionData &&
+    !!sessionData.user &&
+    router.pathname === "/" &&
+    teamId !== "" &&
+    !isLoading &&
+    !!data &&
+    data.length !== 0
+  )
+    void router.push("/leaderboard").then(() => router.reload());
+
+  // your logged in, not in a team, not at homepage, redirect to homepage
+  if (
+    !!sessionData &&
+    !!sessionData.user &&
+    router.pathname !== "/" &&
+    teamId === ""
+  )
+    void router.push("/").then(() => router.reload());
+
+  // you have no team selected, but there are teams, select the first team
+  if (teamId === "" && !isLoading && !!data && data.length !== 0 && !!data[0])
+    setTeamId(data[0].id);
+
+  // theres no teams, reset teamId and leagueId
+  if (!isLoading && !!data && data.length === 0 && teamId !== "") {
+    setTeamId("");
+    setLeagueId("");
   }
 
   return (

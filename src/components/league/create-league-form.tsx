@@ -74,7 +74,7 @@ export default function CreateLeagueForm() {
             <FormItem>
               <FormLabel>League{"'"}s name</FormLabel>
               <FormControl>
-                <Input placeholder="Navn..." {...field} />
+                <Input placeholder="Name..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
