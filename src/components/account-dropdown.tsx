@@ -24,6 +24,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { toast } from "./ui/use-toast";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
+import { getProperFormForName } from "./teamUser/team-user-utils";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
@@ -124,18 +125,19 @@ function TeamUserProfileButton() {
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" /> {data.gamerTag}
+      <User className="mr-2 h-6 w-6" /> {getProperFormForName(data.gamerTag)}
     </>
   );
 }
 
 function UserProfileButton() {
   const { data: sessionData } = useSession();
-  if (!sessionData) return null;
+  if (!sessionData?.user.name) return null;
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" /> {sessionData.user.name}
+      <User className="mr-2 h-6 w-6" />{" "}
+      {getProperFormForName(sessionData.user.name)}
     </>
   );
 }
