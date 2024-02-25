@@ -87,6 +87,7 @@ function TeamInfo() {
       )}
 
       <TeamMemberList teamUsers={data.teamUsers} />
+      <span className="py-10" />
     </div>
   );
 }

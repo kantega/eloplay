@@ -268,6 +268,79 @@ export const leagueMatchRouter = createTRPCRouter({
 
       return { leagueMatchesWithProfiles };
     }),
+  getAllInifinte: teamMemberProcedure
+    .input(
+      z
+        .object({
+          limit: z.number(),
+          cursor: z.string().nullish(),
+          skip: z.number().optional(),
+          leagueId: z.string().min(1),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, leagueId, teamId, cursor } = input;
+      const leagueMatches = await ctx.db.leagueMatch.findMany({
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: "desc",
+        },
+        where: {
+          leagueId,
+          teamId,
+        },
+      });
+
+      // todo: optimize this, you can cache the team users and fetch from the cache, not neccaesarily to get them form the db every time
+      const leagueMatchesWithProfiles = await Promise.all(
+        leagueMatches.map(async (match) => {
+          const winnerTeamUser = await ctx.db.teamUser.findFirst({
+            where: {
+              userId: match.winnerId,
+              teamId: input.teamId,
+            },
+          });
+
+          if (!winnerTeamUser) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Winner team user not found",
+            });
+          }
+
+          const loserTeamUser = await ctx.db.teamUser.findFirst({
+            where: {
+              userId: match.loserId,
+              teamId: input.teamId,
+            },
+          });
+
+          if (!loserTeamUser) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Winner team user not found",
+            });
+          }
+
+          return {
+            match,
+            winnerTeamUser,
+            loserTeamUser,
+          };
+        }),
+      );
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (leagueMatchesWithProfiles.length > limit) {
+        const nextItem = leagueMatchesWithProfiles.pop(); // return the last item from the array
+        nextCursor = nextItem?.match.id;
+      }
+
+      return { leagueMatchesWithProfiles, nextCursor };
+    }),
   getAllForUser: protectedProcedure
     .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .query(async ({ ctx, input }) => {
