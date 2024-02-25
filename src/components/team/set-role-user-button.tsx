@@ -21,7 +21,7 @@ export default function SetRoleUserButton({
 
       toast({
         title: "Member role updated",
-        description: `Member is now ${role === RoleTexts.MEMBER ? RoleTexts.MODERATOR : RoleTexts.MEMBER}.`,
+        description: "Nice, you updated the role for the member.",
         variant: "default",
       });
     },

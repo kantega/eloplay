@@ -48,7 +48,7 @@ export default function UpdateEloLeagueUserForm({
       void ctx.leagueUser.getAllByLeagueId.invalidate();
       toast({
         title: "League User ELO updated",
-        description: `ELO updated from ${value} to ${form.getValues().elo}`,
+        description: "Nice, you updated the ELO for the league user.",
         variant: "success",
       });
     },
