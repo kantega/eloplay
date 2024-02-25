@@ -4,7 +4,7 @@ export default function HeaderLabel({
   headerText,
   label,
 }: {
-  headerText: string;
+  headerText?: string;
   label?: string;
 }) {
   return (
@@ -12,7 +12,9 @@ export default function HeaderLabel({
       {label && (
         <h2 className="m-0 text-xs font-bold text-gray-500">{label}</h2>
       )}
-      <h1 className="m-0 text-4xl text-primary">{headerText}</h1>
+      {headerText && (
+        <h1 className="m-0 text-4xl text-primary">{headerText}</h1>
+      )}
     </span>
   );
 }

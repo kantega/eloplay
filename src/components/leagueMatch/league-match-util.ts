@@ -17,7 +17,6 @@ export const getLocalStorageShowInactivePlayers = () => {
   return defaultValue;
 };
 
-// todo: bug cant set value and read value
 export const setLocalStorageShowInactivePlayers = (value: boolean) => {
   if (typeof window !== "undefined") {
     localStorage.setItem(localStorageKey, JSON.stringify(value));
@@ -123,4 +122,29 @@ export const sortTeamUserByGamerTag = (
   if (a.teamUser.gamerTag > b.teamUser.gamerTag) return 1;
   if (a.teamUser.gamerTag < b.teamUser.gamerTag) return -1;
   return 0;
+};
+
+const recentPlayersLocalStorageKey = "recentOpponents";
+const recentPlayersDefaultValue: string[] = [];
+
+export const getLocalStorageRecentOpponents = (leagueId: string) => {
+  if (typeof window !== "undefined") {
+    const value = localStorage.getItem(leagueId + recentPlayersLocalStorageKey);
+    if (value === null) return recentPlayersDefaultValue;
+    return z.string().array().parse(JSON.parse(value));
+  }
+  return recentPlayersDefaultValue;
+};
+
+export const setLocalStorageRecentOpponents = (
+  value: string[],
+  leagueId: string,
+) => {
+  const saveValue = value.slice(0, 3);
+  if (typeof window !== "undefined") {
+    localStorage.setItem(
+      leagueId + recentPlayersLocalStorageKey,
+      JSON.stringify(saveValue),
+    );
+  }
 };
