@@ -364,6 +364,7 @@ export const teamRouter = createTRPCRouter({
       const newAdminUser = await ctx.db.teamUser.findFirst({
         where: {
           userId: input.newAdminUserId,
+          teamId: input.teamId,
         },
       });
 
@@ -401,6 +402,8 @@ export const teamRouter = createTRPCRouter({
       await ctx.db.teamUser.update({
         where: {
           id: oldAdminUser.id,
+          userId: ctx.session.user.id,
+          teamId: input.teamId,
         },
         data: {
           roleId: team.moderatorRoleId,
