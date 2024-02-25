@@ -374,7 +374,7 @@ function PickFromRecentOpponents({
   return (
     <div className="flex flex-col gap-4">
       <HeaderLabel label="Pick from recent opponents" />
-      {recentOpponentsFiltered.map((user) => (
+      {recentOpponentsFiltered.reverse().map((user) => (
         <div
           key={user.teamUser.userId}
           className="relative flex h-10 w-full items-center justify-center rounded-sm bg-gradient-to-r from-primary from-30% to-red-500 to-70%"
