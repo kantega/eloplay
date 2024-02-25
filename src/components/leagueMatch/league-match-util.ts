@@ -11,8 +11,8 @@ const defaultValue = false;
 export const getLocalStorageShowInactivePlayers = () => {
   if (typeof window !== "undefined") {
     const value = localStorage.getItem(localStorageKey);
-    if (!value) return defaultValue;
-    return z.boolean().parse(defaultValue);
+    if (value === null) return defaultValue;
+    return z.boolean().parse(JSON.parse(value));
   }
   return defaultValue;
 };

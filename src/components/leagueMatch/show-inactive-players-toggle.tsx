@@ -12,14 +12,14 @@ export default function ShowInactivePlayersToggle({
   return (
     <div className="flex items-center space-x-2">
       <Switch
-        id="airplane-mode"
+        id="show-inactive-players"
         checked={showInactivePlayers}
         onCheckedChange={(value: boolean) => {
           setShowInactivePlayers(value);
           setLocalStorageShowInactivePlayers(value);
         }}
       />
-      <Label htmlFor="airplane-mode">Show inactive players</Label>
+      <Label htmlFor="show-inactive-players">Show inactive players</Label>
     </div>
   );
 }
