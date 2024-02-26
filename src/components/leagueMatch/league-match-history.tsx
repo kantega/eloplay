@@ -48,7 +48,7 @@ export default function LeagueMatchHistory({
         (test) => test,
       );
       if (!newEntries) return prev;
-      return [...prev, ...newEntries];
+      return Array.from(new Set([...prev, ...newEntries]));
     });
   };
 
@@ -56,15 +56,13 @@ export default function LeagueMatchHistory({
   //   setPage((prev) => prev - 1);
   // };
 
-  if (isLoading || !data) return <LoadingSpinner />;
-
   const sortedLeagueMatchesWithProfiles = listToShow.sort(
     (a, b) => b.match.createdAt.getTime() - a.match.createdAt.getTime(),
   );
 
   return (
     <>
-      {sortedLeagueMatchesWithProfiles.length === 0 && (
+      {sortedLeagueMatchesWithProfiles.length === 0 && !isLoading && (
         <MessageBox>
           No matches found for {leagueName}.
           <br />
