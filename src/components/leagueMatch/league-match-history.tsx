@@ -37,12 +37,12 @@ export default function LeagueMatchHistory({
     await fetchNextPage();
     setPage((prev) => prev + 1);
 
-    setListToShow((prev) => {
-      const newEntries = data?.pages[page]?.leagueMatchesWithProfiles.flatMap(
-        (test) => test,
-      );
-      if (!newEntries) return prev;
-      return Array.from(new Set([...prev, ...newEntries]));
+    setListToShow(() => {
+      const test = data.pages.reduce((prev, curr) => {
+        return [...prev, ...curr.leagueMatchesWithProfiles];
+      }, [] as LeagueMatchWithProfiles[]);
+
+      return Array.from(new Set([...test]));
     });
   };
 

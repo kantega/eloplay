@@ -20,7 +20,7 @@ export default function LeagueUserMatchHistory({
   searchQuery: string;
 }) {
   const [listToShow, setListToShow] = useState<LeagueMatchWithProfiles[]>([]);
-  const [page, setPage] = useState(0);
+  const [, setPage] = useState(0);
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const { data: leagueUserData, isLoading: leagueUserIsLoading } =
@@ -46,12 +46,12 @@ export default function LeagueUserMatchHistory({
     await fetchNextPage();
     setPage((prev) => prev + 1);
 
-    setListToShow((prev) => {
-      const newEntries = data?.pages[page]?.leagueMatchesWithProfiles.flatMap(
-        (test) => test,
-      );
-      if (!newEntries) return prev;
-      return Array.from(new Set([...prev, ...newEntries]));
+    setListToShow(() => {
+      const test = data.pages.reduce((prev, curr) => {
+        return [...prev, ...curr.leagueMatchesWithProfiles];
+      }, [] as LeagueMatchWithProfiles[]);
+
+      return Array.from(new Set([...test]));
     });
   };
 

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { useState } from "react";
 import { InView } from "react-intersection-observer";
 
@@ -21,8 +19,7 @@ export default function AnimationOnScroll({
       onChange={async (inView) => {
         if (inView) {
           setIsLoading(true);
-          await functionToCall();
-          setIsLoading(false);
+          await functionToCall().then(() => setIsLoading(false));
         }
       }}
     >
