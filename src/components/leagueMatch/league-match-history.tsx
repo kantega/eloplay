@@ -7,14 +7,8 @@ import { useContext, useState } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 import LoadingSpinner from "../loading";
 import MessageBox from "../message-box";
-import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import AnimationOnScroll from "./animation-on-scroll";
-
-interface LeagueMatchWithProfiles {
-  winnerTeamUser: TeamUser;
-  loserTeamUser: TeamUser;
-  match: LeagueMatch;
-}
+import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 
 export default function LeagueMatchHistory({
   leagueName,
@@ -26,7 +20,7 @@ export default function LeagueMatchHistory({
   const { leagueId } = useContext(LeagueContext);
   const { teamId } = useContext(TeamContext);
   const { data, isLoading, fetchNextPage } =
-    api.leagueMatch.getAllInifinte.useInfiniteQuery(
+    api.leagueMatch.getAllInfinite.useInfiniteQuery(
       {
         limit: 10,
         leagueId,
