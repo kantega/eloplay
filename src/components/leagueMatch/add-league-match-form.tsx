@@ -87,7 +87,7 @@ export default function AddLeagueMatchForm() {
       toast({
         title: "Success",
         description: `New match registered.`,
-        variant: "default",
+        variant: "success",
       });
     },
     onError: (e) => {
@@ -377,7 +377,7 @@ function PickFromRecentOpponents({
       {recentOpponentsFiltered.reverse().map((user) => (
         <div
           key={user.teamUser.userId}
-          className="relative flex h-10 w-full items-center justify-center rounded-sm bg-gradient-to-r from-primary from-30% to-red-500 to-70%"
+          className="relative flex h-10 w-full items-center justify-center rounded-sm bg-gradient-to-r from-primary from-45% to-red-500 to-55%"
         >
           <Button
             className="absolute left-0 m-0 h-full w-2/5 p-0 hover:bg-transparent"

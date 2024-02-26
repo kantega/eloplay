@@ -22,7 +22,7 @@ export default function SetRoleUserButton({
       toast({
         title: "Member role updated",
         description: "Nice, you updated the role for the member.",
-        variant: "default",
+        variant: "success",
       });
     },
     onError: (e) => {

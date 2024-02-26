@@ -11,7 +11,7 @@ export default function TeamName({ teamName }: { teamName: string }) {
   const [changeTeamName, setChangeTeamName] = useState(false);
 
   return (
-    <div className="flex items-end gap-2">
+    <div className="flex items-center gap-2">
       {!changeTeamName && (
         <HeaderLabel headerText={teamName} label="TEAM NAME" />
       )}
@@ -23,7 +23,7 @@ export default function TeamName({ teamName }: { teamName: string }) {
       )}
       {userIsAdmin(role) && (
         <Button
-          className=" items-start p-4"
+          className="h-6 w-6 items-start p-1"
           variant={!changeTeamName ? "ghost" : "destructive"}
           size="sm"
           onClick={() => setChangeTeamName(!changeTeamName)}

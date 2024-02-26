@@ -31,7 +31,7 @@ export default function JoinTeamForm() {
       toast({
         title: "Joined team",
         description: "Welcom to the best team in the world!",
-        variant: "default",
+        variant: "success",
       });
     },
     onError: (e) => {

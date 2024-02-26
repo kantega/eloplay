@@ -9,7 +9,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -38,7 +37,7 @@ export default function CreateLeagueForm() {
       toast({
         title: "Success",
         description: `Added new league, ${form.getValues("name")}, to team.`,
-        variant: "default",
+        variant: "success",
       });
     },
     onError: (e) => {
@@ -65,16 +64,15 @@ export default function CreateLeagueForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex items-end gap-2"
+        className="flex items-start gap-2"
       >
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>League{"'"}s name</FormLabel>
               <FormControl>
-                <Input placeholder="Name..." {...field} />
+                <Input placeholder="New league's name..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

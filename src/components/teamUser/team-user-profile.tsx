@@ -9,7 +9,7 @@ import { RoleTexts } from "@/server/types/roleTypes";
 import HeaderLabel from "../header-label";
 import LoadingSpinner from "../loading";
 
-export default function TeamProfile() {
+export default function TeamUserProfile() {
   const { role } = useContext(TeamContext);
 
   return (
@@ -34,7 +34,7 @@ function TeamUserName() {
   if (!data) return null;
 
   return (
-    <div className="flex items-end justify-center gap-2">
+    <div className="flex items-center justify-center gap-2">
       {!changeTeamName && (
         <HeaderLabel headerText={data.gamerTag} label="TEAM USER PROFILE" />
       )}
@@ -45,7 +45,7 @@ function TeamUserName() {
         />
       )}
       <Button
-        className="h-6 w-6 items-start p-1"
+        className="h-6 w-6 items-end p-1"
         variant={!changeTeamName ? "ghost" : "destructive"}
         size="sm"
         onClick={() => setChangeTeamName(!changeTeamName)}

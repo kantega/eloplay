@@ -39,7 +39,7 @@ export default function CreateTeamForm() {
       toast({
         title: "Success",
         description: `Team ${form.getValues("name")} created.`,
-        variant: "default",
+        variant: "success",
       });
 
       setTeamId(data.team.id);

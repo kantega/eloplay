@@ -74,7 +74,10 @@ export default function ChangeTeamName({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-2/3 gap-2">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-2/3 items-center gap-2"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -91,9 +94,13 @@ export default function ChangeTeamName({
           disabled={updateTeamNameMutate.isLoading}
           type="submit"
           size="icon"
-          className=" aspect-square"
+          className=" aspect-square h-6 w-6"
         >
-          {updateTeamNameMutate.isLoading ? <LoadingSpinner /> : <Check />}
+          {updateTeamNameMutate.isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <Check size={16} />
+          )}
         </Button>
       </form>
     </Form>

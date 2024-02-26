@@ -2,7 +2,7 @@
 
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
 import LoadingSpinner from "@/components/loading";
-import TeamProfile from "@/components/teamUser/team-profile";
+import TeamUserProfile from "@/components/teamUser/team-user-profile";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext } from "react";
@@ -27,7 +27,7 @@ function PersonalLeaguePlayerCards() {
 
   return (
     <>
-      <TeamProfile />
+      <TeamUserProfile />
       <LeagueUserCards
         leagueAndLeagueUsers={leagueAndLeagueUsers}
         teamUser={teamUser}
