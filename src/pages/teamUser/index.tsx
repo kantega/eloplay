@@ -7,7 +7,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext } from "react";
 
-export default function ProfilePage() {
+export default function TeamUserPage() {
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4">
       <PersonalLeaguePlayerCards />

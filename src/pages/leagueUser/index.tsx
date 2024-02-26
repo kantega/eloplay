@@ -9,7 +9,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext, useState } from "react";
 
-export default function PlayerPage() {
+export default function LeagueUserPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);

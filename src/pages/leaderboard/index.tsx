@@ -11,7 +11,7 @@ import ShowInactivePlayersToggle from "@/components/leagueMatch/show-inactive-pl
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
 
-export default function Home() {
+export default function LeaderboardPage() {
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const [showInactivePlayers, setShowInactivePlayers] = useState(

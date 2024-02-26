@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 
-export default function PlayerPage() {
+export default function JoinTeamPage() {
   const router = useRouter();
   const { id } = router.query;
 
