@@ -137,14 +137,13 @@ export const getLocalStorageRecentOpponents = (leagueId: string) => {
 };
 
 export const setLocalStorageRecentOpponents = (
-  value: string[],
+  opponentIds: string[],
   leagueId: string,
 ) => {
-  const saveValue = value.slice(0, 3);
   if (typeof window !== "undefined") {
     localStorage.setItem(
       leagueId + recentPlayersLocalStorageKey,
-      JSON.stringify(saveValue),
+      JSON.stringify(Array.from(new Set(opponentIds)).slice(0, 3)),
     );
   }
 };
