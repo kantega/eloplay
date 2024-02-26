@@ -7,14 +7,8 @@ import { useContext, useState } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 import LoadingSpinner from "../loading";
 import MessageBox from "../message-box";
-import { type LeagueMatch, type TeamUser } from "@prisma/client";
 import AnimationOnScroll from "./animation-on-scroll";
-
-interface LeagueMatchWithProfiles {
-  winnerTeamUser: TeamUser;
-  loserTeamUser: TeamUser;
-  match: LeagueMatch;
-}
+import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 
 export default function LeagueMatchHistory({
   leagueName,
@@ -26,7 +20,7 @@ export default function LeagueMatchHistory({
   const { leagueId } = useContext(LeagueContext);
   const { teamId } = useContext(TeamContext);
   const { data, isLoading, fetchNextPage } =
-    api.leagueMatch.getAllInifinte.useInfiniteQuery(
+    api.leagueMatch.getAllInfinite.useInfiniteQuery(
       {
         limit: 10,
         leagueId,
@@ -43,12 +37,12 @@ export default function LeagueMatchHistory({
     await fetchNextPage();
     setPage((prev) => prev + 1);
 
-    setListToShow((prev) => {
-      const newEntries = data?.pages[page]?.leagueMatchesWithProfiles.flatMap(
-        (test) => test,
-      );
-      if (!newEntries) return prev;
-      return Array.from(new Set([...prev, ...newEntries]));
+    setListToShow(() => {
+      const test = data.pages.reduce((prev, curr) => {
+        return [...prev, ...curr.leagueMatchesWithProfiles];
+      }, [] as LeagueMatchWithProfiles[]);
+
+      return Array.from(new Set([...test]));
     });
   };
 

@@ -268,7 +268,7 @@ export const leagueMatchRouter = createTRPCRouter({
 
       return { leagueMatchesWithProfiles };
     }),
-  getAllInifinte: teamMemberProcedure
+  getAllInfinite: teamMemberProcedure
     .input(
       z
         .object({
@@ -340,79 +340,6 @@ export const leagueMatchRouter = createTRPCRouter({
       }
 
       return { leagueMatchesWithProfiles, nextCursor };
-    }),
-  getAllForUser: protectedProcedure
-    .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
-    .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
-
-      const leagueMatches = await ctx.db.leagueMatch.findMany({
-        where: {
-          leagueId: input.leagueId,
-          OR: [{ winnerId: userId }, { loserId: userId }],
-          teamId: input.teamId,
-        },
-      });
-
-      const teamUser = await ctx.db.teamUser.findFirst({
-        where: {
-          userId,
-          teamId: input.teamId,
-        },
-      });
-
-      if (!teamUser) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Team user not found",
-        });
-      }
-
-      const leagueMatchesWithProfiles = await Promise.all(
-        leagueMatches.map(async (match) => {
-          let winnerTeamUser;
-          let loserTeamUser;
-          if (match.winnerId === userId) {
-            winnerTeamUser = teamUser;
-            loserTeamUser = await ctx.db.teamUser.findFirst({
-              where: {
-                userId: match.loserId,
-                teamId: input.teamId,
-              },
-            });
-          } else {
-            loserTeamUser = teamUser;
-            winnerTeamUser = await ctx.db.teamUser.findFirst({
-              where: {
-                userId: match.winnerId,
-                teamId: input.teamId,
-              },
-            });
-          }
-
-          if (!winnerTeamUser) {
-            throw new TRPCError({
-              code: "NOT_FOUND",
-              message: "Winner team user not found",
-            });
-          }
-
-          if (!loserTeamUser) {
-            throw new TRPCError({
-              code: "NOT_FOUND",
-              message: "Winner team user not found",
-            });
-          }
-
-          return {
-            match,
-            winnerTeamUser,
-            loserTeamUser,
-          };
-        }),
-      );
-
-      return { leagueMatchesWithProfiles };
     }),
   getAllByLeagueUserId: protectedProcedure
     .input(
@@ -504,5 +431,111 @@ export const leagueMatchRouter = createTRPCRouter({
       );
 
       return { leagueMatchesWithProfiles };
+    }),
+  getAllInfiniteByLeagueUserId: protectedProcedure
+    .input(
+      z
+        .object({
+          limit: z.number(),
+          cursor: z.string().nullish(),
+          skip: z.number().optional(),
+          leagueUserId: z.string().min(1),
+          leagueId: z.string().min(1),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .query(async ({ ctx, input }) => {
+      const leagueUser = await ctx.db.leagueUser.findUnique({
+        where: { id: input.leagueUserId, teamId: input.teamId },
+      });
+
+      if (!leagueUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "League user not found",
+        });
+      }
+
+      const userId = leagueUser.userId;
+
+      const teamUser = await ctx.db.teamUser.findFirst({
+        where: {
+          userId,
+          teamId: input.teamId,
+        },
+      });
+
+      if (!teamUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Team user not found",
+        });
+      }
+
+      const leagueMatches = await ctx.db.leagueMatch.findMany({
+        take: input.limit + 1,
+        skip: input.skip,
+        cursor: input.cursor ? { id: input.cursor } : undefined,
+        orderBy: {
+          id: "desc",
+        },
+        where: {
+          leagueId: input.leagueId,
+          OR: [{ winnerId: userId }, { loserId: userId }],
+          teamId: input.teamId,
+        },
+      });
+
+      const leagueMatchesWithProfiles = await Promise.all(
+        leagueMatches.map(async (match) => {
+          let winnerTeamUser;
+          let loserTeamUser;
+          if (match.winnerId === userId) {
+            winnerTeamUser = teamUser;
+            loserTeamUser = await ctx.db.teamUser.findFirst({
+              where: {
+                userId: match.loserId,
+                teamId: input.teamId,
+              },
+            });
+          } else {
+            loserTeamUser = teamUser;
+            winnerTeamUser = await ctx.db.teamUser.findFirst({
+              where: {
+                userId: match.winnerId,
+                teamId: input.teamId,
+              },
+            });
+          }
+
+          if (!winnerTeamUser) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Winner team user not found",
+            });
+          }
+
+          if (!loserTeamUser) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Winner team user not found",
+            });
+          }
+
+          return {
+            match,
+            winnerTeamUser,
+            loserTeamUser,
+          };
+        }),
+      );
+
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (leagueMatchesWithProfiles.length > input.limit) {
+        const nextItem = leagueMatchesWithProfiles.pop(); // return the last item from the array
+        nextCursor = nextItem?.match.id;
+      }
+
+      return { leagueMatchesWithProfiles, nextCursor };
     }),
 });

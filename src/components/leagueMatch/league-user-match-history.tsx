@@ -3,12 +3,14 @@
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { filterMatches } from "./league-match-util";
 import LeagueUserRivals from "../leagueUser/league-user-rivals";
 import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 import LoadingSpinner from "../loading";
+import AnimationOnScroll from "./animation-on-scroll";
+import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 
 export default function LeagueUserMatchHistory({
   leagueUserId,
@@ -17,6 +19,8 @@ export default function LeagueUserMatchHistory({
   leagueUserId: string;
   searchQuery: string;
 }) {
+  const [listToShow, setListToShow] = useState<LeagueMatchWithProfiles[]>([]);
+  const [, setPage] = useState(0);
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const { data: leagueUserData, isLoading: leagueUserIsLoading } =
@@ -24,17 +28,35 @@ export default function LeagueUserMatchHistory({
       leagueUserId,
       teamId,
     });
-  const { data, isLoading } = api.leagueMatch.getAllByLeagueUserId.useQuery({
-    leagueUserId,
-    leagueId,
-    teamId,
-  });
+  const { data, isLoading, fetchNextPage } =
+    api.leagueMatch.getAllInfiniteByLeagueUserId.useInfiniteQuery(
+      {
+        limit: 10,
+        leagueUserId,
+        leagueId,
+        teamId,
+      },
+      { getNextPageParam: (lastPage) => lastPage.nextCursor },
+    );
 
   if (isLoading || leagueUserIsLoading) return <LoadingSpinner />;
-  if (!leagueUserData || !data) return null;
+  if (!data || !leagueUserData) return null;
+
+  const handleFetchNextPage = async () => {
+    await fetchNextPage();
+    setPage((prev) => prev + 1);
+
+    setListToShow(() => {
+      const test = data.pages.reduce((prev, curr) => {
+        return [...prev, ...curr.leagueMatchesWithProfiles];
+      }, [] as LeagueMatchWithProfiles[]);
+
+      return Array.from(new Set([...test]));
+    });
+  };
 
   const filteredMatches = filterMatches({
-    matches: data.leagueMatchesWithProfiles,
+    matches: listToShow,
     searchQuery,
     winnerId: leagueUserData.leagueUser.userId,
   });
@@ -56,6 +78,13 @@ export default function LeagueUserMatchHistory({
       <LeagueMatchHistoryByDate
         sortedLeagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}
       />
+      <AnimationOnScroll
+        classNameInView={"p-2 flex justify-center items-center"}
+        classNameNotInView={"p-2 flex justify-center items-center"}
+        functionToCall={handleFetchNextPage}
+      >
+        <LoadingSpinner />
+      </AnimationOnScroll>
     </>
   );
 }
