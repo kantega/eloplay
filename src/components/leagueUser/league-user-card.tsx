@@ -43,7 +43,7 @@ export default function LeagueUserCard({
             </div>
             <div className="flex flex-col">
               <p className="text-2xl">{teamUser.gamerTag}</p>
-              <span className="flex flex-row items-end justify-end gap-2">
+              <span className="flex flex-row items-center justify-start gap-2">
                 <p className="text-lg">{leagueUser.elo}</p>
                 <p className="text-sm text-gray-500">ELO</p>
               </span>

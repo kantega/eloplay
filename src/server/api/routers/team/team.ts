@@ -50,7 +50,7 @@ export const teamRouter = createTRPCRouter({
           teamId: team.id,
           userId: userId,
           roleId: adminRole.id,
-          gamerTag: ctx.session.user.name ?? "No name",
+          gamerTag: ctx.session.user.name?.slice(0, 20) ?? "No name",
           image: ctx.session.user.image ?? "https://github.com/shadcn.png",
         },
       });
