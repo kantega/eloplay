@@ -43,7 +43,6 @@ export default function Leaderboard({
                 className="w-14 px-0"
                 onClick={async () => {
                   await router.push("/leagueUser/" + player.leagueUser.id);
-                  router.reload();
                 }}
               >
                 <div className="relative w-10 overflow-hidden rounded-full">
