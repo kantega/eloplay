@@ -38,7 +38,11 @@ export function InnerLeagueSelector() {
   }, []);
 
   useEffect(() => {
-    if (!!data && data.length > 0 && leagueId === "") {
+    if (
+      !!data &&
+      data.length > 0 &&
+      data.find((league) => league.id === leagueId) === undefined
+    ) {
       setLeagueId(!!data[0] ? data[0].id : "");
     }
   }, [data, leagueId, setLeagueId]);
