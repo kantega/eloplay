@@ -65,7 +65,6 @@ export default function Leaderboard({
                 className="px-0 "
                 onClick={async () => {
                   await router.push("/leagueUser/" + player.leagueUser.id);
-                  router.reload();
                 }}
               >
                 <div className="flex flex-col items-start">
@@ -84,7 +83,6 @@ export default function Leaderboard({
                 className="px-0"
                 onClick={async () => {
                   await router.push("/leagueUser/" + player.leagueUser.id);
-                  router.reload();
                 }}
               >
                 {Math.abs(player.leagueUser.streak) > 3 && (
