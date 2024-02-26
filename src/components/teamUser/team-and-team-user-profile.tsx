@@ -19,16 +19,16 @@ export default function TeamAndTeamUserProfile({
 }) {
   return (
     <>
-      <div>
+      <div className="relative">
+        <Badge
+          className="absolute right-0 top-0 h-fit"
+          variant={role === RoleTexts.MEMBER ? "outline" : "default"}
+        >
+          {role}
+        </Badge>
         <HeaderLabel headerText={team.name} label="Team" />
         <div className="flex items-end gap-4">
           <TeamUserName teamUser={teamUser} />
-          <Badge
-            className="h-fit"
-            variant={role === RoleTexts.MEMBER ? "outline" : "default"}
-          >
-            {role}
-          </Badge>
         </div>
       </div>
       <Separator className="bg-background-tertiary" />

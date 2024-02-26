@@ -13,10 +13,10 @@ export default function TeamUserProfile() {
   const { role } = useContext(TeamContext);
 
   return (
-    <div className="flex items-end gap-4">
+    <div className=" relative flex items-end gap-4 pt-2">
       <TeamUserName />
       <Badge
-        className="h-fit"
+        className="absolute right-0 top-0 h-fit"
         variant={role === RoleTexts.MEMBER ? "outline" : "default"}
       >
         {role}
