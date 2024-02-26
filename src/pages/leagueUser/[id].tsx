@@ -1,5 +1,3 @@
-"use client";
-
 import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
 import SpecificLeagueUser from "@/components/leagueUser/specific-league-user";
 import { Input } from "@/components/ui/input";

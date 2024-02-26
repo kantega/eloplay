@@ -1,5 +1,3 @@
-"use client";
-
 import HeaderLabel from "@/components/header-label";
 import JoinTeamForm from "../../../components/team/join-team-form";
 

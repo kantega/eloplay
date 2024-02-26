@@ -1,5 +1,3 @@
-"use client";
-
 import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import LoadingSpinner from "@/components/loading";

@@ -1,5 +1,3 @@
-"use client";
-
 import { api } from "@/utils/api";
 import { useContext, useState } from "react";
 import Leaderboard from "@/components/leaderboard/leaderboard";

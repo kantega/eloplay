@@ -1,4 +1,8 @@
-import { createTRPCRouter, teamMemberProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  teamMemberProcedure,
+} from "@/server/api/trpc";
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -8,6 +12,13 @@ export const teamUserRouter = createTRPCRouter({
     return await ctx.db.teamUser.findFirst({
       where: {
         teamId: input.teamId,
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.teamUser.findMany({
+      where: {
         userId: ctx.session.user.id,
       },
     });

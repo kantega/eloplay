@@ -1,5 +1,3 @@
-"use client";
-
 import HeaderLabel from "@/components/header-label";
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
 import LoadingSpinner from "@/components/loading";

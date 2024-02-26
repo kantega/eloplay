@@ -1,5 +1,3 @@
-"use client";
-
 import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loading";
 import { api } from "@/utils/api";
