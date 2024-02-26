@@ -8,7 +8,7 @@ import { type Team, type TeamUser } from "@prisma/client";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
 
-export default function DataTeamUserProfile({
+export default function TeamAndTeamUserProfile({
   role,
   teamUser,
   team,

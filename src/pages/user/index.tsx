@@ -1,6 +1,6 @@
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
-import DataTeamUserProfile from "@/components/teamUser/data-team-user-profile";
+import TeamAndTeamUserProfile from "@/components/teamUser/team-and-team-user-profile";
 import { api } from "@/utils/api";
 
 export default function UserPage() {
@@ -20,7 +20,7 @@ function AllTeamUserProfilesAndTeams() {
     <ul className="space-y-4 ">
       {data.map((teamUserAndTeam) => {
         return (
-          <DataTeamUserProfile
+          <TeamAndTeamUserProfile
             key={teamUserAndTeam.teamUser.id}
             {...teamUserAndTeam}
           />
