@@ -1,12 +1,10 @@
-"use client";
-
 import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
 import SpecificLeagueUser from "@/components/leagueUser/specific-league-user";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export default function PlayerPage() {
+export default function LeagueUserPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const { id } = router.query;

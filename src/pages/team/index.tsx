@@ -19,7 +19,7 @@ import TeamTransferOwnershipDialog from "@/components/team/team-transfer-ownersh
 import TeamDeleteDialog from "@/components/team/team-delete-dialog";
 import TeamLeaveDialog from "@/components/team/team-leave-dialog";
 
-export default function PlayerPage() {
+export default function TeamPage() {
   return (
     <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
       <TeamInfo />

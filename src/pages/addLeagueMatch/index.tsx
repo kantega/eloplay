@@ -7,7 +7,7 @@ import AddLeagueMatchForm from "@/components/leagueMatch/add-league-match-form";
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
 
-export default function AddMatch() {
+export default function AddMatchPage() {
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const { data, isLoading } = api.league.get.useQuery({

@@ -1,6 +1,4 @@
 import { api } from "@/utils/api";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
@@ -24,9 +22,11 @@ const ChangeTeamNameType = z.object({
 });
 
 export default function ChangeTeamUserName({
+  teamId,
   teamUserName,
   setChangeTeamUserName,
 }: {
+  teamId: string;
   teamUserName: string;
   setChangeTeamUserName: (value: boolean) => void;
 }) {
@@ -38,15 +38,14 @@ export default function ChangeTeamUserName({
   });
 
   const ctx = api.useUtils();
-  const { teamId } = useContext(TeamContext);
   const updateTeamNameMutate = api.teamUser.updateGamerTag.useMutation({
     onSuccess: async () => {
       void ctx.teamUser.get.invalidate({ teamId });
       setChangeTeamUserName(false);
 
       toast({
-        title: "Team user name updated",
-        description: "Team user name updated.",
+        title: "Gamertag updated",
+        description: "Your team gamertag has been updated.",
         variant: "success",
       });
     },

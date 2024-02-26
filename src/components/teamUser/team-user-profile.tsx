@@ -40,6 +40,7 @@ function TeamUserName() {
       )}
       {changeTeamName && (
         <ChangeTeamUserName
+          teamId={teamId}
           teamUserName={data.gamerTag}
           setChangeTeamUserName={setChangeTeamName}
         />

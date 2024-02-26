@@ -1,5 +1,3 @@
-"use client";
-
 import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import LoadingSpinner from "@/components/loading";
@@ -9,7 +7,7 @@ import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useContext, useState } from "react";
 
-export default function PlayerPage() {
+export default function LeagueUserPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
