@@ -60,7 +60,11 @@ export const teamUserRouter = createTRPCRouter({
     });
   }),
   updateGamerTag: teamMemberProcedure
-    .input(z.object({ gamerTag: z.string().min(1) }).extend(teamIdSchema.shape))
+    .input(
+      z
+        .object({ gamerTag: z.string().min(1).max(20) })
+        .extend(teamIdSchema.shape),
+    )
     .mutation(async ({ ctx, input }) => {
       const teamUser = await ctx.db.teamUser.findFirst({
         where: {

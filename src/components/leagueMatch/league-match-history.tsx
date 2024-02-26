@@ -62,13 +62,15 @@ export default function LeagueMatchHistory({
 
   return (
     <>
-      {sortedLeagueMatchesWithProfiles.length === 0 && !isLoading && (
-        <MessageBox>
-          No matches found for {leagueName}.
-          <br />
-          Maybe you should play some games?
-        </MessageBox>
-      )}
+      {sortedLeagueMatchesWithProfiles.length === 0 &&
+        !isLoading &&
+        page > 0 && (
+          <MessageBox>
+            No matches found for {leagueName}.
+            <br />
+            Maybe you should play some games?
+          </MessageBox>
+        )}
       <LeagueMatchHistoryByDate
         sortedLeagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}
       />

@@ -16,9 +16,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingSpinner from "../loading";
 
 const ChangeTeamNameType = z.object({
-  name: z.string().min(1, {
-    message: "Name must be at least 1 characters.",
-  }),
+  name: z
+    .string()
+    .min(1, {
+      message: "Name must be at least 1 characters.",
+    })
+    .max(20, {
+      message: "Name must be at most 20 characters.",
+    }),
 });
 
 export default function ChangeTeamUserName({
