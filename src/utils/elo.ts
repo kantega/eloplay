@@ -15,5 +15,5 @@ export function updateEloRating(
   const newRa: number = Ra + K * (Sa - Ea);
   const newRb: number = Rb + K * (Sb - Eb);
 
-  return [Math.ceil(newRa), Math.ceil(newRb)];
+  return [Math.round(newRa), Math.round(newRb)];
 }
