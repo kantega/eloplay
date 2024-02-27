@@ -10,6 +10,7 @@ import { SessionProvider } from "next-auth/react";
 import { TeamProvider } from "@/contexts/teamContext/team-provider";
 import { LeagueProvider } from "@/contexts/leagueContext/league-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/contexts/authContext/auth-provider";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -17,17 +18,19 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <TooltipProvider>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TeamProvider>
-            <LeagueProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </LeagueProvider>
-          </TeamProvider>
-        </ThemeProvider>
-      </TooltipProvider>
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <AuthProvider>
+          <TooltipProvider>
+            <TeamProvider>
+              <LeagueProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </LeagueProvider>
+            </TeamProvider>
+          </TooltipProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </SessionProvider>
   );
 };

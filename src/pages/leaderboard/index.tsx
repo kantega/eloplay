@@ -8,6 +8,7 @@ import HeaderLabel from "@/components/header-label";
 import ShowInactivePlayersToggle from "@/components/leagueMatch/show-inactive-players-toggle";
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
+import router from "next/router";
 
 export default function LeaderboardPage() {
   const { teamId } = useContext(TeamContext);
