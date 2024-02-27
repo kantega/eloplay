@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { SignInOrOutButton } from "./account-dropdown";
+import { LogInButton } from "./account-dropdown";
 import { ContainerScroll } from "./ui/container-scroll-animation";
 import { TextRevealCard } from "./ui/text-reveal-card";
 
@@ -22,7 +22,7 @@ export default function Homepage() {
 function SignInButtonTopRight() {
   return (
     <div className="absolute right-2 top-2 text-4xl font-bold">
-      <SignInOrOutButton />
+      <LogInButton />
     </div>
   );
 }

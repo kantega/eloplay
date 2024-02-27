@@ -34,7 +34,6 @@ import { CreateLeagueMatch } from "@/server/api/routers/leagueMatch/league-match
 import { useContext, useState } from "react";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { useSession } from "next-auth/react";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 import {
@@ -46,9 +45,10 @@ import ShowInactivePlayersToggle from "./show-inactive-players-toggle";
 import LoadingSpinner from "../loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import HeaderLabel from "../header-label";
+import { useUserId } from "@/contexts/authContext/auth-provider";
 
 export default function AddLeagueMatchForm() {
-  const { data: sessionData } = useSession();
+  const userId = useUserId();
   const { teamId } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
   const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
@@ -68,8 +68,8 @@ export default function AddLeagueMatchForm() {
   const form = useForm<z.infer<typeof CreateLeagueMatch>>({
     resolver: zodResolver(CreateLeagueMatch),
     defaultValues: {
-      winnerId: sessionData?.user.id ?? "",
-      loserId: sessionData?.user.id ?? "",
+      winnerId: userId,
+      loserId: userId,
     },
   });
   const createMatchMutate = api.leagueMatch.create.useMutation({
@@ -77,8 +77,8 @@ export default function AddLeagueMatchForm() {
       const winner = form.getValues("winnerId");
       const loser = form.getValues("loserId");
 
-      if (winner !== sessionData?.user.id) recentOpponents.unshift(winner);
-      if (loser !== sessionData?.user.id) recentOpponents.unshift(loser);
+      if (winner !== userId) recentOpponents.unshift(winner);
+      if (loser !== userId) recentOpponents.unshift(loser);
 
       setLocalStorageRecentOpponents(recentOpponents, leagueId);
       setRecentOpponents(getLocalStorageRecentOpponents(leagueId));
@@ -108,12 +108,12 @@ export default function AddLeagueMatchForm() {
     createMatchMutate.mutate({ ...data, teamId, leagueId });
   }
 
-  if (!data || isLoading || !sessionData) return <LoadingSpinner />;
+  if (!data || isLoading) return <LoadingSpinner />;
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,
     showInactivePlayers,
-    sessionData.user.id,
+    userId,
   );
 
   const winnerPlayer = filtedLeagueUsers.find(

@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { TeamSelector } from "@/contexts/teamContext/team-selector";
 import Link from "next/link";
 import { useContext, useState } from "react";
@@ -25,14 +25,12 @@ import { toast } from "./ui/use-toast";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { getProperFormForName } from "./teamUser/team-user-utils";
+import { useUserName } from "@/contexts/authContext/auth-provider";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
   const { teamId } = useContext(TeamContext);
-  const { data: sessionData } = useSession();
   const router = useRouter();
-
-  if (!sessionData) return <SignInOrOutButton />;
 
   return (
     <DropdownMenu open={isOpened} onOpenChange={() => setIsOpened(!isOpened)}>
@@ -108,7 +106,7 @@ export function AccountDropdown() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
-          <SignInOrOutButton />
+          <LogOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -136,22 +134,13 @@ function TeamUserProfileButton() {
 }
 
 function UserProfileButton() {
-  const { data: sessionData } = useSession();
-  if (!sessionData?.user.name) return null;
+  const userName = useUserName();
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" />{" "}
-      {getProperFormForName(sessionData.user.name)}
+      <User className="mr-2 h-6 w-6" /> {getProperFormForName(userName)}
     </>
   );
-}
-
-export function SignInOrOutButton() {
-  const { data: sessionData, status } = useSession();
-
-  if (status === "loading") return null;
-  return sessionData ? <LogOutButton /> : <LogInButton />;
 }
 
 export function LogInButton() {
