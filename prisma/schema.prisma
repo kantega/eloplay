@@ -35,17 +35,21 @@ model Session {
 }
 
 model User {
-    id                String        @id @default(cuid())
-    name              String?
-    email             String?       @unique
-    emailVerified     DateTime?
-    image             String?
-    accounts          Account[]
-    sessions          Session[]
-    TeamUser          TeamUser[]
-    Elo               LeagueUser[]
-    WinnerLeagueMatch LeagueMatch[] @relation("match_winner_id")
-    LoserLeagueMatch  LeagueMatch[] @relation("match_loser_id")
+    id                   String                 @id @default(cuid())
+    name                 String?
+    email                String?                @unique
+    emailVerified        DateTime?
+    image                String?
+    accounts             Account[]
+    sessions             Session[]
+    TeamUser             TeamUser[]
+    Elo                  LeagueUser[]
+    WinnerLeagueMatch    LeagueMatch[]          @relation("match_winner_id")
+    LoserLeagueMatch     LeagueMatch[]          @relation("match_loser_id")
+    SwissTournament      SwissTournament[]
+    User1TournamentMatch SwissTournamentMatch[] @relation("tournament_match_user1_id")
+    User2TournamentMatch SwissTournamentMatch[] @relation("tournament_match_user2_id")
+    SwissTournamentUser  SwissTournamentUser[]
 }
 
 model VerificationToken {
@@ -67,22 +71,25 @@ model Role {
 }
 
 model Team {
-    id              String        @id @default(cuid())
-    name            String
-    image           String?
-    description     String?
-    password        String?
-    createdAt       DateTime      @default(now())
-    adminRoleId     String        @unique
-    moderatorRoleId String        @unique
-    memberRoleId    String        @unique
-    RoleAdmin       Role          @relation("team_role_adminId", fields: [adminRoleId], references: [id])
-    RoleModerator   Role          @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
-    RoleMember      Role          @relation("team_role_memberId", fields: [memberRoleId], references: [id])
-    League          League[]
-    TeamUser        TeamUser[]
-    LeagueUser      LeagueUser[]
-    LeagueMatch     LeagueMatch[]
+    id                   String                 @id @default(cuid())
+    name                 String
+    image                String?
+    description          String?
+    password             String?
+    createdAt            DateTime               @default(now())
+    adminRoleId          String                 @unique
+    moderatorRoleId      String                 @unique
+    memberRoleId         String                 @unique
+    RoleAdmin            Role                   @relation("team_role_adminId", fields: [adminRoleId], references: [id])
+    RoleModerator        Role                   @relation("team_role_moderatorId", fields: [moderatorRoleId], references: [id])
+    RoleMember           Role                   @relation("team_role_memberId", fields: [memberRoleId], references: [id])
+    League               League[]
+    TeamUser             TeamUser[]
+    LeagueUser           LeagueUser[]
+    LeagueMatch          LeagueMatch[]
+    SwissTournament      SwissTournament[]
+    SwissTournamentUser  SwissTournamentUser[]
+    SwissTournamentMatch SwissTournamentMatch[]
 }
 
 model TeamUser {
@@ -101,15 +108,18 @@ model TeamUser {
 }
 
 model League {
-    id         String        @id @default(cuid())
-    name       String
-    teamId     String
-    Team       Team          @relation(fields: [teamId], references: [id])
-    LeagueUser LeagueUser[]
-    matchCount Int           @default(0)
-    createdAt  DateTime      @default(now())
-    updatedAt  DateTime      @updatedAt
-    Match      LeagueMatch[]
+    id                   String                 @id @default(cuid())
+    name                 String
+    teamId               String
+    Team                 Team                   @relation(fields: [teamId], references: [id])
+    LeagueUser           LeagueUser[]
+    matchCount           Int                    @default(0)
+    createdAt            DateTime               @default(now())
+    updatedAt            DateTime               @updatedAt
+    Match                LeagueMatch[]
+    SwissTournament      SwissTournament[]
+    SwissTournamentUser  SwissTournamentUser[]
+    SwissTournamentMatch SwissTournamentMatch[]
 
     @@unique([teamId, name])
 }
@@ -150,4 +160,79 @@ model LeagueMatch {
 
     @@index([winnerId])
     @@index([loserId])
+}
+
+model SwissTournament {
+    id           String  @id @default(cuid())
+    name         String
+    description  String? @default("No description")
+    image        String? @default("")
+    roundLimit   Int     @default(1)
+    currentRound Int     @default(0)
+
+    Match    SwissTournamentMatch[]
+    userId   String
+    user     User                   @relation(fields: [userId], references: [id])
+    leageuId String
+    league   League                 @relation(fields: [leageuId], references: [id])
+    teamId   String
+    team     Team                   @relation(fields: [teamId], references: [id])
+
+    createdAt           DateTime              @default(now())
+    updatedAt           DateTime              @updatedAt
+    SwissTournamentUser SwissTournamentUser[]
+}
+
+model SwissTournamentUser {
+    id                String          @id @default(cuid())
+    userId            String
+    user              User            @relation(fields: [userId], references: [id])
+    swissTournamentId String
+    swissTournament   SwissTournament @relation(fields: [swissTournamentId], references: [id])
+    leagueId          String
+    league            League          @relation(fields: [leagueId], references: [id])
+    teamId            String
+    team              Team            @relation(fields: [teamId], references: [id])
+
+    placement Int @default(0)
+    score     Int @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, swissTournamentId])
+}
+
+enum MatchStatus {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+}
+
+model SwissTournamentMatch {
+    id     String      @id @default(cuid())
+    status MatchStatus @default(PENDING)
+
+    round   Int
+    userId1 String
+    userId2 String
+    User1   User   @relation("tournament_match_user1_id", fields: [userId1], references: [id])
+    User2   User   @relation("tournament_match_user2_id", fields: [userId2], references: [id])
+
+    preWinnerElo Int?
+    preLoserElo  Int?
+    winnerId     String?
+
+    leagueId     String
+    league       League          @relation(fields: [leagueId], references: [id])
+    teamId       String
+    team         Team            @relation(fields: [teamId], references: [id])
+    tournamentId String
+    tournament   SwissTournament @relation(fields: [tournamentId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId1])
+    @@index([userId2])
 }

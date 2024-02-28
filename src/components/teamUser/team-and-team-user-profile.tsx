@@ -2,21 +2,18 @@ import ChangeTeamUserName from "./change-team-user-name";
 import { Button } from "../ui/button";
 import { PencilLine, X } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
+import { RoleTexts } from "@/server/types/roleTypes";
 import HeaderLabel from "../header-label";
-import { type Team, type TeamUser } from "@prisma/client";
+import { type TeamUser } from "@prisma/client";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
+import { type TeamUserTeamAndRole } from "./team-user-types";
 
 export default function TeamAndTeamUserProfile({
   role,
   teamUser,
   team,
-}: {
-  role: RoleText;
-  teamUser: TeamUser;
-  team: Team;
-}) {
+}: TeamUserTeamAndRole) {
   return (
     <>
       <div className="relative">
