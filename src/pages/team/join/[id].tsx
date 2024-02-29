@@ -46,7 +46,9 @@ function JoinTeamByInviteLink({ id }: { id: string }) {
       });
       setTeamId(data.id);
       setRequestStatus(RequestStatuses.SUCCESS);
-      void router.push("/leaderboard").then(() => router.reload());
+      setTimeout(() => {
+        void router.push("/leaderboard").then(() => router.reload());
+      }, 2000);
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors;
