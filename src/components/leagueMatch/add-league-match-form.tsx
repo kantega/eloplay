@@ -340,7 +340,7 @@ function PickOpponent({
           }}
         />
         <MinorHeaderLabel headerText="Members" />
-        <div className="flex h-[27vh] w-full flex-col gap-1 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
+        <div className="flex h-[55dvh] w-full flex-col gap-1 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
           {sortedMembers.map((member) => (
             <Button
               variant="outline"
