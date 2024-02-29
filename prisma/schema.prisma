@@ -167,14 +167,15 @@ model SwissTournament {
     name         String
     description  String? @default("No description")
     image        String? @default("")
-    roundLimit   Int     @default(1)
+    isOpen       Boolean
+    roundLimit   Int
     currentRound Int     @default(0)
 
     Match    SwissTournamentMatch[]
     userId   String
     user     User                   @relation(fields: [userId], references: [id])
-    leageuId String
-    league   League                 @relation(fields: [leageuId], references: [id])
+    leagueId String
+    league   League                 @relation(fields: [leagueId], references: [id])
     teamId   String
     team     Team                   @relation(fields: [teamId], references: [id])
 

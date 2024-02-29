@@ -4,6 +4,7 @@ import { leagueRouter } from "./routers/league/league";
 import { teamUserRouter } from "./routers/teamUser";
 import { leagueUserRouter } from "./routers/leagueUser";
 import { leagueMatchRouter } from "./routers/leagueMatch/league-match";
+import { swissTournamentRouter } from "./routers/swissTournament/swissTournament";
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   teamUser: teamUserRouter,
   leagueUser: leagueUserRouter,
   leagueMatch: leagueMatchRouter,
+  swissTournament: swissTournamentRouter,
 });
 
 // export type definition of API
