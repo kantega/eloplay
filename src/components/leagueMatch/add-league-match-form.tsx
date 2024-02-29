@@ -135,18 +135,6 @@ export default function AddLeagueMatchForm() {
             <ArrowLeftRight />
           </Button>
           <div className="flex w-full items-center justify-center gap-4">
-            {form.watch("winnerId") !== "" && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => {
-                  setWinnerId("");
-                }}
-              >
-                <XCircle className="text-red-500" />
-              </Button>
-            )}
             <PickOpponent
               teamUsers={filtedLeagueUsers}
               title={"Pick winner"}
@@ -162,36 +150,22 @@ export default function AddLeagueMatchForm() {
               </Button>
             </PickOpponent>
           </div>
-          {form.watch("winnerId") !== "" && (
-            <div className="flex w-full items-center justify-center gap-4">
-              {form.watch("loserId") !== "" && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    setLoserId("");
-                  }}
-                >
-                  <XCircle className="text-red-500" />
-                </Button>
-              )}
-              <PickOpponent
-                teamUsers={filtedLeagueUsers}
-                title={"Pick winner"}
-                setPlayerId={setLoserId}
+          <div className="flex w-full items-center justify-center gap-4">
+            <PickOpponent
+              teamUsers={filtedLeagueUsers}
+              title={"Pick winner"}
+              setPlayerId={setLoserId}
+            >
+              <Button
+                type="button"
+                variant="outline"
+                className="flex w-full justify-between"
               >
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex w-full justify-between"
-                >
-                  <p>{loserPlayer?.teamUser.gamerTag ?? "Pick loser"}</p>
-                  <ArrowUpRightFromSquare className="text-gray-700" />
-                </Button>
-              </PickOpponent>
-            </div>
-          )}
+                <p>{loserPlayer?.teamUser.gamerTag ?? "Pick loser"}</p>
+                <ArrowUpRightFromSquare className="text-gray-700" />
+              </Button>
+            </PickOpponent>
+          </div>
           {watchLoserId !== watchWinnerId &&
             watchLoserId !== "" &&
             watchWinnerId !== "" && (
@@ -329,16 +303,29 @@ function PickOpponent({
         <DialogHeader>
           <DialogTitle className="text-2xl text-primary">{title}</DialogTitle>
         </DialogHeader>
-        <Input
-          tabIndex={-1}
-          autoFocus={false}
-          className="sticky top-16 z-10"
-          placeholder="search for opponent..."
-          value={searchQuery}
-          onChange={(value) => {
-            setSearchQuery(value.currentTarget.value);
-          }}
-        />
+        <div className="relative">
+          <Input
+            tabIndex={-1}
+            autoFocus={false}
+            className="sticky top-16 z-10"
+            placeholder="search for opponent..."
+            value={searchQuery}
+            onChange={(value) => {
+              setSearchQuery(value.currentTarget.value);
+            }}
+          />
+          <Button
+            className="absolute right-0 top-0 z-20"
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setSearchQuery("");
+            }}
+          >
+            <XCircle className="text-red-500" />
+          </Button>
+        </div>
         <MinorHeaderLabel headerText="Members" />
         <div className="flex h-[55dvh] w-full flex-col gap-1 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
           {sortedMembers.map((member) => (
