@@ -330,6 +330,7 @@ function PickOpponent({
           <DialogTitle className="text-2xl text-primary">{title}</DialogTitle>
         </DialogHeader>
         <Input
+          tabIndex={-1}
           autoFocus={false}
           className="sticky top-16 z-10"
           placeholder="search for opponent..."
