@@ -316,6 +316,10 @@ function PickOpponent({
 
   const filteredMembers = filterTeamUsers(membersList, searchQuery);
 
+  const sortedMembers = filteredMembers.sort((a, b) =>
+    a.gamerTag.localeCompare(b.gamerTag),
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger className="my-4" asChild>
@@ -326,6 +330,7 @@ function PickOpponent({
           <DialogTitle className="text-2xl text-primary">{title}</DialogTitle>
         </DialogHeader>
         <Input
+          autoFocus={false}
           className="sticky top-16 z-10"
           placeholder="search for opponent..."
           value={searchQuery}
@@ -335,7 +340,7 @@ function PickOpponent({
         />
         <MinorHeaderLabel headerText="Members" />
         <div className="flex h-[27vh] w-full flex-col gap-1 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
-          {filteredMembers.map((member) => (
+          {sortedMembers.map((member) => (
             <Button
               variant="outline"
               key={member.gamerTag}
