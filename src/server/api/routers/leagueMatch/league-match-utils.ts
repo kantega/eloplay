@@ -12,7 +12,7 @@ export function filterTeamUsers(
 ) {
   const letters = searchQuery.split("");
 
-  const filteredMatches = members.filter((member) => {
+  const filteredTeamUsers = members.filter((member) => {
     return letters.reduce(
       (acc, letter) => {
         if (!acc.state) return { state: acc.state, gamerTag: acc.gamerTag };
@@ -29,7 +29,7 @@ export function filterTeamUsers(
     ).state;
   });
 
-  return filteredMatches.reverse();
+  return filteredTeamUsers.reverse();
 }
 
 export const getTime = (date: Date) => {
