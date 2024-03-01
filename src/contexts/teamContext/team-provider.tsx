@@ -76,10 +76,11 @@ export function InnerWrapper({ children }: { children: React.ReactNode }) {
     return <FullPageLoader />;
   }
 
-  const noTeamInDbOrContext =
-    teamId === "" && !isLoading && !!data && data.length === 0;
+  const noTeamInDbOrContext = teamId === "" && !!data && data.length === 0;
+  const notTryingToJoinTeam = router.pathname !== "/team/join/[id]";
+  const tryingToReachTeamPages = router.pathname !== "/";
 
-  if (noTeamInDbOrContext && router.pathname !== "/") {
+  if (noTeamInDbOrContext && notTryingToJoinTeam && tryingToReachTeamPages) {
     void router.push("/");
     return <FullPageLoader />;
   }

@@ -24,6 +24,7 @@ import { CreateSwissTournament } from "@/server/api/routers/swissTournament/swis
 import { Switch } from "../ui/switch";
 import ShowPickedMembers from "./show-picked-members";
 import MessageBox from "../message-box";
+import router from "next/router";
 
 export default function CreateSwissForm() {
   const { leagueId } = useContext(LeagueContext);
@@ -33,12 +34,13 @@ export default function CreateSwissForm() {
     defaultValues: {
       name: "",
       leagueId,
+      teamId,
       isOpen: true,
       participants: [],
     },
   });
   const createSwissTournament = api.swissTournament.create.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       toast({
         title: "Swiss tournament created.",
         description: `Swiss tournament: ${form.getValues("name")}.`,
@@ -46,6 +48,7 @@ export default function CreateSwissForm() {
       });
 
       form.reset();
+      void router.push(`/tournament/swiss/${data.swissTournament.id}`);
     },
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors;
@@ -69,6 +72,8 @@ export default function CreateSwissForm() {
 
   if (isLoading) return <LoadingSpinner />;
   if (!data) return <MessageBox>No team users found</MessageBox>;
+
+  const teamUsers = data.map((user) => user.teamUser);
 
   const contenders = form.watch("participants");
 
@@ -128,7 +133,7 @@ export default function CreateSwissForm() {
             )}
           />
           <ShowPickedMembers
-            members={data}
+            members={teamUsers}
             contenders={contenders}
             setSelected={setSelected}
           />
