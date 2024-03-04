@@ -12,15 +12,19 @@ export default function ShowPickedMembers({
   contenders,
   setSelected,
   showPickMembersDialog = true,
+  isOpen = true,
 }: {
   members: TeamUser[];
   contenders: string[];
   setSelected?: (selected: string) => void;
   showPickMembersDialog?: boolean;
+  isOpen?: boolean;
 }) {
   const filteredMembers = members.filter((teamUser) =>
     contenders.includes(teamUser.userId),
   );
+
+  console.log(isOpen);
 
   return (
     <div>
@@ -49,12 +53,14 @@ export default function ShowPickedMembers({
             <Badge
               key={member.id}
               className={
-                !!setSelected ? "mr-0 flex h-6 gap-2 pr-0" : "flex h-6 gap-2"
+                !!setSelected && isOpen
+                  ? "mr-0 flex h-6 gap-2 pr-0"
+                  : "flex h-6 gap-2"
               }
               variant="secondary"
             >
               {member.gamerTag}
-              {setSelected && (
+              {!!setSelected && isOpen && (
                 <span className="flex h-full items-center justify-center">
                   <Separator
                     orientation="vertical"

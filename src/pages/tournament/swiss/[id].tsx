@@ -1,17 +1,26 @@
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
-import ShowPickedMembers from "@/components/tournaments/show-picked-members";
 import TournamentCard from "@/components/tournaments/tournament-card";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { useUserId } from "@/contexts/authContext/auth-provider";
 import { LeagueContext } from "@/contexts/leagueContext/league-provider";
 import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { userIsModerator } from "@/utils/role";
-import { type TeamUser } from "@prisma/client";
+import {
+  type SwissTournament,
+  type SwissTournamentMatch,
+  type TeamUser,
+} from "@prisma/client";
 import { useRouter } from "next/router";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
+import ShowPickedMembersWithOptions from "../../../components/tournaments/show-selected-members-with-options";
+import { Button } from "@/components/ui/button";
+import { userIsTournamentModerator } from "@/utils/role";
+import { useUserId } from "@/contexts/authContext/auth-provider";
+import { toast } from "@/components/ui/use-toast";
+import {
+  type State,
+  States,
+  TournamentMenu,
+} from "@/components/tournament-menu";
 
 export default function SwissTournamentIdPage() {
   const router = useRouter();
@@ -28,234 +37,160 @@ export default function SwissTournamentIdPage() {
 }
 
 function SwissTournamentPage({ id }: { id: string }) {
-  const { teamId } = useContext(TeamContext);
+  const { teamId, role } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
+  const userId = useUserId();
 
-  const { data: tournamentAndUsers, isLoading } =
-    api.swissTournament.get.useQuery({
-      teamId,
-      leagueId,
-      tournamentId: id,
-    });
+  const { data, isLoading } = api.swissTournament.get.useQuery({
+    teamId,
+    leagueId,
+    tournamentId: id,
+  });
+
+  const startTournament = api.swissTournament.start.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Tournament started!",
+        variant: "success",
+      });
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors;
+
+      toast({
+        title: "Error",
+        description:
+          errorMessage?.title ??
+          errorMessage?.description ??
+          "Something went wrong.",
+        variant: "destructive",
+      });
+    },
+  });
 
   if (isLoading) return <LoadingSpinner />;
-  if (!tournamentAndUsers)
+  if (!data)
     return <MessageBox>We could not find the tournament :( </MessageBox>;
 
-  const teamUsers = tournamentAndUsers.teamUsers.filter(
+  const { matches, teamUsers, tournament } = data;
+
+  const filteredTeamUsers = teamUsers.filter(
     (user): user is TeamUser => user !== null,
   );
 
+  const ownerId = tournament.userId;
+  if (!tournament.isOpen)
+    return (
+      <SwissTournamentLayout
+        tournament={tournament}
+        teamUsers={filteredTeamUsers}
+        matches={matches}
+      />
+    );
+
   return (
     <div className="container relative flex h-full flex-col justify-center gap-8 px-4 py-4">
-      <TournamentCard tournament={tournamentAndUsers.tournament} />
+      <TournamentCard tournament={tournament} />
       <ShowPickedMembersWithOptions
-        teamUsers={teamUsers}
-        tournamentId={tournamentAndUsers.tournament.id}
-        ownerId={tournamentAndUsers.tournament.userId}
+        teamUsers={filteredTeamUsers}
+        tournament={tournament}
+        ownerId={ownerId}
       />
-      <JoinTournamentButton tournamentId={id} />
-      <LeaveTournamentButton tournamentId={id} />
+      {userIsTournamentModerator({ userRole: role, ownerId, userId }) &&
+        tournament.isOpen && (
+          <Button
+            disabled={
+              !(
+                filteredTeamUsers.length > 1 &&
+                filteredTeamUsers.length % 2 === 0
+              ) || startTournament.isLoading
+            }
+            className="hover:bg-background-tertiary"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              startTournament.mutate({
+                teamId,
+                leagueId,
+                tournamentId: id,
+              })
+            }
+          >
+            Start tournament
+          </Button>
+        )}
+
       <p className="p-10"></p>
     </div>
   );
 }
 
-function JoinTournamentButton({ tournamentId }: { tournamentId: string }) {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
-  const ctx = api.useUtils();
-
-  const mutateAsync = api.swissTournament.join.useMutation({
-    onSuccess: async () => {
-      void ctx.swissTournament.get.invalidate({
-        teamId,
-        leagueId,
-        tournamentId,
-      });
-      toast({
-        title: "Success",
-        description: "Welcome, your are part of the tournament!",
-        variant: "success",
-      });
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  return (
-    <Button
-      onClick={() => {
-        mutateAsync.mutate({ teamId, leagueId, tournamentId });
-      }}
-    >
-      Join Tournament
-    </Button>
-  );
-}
-
-function LeaveTournamentButton({ tournamentId }: { tournamentId: string }) {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
-  const ctx = api.useUtils();
-
-  const mutateAsync = api.swissTournament.leave.useMutation({
-    onSuccess: async () => {
-      void ctx.swissTournament.get.invalidate({
-        teamId,
-        leagueId,
-        tournamentId,
-      });
-      toast({
-        title: "Successfully left the tournament!",
-        description: "We will miss you! But you can always join again.",
-        variant: "default",
-      });
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  return (
-    <Button
-      variant="destructive"
-      onClick={() => {
-        mutateAsync.mutate({ teamId, leagueId, tournamentId });
-      }}
-    >
-      Leave Tournament
-    </Button>
-  );
-}
-
-function ShowPickedMembersWithOptions({
-  ownerId,
+function SwissTournamentLayout({
+  tournament,
   teamUsers,
-  tournamentId,
+  matches,
 }: {
-  ownerId: string;
+  tournament: SwissTournament;
   teamUsers: TeamUser[];
-  tournamentId: string;
+  matches: SwissTournamentMatch[];
 }) {
-  const [contenders, setContenders] = useState<string[]>([]);
+  const [state, setState] = useState<State>(States.INFORMATION);
   const { teamId, role } = useContext(TeamContext);
   const { leagueId } = useContext(LeagueContext);
-  const ctx = api.useUtils();
   const userId = useUserId();
+  const ownerId = tournament.userId;
 
-  useMemo(() => {
-    const contendersFiltered = teamUsers.map((user) => user.userId);
-    setContenders(contendersFiltered);
-  }, [teamUsers]);
-
-  const addPlayerMutate = api.swissTournament.addPlayer.useMutation({
-    onSuccess: async () => {
-      void ctx.swissTournament.get.invalidate({
-        teamId,
-        leagueId,
-        tournamentId: ownerId,
-      });
-      toast({
-        title: "Success",
-        description: "Player added to tournament!",
-        variant: "success",
-      });
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const removeMutate = api.swissTournament.removePlayer.useMutation({
-    onSuccess: async () => {
-      void ctx.swissTournament.get.invalidate({
-        teamId,
-        leagueId,
-        tournamentId,
-      });
-      toast({
-        title: "Success",
-        description: "Player removed from tournament!",
-        variant: "success",
-      });
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // addplayer and removeplayer, check if player in contenders to decide function call
-  const setSelected = (newUserId: string) => {
-    console.log("newUserId", newUserId);
-    if (contenders.includes(newUserId))
-      removeMutate.mutate({
-        teamId,
-        leagueId,
-        tournamentId,
-        userId: newUserId,
-      });
-    else
-      addPlayerMutate.mutate({
-        teamId,
-        leagueId,
-        tournamentId,
-        userId: newUserId,
-      });
+  const renderState = () => {
+    switch (state) {
+      case States.INFORMATION:
+        return (
+          <>
+            <TournamentCard tournament={tournament} />
+            <ShowPickedMembersWithOptions
+              teamUsers={teamUsers}
+              tournament={tournament}
+              ownerId={ownerId}
+            />
+          </>
+        );
+      case States.MATCHES:
+        return <SwissTournamentMatches matches={matches} />;
+    }
   };
 
-  if (!userIsModerator(role) || userId !== ownerId)
-    return (
-      <ShowPickedMembers
-        members={teamUsers}
-        contenders={contenders}
-        showPickMembersDialog={false}
+  return (
+    <div className="container relative flex h-full flex-col justify-center gap-8 px-4 py-4">
+      <TournamentMenu
+        currentState={state}
+        setState={setState}
+        states={[States.INFORMATION, States.MATCHES]}
       />
-    );
+      {renderState()}
+      <p className="p-10"></p>
+    </div>
+  );
+}
+
+function SwissTournamentMatches({
+  matches,
+}: {
+  matches: SwissTournamentMatch[];
+}) {
+  const { role } = useContext(TeamContext);
+  const userId = useUserId();
+
+  console.log(role, userId);
 
   return (
-    <ShowPickedMembers
-      members={teamUsers}
-      contenders={contenders}
-      setSelected={setSelected}
-      showPickMembersDialog={false}
-    />
+    <div>
+      {matches.map((match) => {
+        return (
+          <div key={match.id}>
+            {match.status} {match.id} {match.teamId} {match.leagueId}
+          </div>
+        );
+      })}
+    </div>
   );
 }

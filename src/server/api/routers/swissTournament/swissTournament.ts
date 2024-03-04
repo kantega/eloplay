@@ -2,6 +2,7 @@ import {
   createTRPCRouter,
   teamMemberProcedure,
   teamModeratorProcedure,
+  tournamentModeratorProcedure,
 } from "@/server/api/trpc";
 import {
   CreateSwissTournament,
@@ -56,12 +57,12 @@ export const swissTournamentRouter = createTRPCRouter({
   get: teamMemberProcedure
     .input(GetSwissTournament)
     .query(async ({ input, ctx }) => {
-      const { teamId, tournamentId } = input;
-      const userId = ctx.session.user.id;
+      const { teamId, leagueId, tournamentId } = input;
 
       const swissTournament = await ctx.db.swissTournament.findUnique({
         where: {
           teamId,
+          leagueId,
           id: tournamentId,
         },
         include: {
@@ -77,7 +78,6 @@ export const swissTournamentRouter = createTRPCRouter({
         where: {
           swissTournamentId: tournamentId,
           teamId,
-          userId,
         },
       });
 
@@ -96,11 +96,20 @@ export const swissTournamentRouter = createTRPCRouter({
         }),
       );
 
+      const matches = await ctx.db.swissTournamentMatch.findMany({
+        where: {
+          teamId,
+          leagueId,
+          tournamentId,
+        },
+      });
+
       return {
         team: swissTournament.team,
         tournament: swissTournament,
         swissUsers,
         teamUsers,
+        matches,
       };
     }),
 
@@ -156,7 +165,7 @@ export const swissTournamentRouter = createTRPCRouter({
 
       return swissUser;
     }),
-  addPlayer: teamMemberProcedure
+  addPlayer: tournamentModeratorProcedure
     .input(
       GetSwissTournament.extend(
         z.object({
@@ -179,7 +188,7 @@ export const swissTournamentRouter = createTRPCRouter({
       return swissUser;
     }),
 
-  removePlayer: teamModeratorProcedure
+  removePlayer: tournamentModeratorProcedure
     .input(
       GetSwissTournament.extend(
         z.object({
@@ -202,5 +211,100 @@ export const swissTournamentRouter = createTRPCRouter({
       });
 
       return swissUser;
+    }),
+  start: tournamentModeratorProcedure
+    .input(GetSwissTournament)
+    .mutation(async ({ input, ctx }) => {
+      const { teamId, leagueId, tournamentId } = input;
+
+      const swissUsers = await ctx.db.swissTournamentUser.findMany({
+        where: {
+          swissTournamentId: tournamentId,
+          teamId,
+          leagueId,
+        },
+      });
+
+      if (!(swissUsers.length > 1 && swissUsers.length % 2 === 0))
+        throw new Error("Not enough players to start tournament");
+
+      const swissTournament = await ctx.db.swissTournament.update({
+        where: {
+          id: tournamentId,
+          teamId,
+          leagueId,
+        },
+        data: {
+          isOpen: false,
+          currentRound: { increment: 1 },
+        },
+      });
+
+      // first shuffle the array, then sort on score
+      const shuffledUsers = swissUsers.sort(() => Math.random() - 0.5);
+      const sortedUsers = shuffledUsers.sort((a, b) => b.score - a.score);
+
+      // create matches for two and two players
+      const matches = [];
+      for (let i = 0; i < sortedUsers.length; i += 2) {
+        const player1 = sortedUsers[i];
+        const player2 = sortedUsers[i + 1];
+        if (!!sortedUsers && !!player1 && !!player2) {
+          matches.push({
+            teamId,
+            leagueId,
+            tournamentId,
+            userId1: player1.userId,
+            userId2: player2.userId,
+            round: swissTournament.currentRound,
+          });
+        }
+      }
+
+      const swissMatches = await ctx.db.swissTournamentMatch.createMany({
+        data: matches,
+      });
+
+      return { matches: swissMatches };
+    }),
+  registerMatchResult: tournamentModeratorProcedure
+    .input(
+      GetSwissTournament.extend(
+        z.object({
+          matchId: z.string().min(1),
+          winnerId: z.string().min(1),
+        }).shape,
+      ),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { teamId, leagueId, tournamentId, matchId, winnerId } = input;
+
+      const swissMatch = await ctx.db.swissTournamentMatch.update({
+        where: {
+          id: matchId,
+          teamId,
+          leagueId,
+          tournamentId,
+        },
+        data: {
+          winnerId,
+        },
+      });
+
+      const swissUser = await ctx.db.swissTournamentUser.update({
+        where: {
+          userId_swissTournamentId: {
+            userId: winnerId,
+            swissTournamentId: tournamentId,
+          },
+          teamId,
+          leagueId,
+        },
+        data: {
+          score: { increment: 1 },
+        },
+      });
+
+      return { swissMatch, swissUser };
     }),
 });
