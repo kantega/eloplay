@@ -120,7 +120,7 @@ export default function CreateSwissForm() {
                     placeholder="Number of rounds..."
                     {...field}
                     onChange={(event) => {
-                      if (event.target.value === "") return field.onChange(1);
+                      if (event.target.value === "") return field.onChange("");
                       if (+event.target.value < 1) return field.onChange(1);
                       if (+event.target.value > 100) return field.onChange(100);
                       field.onChange(+event.target.value);
