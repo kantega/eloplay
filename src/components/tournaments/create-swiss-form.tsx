@@ -67,12 +67,12 @@ export default function CreateSwissForm() {
     createSwissTournament.mutate({ ...data, teamId });
   }
 
-  const { data, isLoading } = api.teamUser.getAll.useQuery();
+  const { data: teamUsers, isLoading } = api.team.getAllMembers.useQuery({
+    teamId,
+  });
 
   if (isLoading) return <LoadingSpinner />;
-  if (!data) return <MessageBox>No team users found</MessageBox>;
-
-  const teamUsers = data.map((user) => user.teamUser);
+  if (!teamUsers) return <MessageBox>No team users found</MessageBox>;
 
   const contenders = form.watch("participants");
 
