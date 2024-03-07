@@ -19,11 +19,18 @@ export default function TournamentCard({
           <b className="text-primary">{" " + tournament.roundLimit}</b> rounds
         </p>
       )}
-      {!tournament.isOpen && (
+      {!tournament.isOpen && tournament.status !== "COMPLETED" && (
         <p>
           Playing round
           <b className="text-primary">{" " + tournament.currentRound}</b> out of
           <b className="text-primary">{" " + tournament.roundLimit}</b> rounds
+        </p>
+      )}
+      {!tournament.isOpen && tournament.status === "COMPLETED" && (
+        <p>
+          All
+          <b className="text-primary">{" " + tournament.currentRound}</b> rounds
+          have been played!
         </p>
       )}
       <TournamentStatusBadge
