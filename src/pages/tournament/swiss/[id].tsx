@@ -120,6 +120,7 @@ function SwissTournamentLayout({
           <SwissTournamentMatches
             matches={matches}
             teamUsers={teamUsers}
+            swissUsers={swissUsers}
             tournament={tournament}
           />
         );

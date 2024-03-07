@@ -9,7 +9,11 @@ import {
 import { api } from "@/utils/api";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { type TeamUser, type SwissTournamentMatch } from "@prisma/client";
+import {
+  type TeamUser,
+  type SwissTournamentMatch,
+  type SwissTournamentUser,
+} from "@prisma/client";
 import LoadingSpinner from "../loading";
 import MinorHeaderLabel from "../minor-header-label";
 import { SwissMatchCard } from "./swiss-matches";
@@ -19,11 +23,16 @@ export default function RegisterSwissMatchDialog({
   match,
   teamUser1,
   teamUser2,
+  swissUser1,
+  swissUser2,
 }: {
   children: React.ReactNode;
   match: SwissTournamentMatch;
   teamUser1: TeamUser;
   teamUser2: TeamUser;
+
+  swissUser1: SwissTournamentUser;
+  swissUser2: SwissTournamentUser;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [winnerId, setWinnerId] = useState("");
@@ -59,6 +68,8 @@ export default function RegisterSwissMatchDialog({
             match={match}
             teamUser1={teamUser1}
             teamUser2={teamUser2}
+            swissUser1={swissUser1}
+            swissUser2={swissUser2}
           />
           <Button
             variant={teamUser1.userId === winnerId ? "tertiary" : "outline"}

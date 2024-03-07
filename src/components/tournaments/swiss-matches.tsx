@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/pagination";
 // import { api } from "@/utils/api";
 import {
+  type SwissTournamentUser,
   type MatchStatus,
   type SwissTournament,
   type SwissTournamentMatch,
@@ -28,10 +29,12 @@ import RegisterSwissMatchDialog from "./register-swiss-match";
 export default function SwissTournamentMatches({
   matches,
   teamUsers,
+  swissUsers,
   tournament,
 }: {
   matches: SwissTournamentMatch[];
   teamUsers: TeamUser[];
+  swissUsers: SwissTournamentUser[];
   tournament: SwissTournament;
 }) {
   const [round, setRound] = useState(
@@ -47,10 +50,15 @@ export default function SwissTournamentMatches({
 
   return (
     <div className="flex h-full flex-col gap-4">
-      <YourMatch matches={filteredMatches} teamUsers={teamUsers} />
+      <YourMatch
+        matches={filteredMatches}
+        teamUsers={teamUsers}
+        swissUsers={swissUsers}
+      />
       <AllMatches
         matches={filteredMatches}
         teamUsers={teamUsers}
+        swissUsers={swissUsers}
         ownerId={tournament.userId}
       />
       <SwissRoundPagination
@@ -67,26 +75,26 @@ export default function SwissTournamentMatches({
 function YourMatch({
   matches,
   teamUsers,
+  swissUsers,
 }: {
   matches: SwissTournamentMatch[];
+  swissUsers: SwissTournamentUser[];
   teamUsers: TeamUser[];
 }) {
   const userId = useUserId();
 
-  const yourMatch = matches.find((match) => {
+  const match = matches.find((match) => {
     return match.userId1 === userId || match.userId2 === userId;
   });
 
-  if (!yourMatch) return null;
+  if (!match) return null;
 
-  const teamUser1 = teamUsers.find(
-    (teamUser) => teamUser.userId === yourMatch.userId1,
-  );
-  const teamUser2 = teamUsers.find(
-    (teamUser) => teamUser.userId === yourMatch.userId2,
-  );
+  const teamUser1 = teamUsers.find((user) => user.userId === match.userId1);
+  const swissUser1 = swissUsers.find((user) => user.userId === match.userId1);
+  const teamUser2 = teamUsers.find((user) => user.userId === match.userId2);
+  const swissUser2 = swissUsers.find((user) => user.userId === match.userId2);
 
-  if (!teamUser1 || !teamUser2) return null;
+  if (!teamUser1 || !teamUser2 || !swissUser1 || !swissUser2) return null;
 
   return (
     <>
@@ -96,14 +104,18 @@ function YourMatch({
           label="You can click on your match to register a result"
         />
         <RegisterSwissMatchDialog
-          match={yourMatch}
+          match={match}
           teamUser1={teamUser1}
           teamUser2={teamUser2}
+          swissUser1={swissUser1}
+          swissUser2={swissUser2}
         >
           <SwissMatchCard
-            match={yourMatch}
+            match={match}
             teamUser1={teamUser1}
             teamUser2={teamUser2}
+            swissUser1={swissUser1}
+            swissUser2={swissUser2}
           />
         </RegisterSwissMatchDialog>
       </div>
@@ -115,10 +127,12 @@ function YourMatch({
 function AllMatches({
   matches,
   teamUsers,
+  swissUsers,
   ownerId,
 }: {
   matches: SwissTournamentMatch[];
   teamUsers: TeamUser[];
+  swissUsers: SwissTournamentUser[];
   ownerId: string;
 }) {
   const role = useTeamRole();
@@ -136,10 +150,22 @@ function AllMatches({
       <div>
         <MinorHeaderLabel headerText="All matches for this round" />
         {matches.map((match) => {
-          const user1 = teamUsers.find((user) => user.userId === match.userId1);
-          const user2 = teamUsers.find((user) => user.userId === match.userId2);
+          const teamUser1 = teamUsers.find(
+            (user) => user.userId === match.userId1,
+          );
+          const swissUser1 = swissUsers.find(
+            (user) => user.userId === match.userId1,
+          );
+          const teamUser2 = teamUsers.find(
+            (user) => user.userId === match.userId2,
+          );
+          const swissUser2 = swissUsers.find(
+            (user) => user.userId === match.userId2,
+          );
 
-          const usersExist = user1 && user2;
+          const usersExist =
+            !!teamUser1 && !!teamUser2 && !!swissUser1 && !!swissUser2;
+
           const isModerator = userIsTournamentModerator({
             userId,
             ownerId,
@@ -151,14 +177,18 @@ function AllMatches({
             return (
               <RegisterSwissMatchDialog
                 match={match}
-                teamUser1={user1}
-                teamUser2={user2}
+                teamUser1={teamUser1}
+                teamUser2={teamUser2}
+                swissUser1={swissUser1}
+                swissUser2={swissUser2}
               >
                 <SwissMatchCard
                   key={match.id}
                   match={match}
-                  teamUser1={user1}
-                  teamUser2={user2}
+                  teamUser1={teamUser1}
+                  teamUser2={teamUser2}
+                  swissUser1={swissUser1}
+                  swissUser2={swissUser2}
                 />
               </RegisterSwissMatchDialog>
             );
@@ -167,8 +197,10 @@ function AllMatches({
             <SwissMatchCard
               key={match.id}
               match={match}
-              teamUser1={user1}
-              teamUser2={user2}
+              teamUser1={teamUser1}
+              teamUser2={teamUser2}
+              swissUser1={swissUser1}
+              swissUser2={swissUser2}
             />
           );
         })}
@@ -181,10 +213,14 @@ export function SwissMatchCard({
   match,
   teamUser1,
   teamUser2,
+  swissUser1,
+  swissUser2,
 }: {
   match: SwissTournamentMatch;
   teamUser1: TeamUser;
   teamUser2: TeamUser;
+  swissUser1: SwissTournamentUser;
+  swissUser2: SwissTournamentUser;
 }) {
   return (
     <Card className="relative w-full overflow-hidden">
@@ -197,7 +233,7 @@ export function SwissMatchCard({
                 : "rounded p-2"
             }
           >
-            {teamUser1.gamerTag}
+            {teamUser1.gamerTag + " "}({swissUser1.score})
           </p>
           <p className="text-sm">vs.</p>
           <p
@@ -207,7 +243,7 @@ export function SwissMatchCard({
                 : "rounded p-2"
             }
           >
-            {teamUser2.gamerTag}
+            {teamUser2.gamerTag + " "}({swissUser2.score})
           </p>
         </div>
       </div>
