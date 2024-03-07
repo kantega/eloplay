@@ -25,7 +25,7 @@ export default function PickTournamentToCreate({
             Create Swiss tournament
           </Button>
         </Link>
-        <Link href="/tournament/elimination">
+        {/* <Link href="/tournament/elimination">
           <Button size="sm" variant="secondary">
             Create Elimination tournament
           </Button>
@@ -34,7 +34,7 @@ export default function PickTournamentToCreate({
           <Button size="sm" variant="secondary">
             Create Round Robin tournament
           </Button>
-        </Link>
+        </Link> */}
       </DialogContent>
     </Dialog>
   );
