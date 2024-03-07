@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -13,6 +13,7 @@ import {
 import { useLeagueId, useSetLeagueId } from "./league-provider";
 import { api } from "@/utils/api";
 import { useTeamId } from "../teamContext/team-provider";
+import { type League } from "@prisma/client";
 
 export function LeagueSelector() {
   const teamId = useTeamId();
@@ -29,6 +30,7 @@ export function LeagueSelector() {
 
 export function InnerLeagueSelector() {
   const [isClient, setIsClient] = useState(false);
+  const [sortedData, setSortedData] = useState<League[]>([]);
   const teamId = useTeamId();
   const leagueId = useLeagueId();
   const setLeagueId = useSetLeagueId();
@@ -38,15 +40,19 @@ export function InnerLeagueSelector() {
     setIsClient(true);
   }, []);
 
+  useMemo(() => {
+    if (!data) return;
+    setSortedData(data?.sort((a, b) => a.name.localeCompare(b.name)));
+  }, [data]);
+
   useEffect(() => {
     if (
-      !!data &&
-      data.length > 0 &&
-      data.find((league) => league.id === leagueId) === undefined
+      sortedData.length > 0 &&
+      sortedData.find((league) => league.id === leagueId) === undefined
     ) {
-      setLeagueId(!!data[0] ? data[0].id : "");
+      setLeagueId(!!sortedData[0] ? sortedData[0].id : "");
     }
-  }, [data, leagueId, setLeagueId]);
+  }, [sortedData, leagueId, setLeagueId]);
 
   if (!isClient) return null;
 
