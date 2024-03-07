@@ -41,36 +41,12 @@ export default function SwissTournamentIdPage() {
 
 function SwissTournamentPage({ id }: { id: string }) {
   const teamId = useTeamId();
-  const role = useTeamRole();
   const leagueId = useLeagueId();
-  const userId = useUserId();
 
   const { data, isLoading } = api.swissTournament.get.useQuery({
     teamId,
     leagueId,
     tournamentId: id,
-  });
-
-  const startTournament = api.swissTournament.start.useMutation({
-    onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Tournament started!",
-        variant: "success",
-      });
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
   });
 
   if (isLoading) return <LoadingSpinner />;
@@ -102,29 +78,8 @@ function SwissTournamentPage({ id }: { id: string }) {
         tournament={tournament}
         ownerId={ownerId}
       />
-      {userIsTournamentModerator({ userRole: role, ownerId, userId }) &&
-        tournament.isOpen && (
-          <Button
-            disabled={
-              !(
-                filteredTeamUsers.length > 1 &&
-                filteredTeamUsers.length % 2 === 0
-              ) || startTournament.isLoading
-            }
-            className="hover:bg-background-tertiary"
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              startTournament.mutate({
-                teamId,
-                leagueId,
-                tournamentId: id,
-              })
-            }
-          >
-            Start tournament
-          </Button>
-        )}
+      <StartTournamentButton tournament={tournament} />
+      <DeleteTournamentButton tournament={tournament} />
 
       <p className="p-10"></p>
     </div>
@@ -155,6 +110,7 @@ function SwissTournamentLayout({
               tournament={tournament}
               ownerId={tournament.userId}
             />
+            <DeleteTournamentButton tournament={tournament} />
           </>
         );
       case States.MATCHES:
@@ -182,5 +138,122 @@ function SwissTournamentLayout({
       {renderState()}
       <p className="p-10"></p>
     </div>
+  );
+}
+
+function DeleteTournamentButton({
+  tournament,
+}: {
+  tournament: SwissTournament;
+}) {
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
+  const role = useTeamRole();
+  const userId = useUserId();
+  const router = useRouter();
+
+  const deleteTournament = api.swissTournament.delete.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Tournament deleted!",
+        variant: "success",
+      });
+      void router.push("/tournament");
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors;
+
+      toast({
+        title: "Error",
+        description:
+          errorMessage?.title ??
+          errorMessage?.description ??
+          "Something went wrong.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const { userId: ownerId, id: tournamentId } = tournament;
+
+  return (
+    <>
+      {userIsTournamentModerator({ userRole: role, ownerId, userId }) && (
+        <Button
+          disabled={deleteTournament.isLoading}
+          className="hover:bg-background-tertiary"
+          variant="destructive"
+          size="sm"
+          onClick={() =>
+            deleteTournament.mutate({
+              teamId,
+              leagueId,
+              tournamentId,
+            })
+          }
+        >
+          Delete tournament
+        </Button>
+      )}
+    </>
+  );
+}
+
+function StartTournamentButton({
+  tournament,
+}: {
+  tournament: SwissTournament;
+}) {
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
+  const userId = useUserId();
+  const role = useTeamRole();
+
+  const startTournament = api.swissTournament.start.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Tournament started!",
+        variant: "success",
+      });
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors;
+
+      toast({
+        title: "Error",
+        description:
+          errorMessage?.title ??
+          errorMessage?.description ??
+          "Something went wrong.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const { userId: ownerId, id: tournamentId } = tournament;
+
+  return (
+    <>
+      {userIsTournamentModerator({ userRole: role, ownerId, userId }) &&
+        tournament.isOpen && (
+          <Button
+            disabled={startTournament.isLoading}
+            className="hover:bg-background-tertiary"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              startTournament.mutate({
+                teamId,
+                leagueId,
+                tournamentId,
+              })
+            }
+          >
+            Start tournament
+          </Button>
+        )}
+    </>
   );
 }
