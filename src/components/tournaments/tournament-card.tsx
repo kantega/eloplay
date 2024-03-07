@@ -13,7 +13,19 @@ export default function TournamentCard({
     <Card className="relative p-2">
       <MinorHeaderLabel label="SWISS TOURNAMENT" headerText={tournament.name} />
       <p>{tournament.description}</p>
-      <p>{tournament.roundLimit}</p>
+      {tournament.isOpen && (
+        <p>
+          The tournament goes for
+          <b className="text-primary">{" " + tournament.roundLimit}</b> rounds
+        </p>
+      )}
+      {!tournament.isOpen && (
+        <p>
+          Playing round
+          <b className="text-primary">{" " + tournament.currentRound}</b> out of
+          <b className="text-primary">{" " + tournament.roundLimit}</b> rounds
+        </p>
+      )}
       <TournamentStatusBadge
         status={tournament.status as MatchStatus}
         isOpen={tournament.isOpen}
