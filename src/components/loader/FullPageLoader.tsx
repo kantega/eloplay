@@ -1,5 +1,3 @@
-import Lottie from "lottie-react";
-import codingLoader from "./coding.json";
 import { useEffect, useState } from "react";
 
 export default function FullPageLoader() {
@@ -16,13 +14,13 @@ export default function FullPageLoader() {
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">
-      <Lottie
-        animationData={codingLoader}
-        loop={true}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
+      <div
+        data-before=""
+        className="before:content before:animate-loading-bounce-effect after:animate-loading-step-effect 
+      relative m-0 h-[90px] w-[120px] before:absolute before:bottom-[30px] before:left-[50px] before:z-50 
+      before:h-[30px] before:w-[30px] before:rounded-full before:bg-teal-600 before:content-[attr(data-before)] 
+      after:absolute after:right-0 after:top-0 after:h-[7px] after:w-[45px] after:rounded 
+      after:content-[attr(data-before)]"
       />
     </div>
   );
