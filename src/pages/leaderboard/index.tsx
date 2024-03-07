@@ -1,8 +1,8 @@
 import { api } from "@/utils/api";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import Leaderboard from "@/components/leaderboard/leaderboard";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { getLocalStorageShowInactivePlayers } from "@/components/leagueMatch/league-match-util";
 import HeaderLabel from "@/components/header-label";
 import ShowInactivePlayersToggle from "@/components/leagueMatch/show-inactive-players-toggle";
@@ -10,8 +10,8 @@ import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
 
 export default function LeaderboardPage() {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const [showInactivePlayers, setShowInactivePlayers] = useState(
     getLocalStorageShowInactivePlayers(),
   );

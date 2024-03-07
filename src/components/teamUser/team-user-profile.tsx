@@ -1,6 +1,6 @@
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ChangeTeamUserName from "./change-team-user-name";
 import { Button } from "../ui/button";
 import { PencilLine, X } from "lucide-react";
@@ -10,7 +10,7 @@ import HeaderLabel from "../header-label";
 import LoadingSpinner from "../loading";
 
 export default function TeamUserProfile() {
-  const { role } = useContext(TeamContext);
+  const role = useTeamRole();
 
   return (
     <div className=" relative flex items-end gap-4 pt-2">
@@ -26,7 +26,7 @@ export default function TeamUserProfile() {
 }
 
 function TeamUserName() {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const { data, isLoading } = api.teamUser.get.useQuery({ teamId });
   const [changeTeamName, setChangeTeamName] = useState(false);
 

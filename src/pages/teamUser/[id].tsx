@@ -1,10 +1,9 @@
 import HeaderLabel from "@/components/header-label";
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
 import LoadingSpinner from "@/components/loading";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { useContext } from "react";
 
 export default function TeamUserPage() {
   const router = useRouter();
@@ -20,7 +19,7 @@ export default function TeamUserPage() {
 }
 
 function PersonalLeaguePlayerCards({ id }: { id: string }) {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const { data, isLoading } = api.leagueUser.getAllById.useQuery({
     teamUserId: id,
     teamId,

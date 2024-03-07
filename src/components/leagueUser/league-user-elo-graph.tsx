@@ -1,7 +1,6 @@
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
-import { useContext } from "react";
 import { Tooltip, YAxis, AreaChart, Area, ResponsiveContainer } from "recharts";
 import LoadingSpinner from "../loading";
 
@@ -10,7 +9,7 @@ interface Props {
 }
 
 export default function LeagueUserEloGraph({ leagueUserId }: Props) {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const { data, isLoading } = api.leagueUser.getById.useQuery({
     teamId,
     leagueUserId: leagueUserId,

@@ -1,8 +1,8 @@
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { type League } from "@prisma/client";
 import { PencilLine, X } from "lucide-react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { userIsAdmin, userIsModerator } from "@/utils/role";
 import ChangeLeagueName from "./change-league-name";
@@ -10,7 +10,7 @@ import LeagueDeleteDialog from "./league-delete-dialog";
 import LoadingSpinner from "../loading";
 
 export default function TeamLeagueList() {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const { data, isLoading } = api.league.getAll.useQuery({ teamId });
 
   if (isLoading || !data) return <LoadingSpinner />;
@@ -25,7 +25,7 @@ export default function TeamLeagueList() {
 }
 
 function LeagueItem({ league }: { league: League }) {
-  const { role } = useContext(TeamContext);
+  const role = useTeamRole();
   const [changeLeagueName, setChangeLeagueName] = useState(false);
 
   return (

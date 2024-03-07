@@ -1,19 +1,19 @@
 import { api } from "@/utils/api";
 import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { userIsAdmin } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 import LoadingSpinner from "../loading";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 
 export default function SetRoleUserButton({
   member,
 }: {
   member: { role: RoleText; id: string };
 }) {
-  const { role, teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
+  const role = useTeamRole();
   const ctx = api.useUtils();
   const { mutateAsync, isLoading } = api.team.updateRoleForMember.useMutation({
     onSuccess: async () => {

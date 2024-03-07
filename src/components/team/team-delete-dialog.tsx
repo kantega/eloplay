@@ -10,18 +10,18 @@ import { api } from "@/utils/api";
 import { TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { toast } from "../ui/use-toast";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import LoadingSpinner from "../loading";
 import { useRouter } from "next/router";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function TeamDeleteDialog({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const [value, setValue] = useState("");
   const router = useRouter();
   const deleteLeagueMutate = api.team.delete.useMutation({

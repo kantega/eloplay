@@ -5,8 +5,7 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-// import Auth0Provider from "next-auth/providers/auth0";
-import AzureADProvider from "next-auth/providers/azure-ad";
+// import AzureADB2CProvider from "next-auth/providers/azure-ad-b2c";
 import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "@/env";
@@ -50,16 +49,13 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(db),
   providers: [
-    // Auth0Provider({
-    //   clientId: env.AUTH0_CLIENT_ID,
-    //   clientSecret: env.AUTH0_CLIENT_SECRET,
-    //   issuer: env.AUTH0_ISSUER,
+    // AzureADB2CProvider({
+    //   tenantId: env.AZURE_AD_B2C_TENANT_NAME,
+    //   clientId: env.AZURE_AD_B2C_CLIENT_ID,
+    //   clientSecret: env.AZURE_AD_B2C_CLIENT_SECRET,
+    //   primaryUserFlow: env.AZURE_AD_B2C_PRIMARY_USER_FLOW,
+    //   authorization: { params: { scope: "offline_access openid" } },
     // }),
-    AzureADProvider({
-      clientId: env.AZUREAD_CLIENT_ID,
-      clientSecret: env.AZUREAD_CLIENT_SECRET,
-      tenantId: env.AZUREAD_TENANT_ID,
-    }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,

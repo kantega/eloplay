@@ -8,7 +8,7 @@ import {
 } from "./league-context-util";
 import { RoleTexts, type RoleText } from "@/server/types/roleTypes";
 import { api } from "@/utils/api";
-import { TeamContext } from "../teamContext/team-provider";
+import { useTeamId } from "../teamContext/team-provider";
 
 interface LeagueProps {
   leagueId: string;
@@ -25,7 +25,7 @@ const LeagueContext = createContext<LeagueProps>({
 });
 
 function LeagueProvider({ children }: { children: React.ReactNode }) {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const [leagueId, setLeagueIdState] = useState<string>(
     getLocalStorageLeague(teamId),
   );
@@ -63,3 +63,43 @@ function LeagueProvider({ children }: { children: React.ReactNode }) {
 }
 
 export { LeagueContext, LeagueProvider };
+
+export function useLeague() {
+  const context = useContext(LeagueContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context;
+}
+
+export function useLeagueId() {
+  const context = useContext(LeagueContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.leagueId;
+}
+
+export function useSetLeagueId() {
+  const context = useContext(LeagueContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.setLeagueId;
+}
+
+export function useLeagueRole() {
+  const context = useContext(LeagueContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.role;
+}
+
+export function useSetLeagueRole() {
+  const context = useContext(LeagueContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.setRole;
+}

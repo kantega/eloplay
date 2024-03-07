@@ -11,12 +11,12 @@ import { ArrowBigRightDash, User, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { toast } from "../ui/use-toast";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import LoadingSpinner from "../loading";
 import { type TeamMemberProps } from "@/server/api/routers/leagueMatch/league-match-utils";
 import TeamTransferList from "./team-transfer-list";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function TeamTransferOwnershipDialog({
   teamUsers,
@@ -26,7 +26,7 @@ export default function TeamTransferOwnershipDialog({
   children: React.ReactNode;
 }) {
   const [newAdminUserId, setNewAdminUserId] = useState("123");
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const [transferInputValue, setTransferInputValue] = useState("");
   const ctx = api.useUtils();
   const transferTeamMutate = api.team.transferTeamOwnerShip.useMutation({

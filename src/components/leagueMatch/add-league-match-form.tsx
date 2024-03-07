@@ -4,37 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
 
-import { ArrowLeftRight, Check, ChevronsUpDown } from "lucide-react";
+import { ArrowLeftRight, ArrowUpRightFromSquare, XCircle } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateLeagueMatch } from "@/server/api/routers/leagueMatch/league-match-types";
-import { useContext, useState } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 import {
@@ -45,14 +24,13 @@ import {
 import ShowInactivePlayersToggle from "./show-inactive-players-toggle";
 import LoadingSpinner from "../loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
-import HeaderLabel from "../header-label";
+import { useUserId } from "@/contexts/authContext/auth-provider";
+import MinorHeaderLabel from "../minor-header-label";
 
 export default function AddLeagueMatchForm() {
-  const { data: sessionData } = useSession();
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
-  const [popoverWinnerOpen, setPopoverWinnerOpen] = useState(false);
-  const [popoverLoserOpen, setPopoverLoserOpen] = useState(false);
+  const userId = useUserId();
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const [showInactivePlayers, setShowInactivePlayers] = useState(
     getLocalStorageShowInactivePlayers(),
   );
@@ -68,8 +46,8 @@ export default function AddLeagueMatchForm() {
   const form = useForm<z.infer<typeof CreateLeagueMatch>>({
     resolver: zodResolver(CreateLeagueMatch),
     defaultValues: {
-      winnerId: sessionData?.user.id ?? "",
-      loserId: sessionData?.user.id ?? "",
+      winnerId: userId,
+      loserId: userId,
     },
   });
   const createMatchMutate = api.leagueMatch.create.useMutation({
@@ -77,8 +55,8 @@ export default function AddLeagueMatchForm() {
       const winner = form.getValues("winnerId");
       const loser = form.getValues("loserId");
 
-      if (winner !== sessionData?.user.id) recentOpponents.unshift(winner);
-      if (loser !== sessionData?.user.id) recentOpponents.unshift(loser);
+      if (winner !== userId) recentOpponents.unshift(winner);
+      if (loser !== userId) recentOpponents.unshift(loser);
 
       setLocalStorageRecentOpponents(recentOpponents, leagueId);
       setRecentOpponents(getLocalStorageRecentOpponents(leagueId));
@@ -108,12 +86,12 @@ export default function AddLeagueMatchForm() {
     createMatchMutate.mutate({ ...data, teamId, leagueId });
   }
 
-  if (!data || isLoading || !sessionData) return <LoadingSpinner />;
+  if (!data || isLoading) return <LoadingSpinner />;
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,
     showInactivePlayers,
-    sessionData.user.id,
+    userId,
   );
 
   const winnerPlayer = filtedLeagueUsers.find(
@@ -127,7 +105,11 @@ export default function AddLeagueMatchForm() {
   const watchLoserId = form.watch("loserId");
   const watchWinnerId = form.watch("winnerId");
 
-  const setWinnerId = (id: string) => form.setValue("winnerId", id);
+  const setWinnerId = (id: string) => {
+    if (id === form.getValues("loserId")) form.setValue("loserId", "");
+    form.setValue("winnerId", id);
+  };
+
   const setLoserId = (id: string) => form.setValue("loserId", id);
 
   return (
@@ -143,7 +125,7 @@ export default function AddLeagueMatchForm() {
         >
           <Button
             type="button"
-            className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
+            className="absolute right-6 top-28 rotate-90 rounded-full bg-primary p-2 text-black"
             onClick={() => {
               const tempValue = form.getValues("winnerId");
               form.setValue("winnerId", form.getValues("loserId"));
@@ -152,170 +134,40 @@ export default function AddLeagueMatchForm() {
           >
             <ArrowLeftRight />
           </Button>
-          <div className="flex w-full flex-col gap-4">
-            <FormField
-              control={form.control}
-              name="winnerId"
-              render={({ field }) => (
-                <FormItem className="flex w-full flex-col">
-                  <FormLabel>Winner</FormLabel>
-                  <Popover
-                    open={popoverWinnerOpen}
-                    onOpenChange={setPopoverWinnerOpen}
-                  >
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "w-full justify-between",
-                            !field.value && "text-muted-foreground",
-                          )}
-                        >
-                          {field.value
-                            ? filtedLeagueUsers.find(
-                                (player) =>
-                                  player.teamUser.userId === field.value,
-                              )?.teamUser.gamerTag
-                            : "Select player"}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="h-52 p-0">
-                      <Command>
-                        <CommandInput
-                          className="placeholder-primary"
-                          placeholder="Pick winner..."
-                        />
-                        <CommandEmpty>No player found.</CommandEmpty>
-                        <CommandGroup className="overflow-y-scroll">
-                          {filtedLeagueUsers.map((player) => (
-                            <CommandItem
-                              value={player.teamUser.gamerTag}
-                              key={player.teamUser.userId}
-                              onSelect={() => {
-                                if (
-                                  player.teamUser.userId ===
-                                  form.getValues("loserId")
-                                )
-                                  form.setValue("loserId", "");
-
-                                form.setValue(
-                                  "loserId",
-                                  form.getValues("loserId"),
-                                );
-                                form.setValue(
-                                  "winnerId",
-                                  player.teamUser.userId,
-                                );
-                                setPopoverWinnerOpen(false);
-                                if (form.getValues("loserId") === "")
-                                  setPopoverLoserOpen(true);
-                              }}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  player.teamUser.userId === field.value
-                                    ? "opacity-100"
-                                    : "opacity-0",
-                                )}
-                              />
-                              {player.teamUser.gamerTag}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="flex w-full flex-col">
+            <Label>Winner</Label>
+            <PickOpponent
+              teamUsers={filtedLeagueUsers}
+              title={"Pick winner"}
+              setPlayerId={setWinnerId}
+            >
+              <Button
+                variant="outline"
+                className="flex w-full justify-between"
+                type="button"
+              >
+                <p>{winnerPlayer?.teamUser.gamerTag ?? "Pick winner"}</p>
+                <ArrowUpRightFromSquare className="text-gray-700" />
+              </Button>
+            </PickOpponent>
           </div>
-          {form.watch("winnerId") !== "" && (
-            <div className="flex w-full flex-col">
-              <FormField
-                control={form.control}
-                name="loserId"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Loser</FormLabel>
-                    <Popover
-                      open={popoverLoserOpen}
-                      onOpenChange={setPopoverLoserOpen}
-                    >
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "w-full justify-between",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value
-                              ? filtedLeagueUsers.find(
-                                  (player) =>
-                                    player.teamUser.userId === field.value,
-                                )?.teamUser.gamerTag
-                              : "Select player"}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="h-52 w-[200px] p-0">
-                        <Command>
-                          <CommandInput
-                            className="placeholder-red-600"
-                            placeholder="Velg taper..."
-                          />
-                          <CommandEmpty>No player found.</CommandEmpty>
-                          <CommandGroup className="overflow-y-scroll">
-                            {filtedLeagueUsers.map((player) => {
-                              if (
-                                player.teamUser.userId ===
-                                form.getValues("winnerId")
-                              )
-                                return null;
-
-                              return (
-                                <CommandItem
-                                  value={player.teamUser.gamerTag}
-                                  key={player.teamUser.userId}
-                                  onSelect={() => {
-                                    form.setValue(
-                                      "loserId",
-                                      player.teamUser.userId,
-                                    );
-                                    setPopoverLoserOpen(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      player.teamUser.userId === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                  {player.teamUser.gamerTag}
-                                </CommandItem>
-                              );
-                            })}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
+          <div className="flex w-full flex-col">
+            <Label>Loser</Label>
+            <PickOpponent
+              teamUsers={filtedLeagueUsers}
+              title={"Pick winner"}
+              setPlayerId={setLoserId}
+            >
+              <Button
+                type="button"
+                variant="outline"
+                className="flex w-full justify-between"
+              >
+                <p>{loserPlayer?.teamUser.gamerTag ?? "Pick loser"}</p>
+                <ArrowUpRightFromSquare className="text-gray-700" />
+              </Button>
+            </PickOpponent>
+          </div>
           {watchLoserId !== watchWinnerId &&
             watchLoserId !== "" &&
             watchWinnerId !== "" && (
@@ -373,27 +225,136 @@ function PickFromRecentOpponents({
 
   return (
     <div className="flex flex-col gap-4">
-      <HeaderLabel label="Pick from recent opponents" />
+      <MinorHeaderLabel headerText="Have you played more matches?" />
+      <div className="flex w-full items-center justify-between">
+        <p>Pick as winner</p>
+        <p>Pick as loser</p>
+      </div>
       {recentOpponentsFiltered.reverse().map((user) => (
         <div
           key={user.teamUser.userId}
-          className="relative flex h-10 w-full items-center justify-center rounded-sm bg-gradient-to-r from-primary from-45% to-red-500 to-55%"
+          className="relative flex h-10 w-full items-center justify-center"
         >
           <Button
-            className="absolute left-0 m-0 h-full w-2/5 p-0 hover:bg-transparent"
+            className="absolute left-0 m-0 h-full w-2/5 bg-primary p-0 hover:bg-transparent"
             variant="ghost"
             onClick={() => setWinnerId(user.teamUser.userId)}
-          />
-          <h1 className="z-20 text-2xl text-gray-900">
+          >
             {user.teamUser.gamerTag}
-          </h1>
+          </Button>
+          <h1 className="z-20 text-5xl">|</h1>
           <Button
-            className="absolute right-0 m-0 h-full w-2/5 p-0 hover:bg-transparent"
+            className="absolute right-0 m-0 h-full w-2/5 bg-red-500 p-0 hover:bg-transparent"
             variant="ghost"
             onClick={() => setLoserId(user.teamUser.userId)}
-          />
+          >
+            {user.teamUser.gamerTag}
+          </Button>
         </div>
       ))}
     </div>
+  );
+}
+
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { Input } from "@/components/ui/input";
+import {
+  type TeamMemberProps,
+  filterTeamUsers,
+} from "@/server/api/routers/leagueMatch/league-match-utils";
+import { Label } from "../ui/label";
+
+function PickOpponent({
+  teamUsers,
+  children,
+  title,
+  setPlayerId,
+}: {
+  teamUsers: LeagueUserAndTeamUser[];
+  children: React.ReactNode;
+  title: string;
+  setPlayerId: (id: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const membersList: TeamMemberProps[] = teamUsers.map((teamUser) => ({
+    ...teamUser.teamUser,
+    role: "MEMBER",
+  }));
+
+  const filteredMembers = filterTeamUsers(membersList, searchQuery);
+
+  const sortedMembers = filteredMembers.sort((a, b) =>
+    a.gamerTag.localeCompare(b.gamerTag),
+  );
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger className="my-4" asChild>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="max-w-[95%] rounded-sm sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="text-2xl text-primary">{title}</DialogTitle>
+        </DialogHeader>
+        <div className="relative">
+          <Input
+            tabIndex={-1}
+            autoFocus={false}
+            className="sticky top-16 z-10"
+            placeholder="search for opponent..."
+            value={searchQuery}
+            onChange={(value) => {
+              setSearchQuery(value.currentTarget.value);
+            }}
+          />
+          <Button
+            className="absolute right-0 top-0 z-20"
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setSearchQuery("");
+            }}
+          >
+            <XCircle className="text-red-500" />
+          </Button>
+        </div>
+        <MinorHeaderLabel headerText="Members" />
+        <div className="flex h-[55dvh] w-full flex-col gap-1 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
+          {sortedMembers.map((member) => (
+            <Button
+              variant="outline"
+              key={member.gamerTag}
+              onClick={() => {
+                setPlayerId(member.userId);
+                setIsOpen(!isOpen);
+              }}
+            >
+              {member.gamerTag}
+            </Button>
+          ))}
+        </div>
+        <DialogFooter>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              setIsOpen(!isOpen);
+            }}
+          >
+            Cancel
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

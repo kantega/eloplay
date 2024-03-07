@@ -12,10 +12,10 @@ import { TrashIcon } from "lucide-react";
 import { type League } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { toast } from "../ui/use-toast";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import LoadingSpinner from "../loading";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function LeagueDeleteDialog({
   league,
@@ -24,7 +24,7 @@ export default function LeagueDeleteDialog({
   league: League;
   children: React.ReactNode;
 }) {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const [value, setValue] = useState("");
   const ctx = api.useUtils();
   const deleteLeagueMutate = api.league.delete.useMutation({

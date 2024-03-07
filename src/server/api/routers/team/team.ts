@@ -206,6 +206,18 @@ export const teamRouter = createTRPCRouter({
     return filtedTeams;
   }),
 
+  getAllMembers: teamMemberProcedure
+    .input(teamIdSchema)
+    .query(async ({ ctx, input }) => {
+      const teamUsers = await ctx.db.teamUser.findMany({
+        where: {
+          teamId: input.teamId,
+        },
+      });
+
+      return teamUsers;
+    }),
+
   getRoleByUserId: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {

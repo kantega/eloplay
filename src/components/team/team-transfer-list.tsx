@@ -7,9 +7,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
-import { useSession } from "next-auth/react";
-import LoadingSpinner from "../loading";
 import { Button } from "../ui/button";
+import { useUserId } from "@/contexts/authContext/auth-provider";
 
 export default function TeamTransferList({
   teamUsers,
@@ -20,11 +19,8 @@ export default function TeamTransferList({
   newAdminUserId: string;
   setNewAdminUserId: (newAdminUserId: string) => void;
 }) {
-  const { data: sessionData, status } = useSession();
+  const userId = useUserId();
   const [searchQuery, setSearchQuery] = useState("");
-
-  if (status === "loading") return <LoadingSpinner />;
-  if (!sessionData) return null;
 
   const filteredTeamUsers = filterTeamUsers(teamUsers, searchQuery);
 
@@ -33,7 +29,7 @@ export default function TeamTransferList({
   );
 
   const removeCurrentUser = sortedTeamUsers.filter(
-    (teamUser) => teamUser.userId !== sessionData.user.id,
+    (teamUser) => teamUser.userId !== userId,
   );
 
   if (removeCurrentUser.length === 0) {

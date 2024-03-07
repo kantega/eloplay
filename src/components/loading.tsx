@@ -1,4 +1,17 @@
+import { useEffect, useState } from "react";
+
 export default function LoadingSpinner({ size }: { size?: number }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShow(true);
+    }, 200);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  if (!show) return null;
+
   return (
     <div role="status">
       <svg

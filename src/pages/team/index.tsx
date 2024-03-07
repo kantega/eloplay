@@ -1,7 +1,5 @@
 import LoadingSpinner from "@/components/loading";
 import { api } from "@/utils/api";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import TeamMemberList from "@/components/team/team-member-list";
 import TeamLeagueList from "@/components/league/team-league-list";
 import TeamName from "@/components/team/team-name";
@@ -18,6 +16,7 @@ import {
 import TeamTransferOwnershipDialog from "@/components/team/team-transfer-ownership-dialog";
 import TeamDeleteDialog from "@/components/team/team-delete-dialog";
 import TeamLeaveDialog from "@/components/team/team-leave-dialog";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 
 export default function TeamPage() {
   return (
@@ -28,7 +27,8 @@ export default function TeamPage() {
 }
 
 function TeamInfo() {
-  const { teamId, role } = useContext(TeamContext);
+  const teamId = useTeamId();
+  const role = useTeamRole();
   const { data, isLoading } = api.team.getById.useQuery({
     teamId,
   });

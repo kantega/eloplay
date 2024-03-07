@@ -2,15 +2,15 @@ import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-h
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import LoadingSpinner from "@/components/loading";
 import { Input } from "@/components/ui/input";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 export default function LeagueUserPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const { data, isLoading } = api.leagueUser.get.useQuery({
     leagueId,
     teamId,

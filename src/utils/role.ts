@@ -15,3 +15,19 @@ export const userIsMember = (userRole: RoleText) => {
     userRole === RoleTexts.MEMBER
   );
 };
+
+export const userIsTournamentModerator = ({
+  userRole,
+  userId,
+  ownerId,
+}: {
+  userRole: RoleText;
+  userId: string;
+  ownerId: string;
+}) => {
+  return (
+    userRole === RoleTexts.ADMIN ||
+    userRole === RoleTexts.MODERATOR ||
+    userId === ownerId
+  );
+};
