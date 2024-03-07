@@ -27,17 +27,22 @@ export default function PickMembers({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const sortedMembers = members.sort((a, b) =>
+    a.gamerTag.localeCompare(b.gamerTag),
+  );
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-[95vw] rounded-sm sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-primary">
             Select members to join tournament
           </DialogTitle>
         </DialogHeader>
-        <ul className="w-full space-y-2">
-          {members.map((teamUser) => {
+        <ul className="h-[50vh] w-full space-y-2 overflow-scroll">
+          {sortedMembers.map((teamUser) => {
             const winner = selected.includes(teamUser.userId);
             return (
               <li
