@@ -2,6 +2,7 @@ import {
   createTRPCRouter,
   teamMemberProcedure,
   teamModeratorProcedure,
+  tournamentMatchModeratorProcedure,
   tournamentModeratorProcedure,
 } from "@/server/api/trpc";
 import {
@@ -269,7 +270,7 @@ export const swissTournamentRouter = createTRPCRouter({
 
       return { matches: swissMatches };
     }),
-  registerMatchResult: tournamentModeratorProcedure
+  registerMatchResult: tournamentMatchModeratorProcedure
     .input(
       GetSwissTournament.extend(
         z.object({
