@@ -6,8 +6,8 @@ import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-histo
 import MinityrStreakSymbol from "../leagueMatch/minityr-streak-symbol";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
-import { useContext, useState } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useState } from "react";
+import { useTeamRole } from "@/contexts/teamContext/team-provider";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { PencilLine } from "lucide-react";
 import UpdateEloLeagueUserForm from "./update-elo-league-user-form";
@@ -107,7 +107,7 @@ function LeagueUserElo({
   elo: number;
   leagueUserId: string;
 }) {
-  const { role } = useContext(TeamContext);
+  const role = useTeamRole();
   const [edit, setEdit] = useState(false);
 
   if (role === RoleTexts.ADMIN && edit)

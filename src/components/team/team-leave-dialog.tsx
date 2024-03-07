@@ -10,20 +10,21 @@ import { api } from "@/utils/api";
 import { LogOutIcon, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { toast } from "../ui/use-toast";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import LoadingSpinner from "../loading";
 import { useRouter } from "next/router";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useSetLeagueId } from "@/contexts/leagueContext/league-provider";
+import { useSetTeamId, useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function TeamLeaveDialog({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { teamId, setTeamId } = useContext(TeamContext);
-  const { setLeagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const setTeamId = useSetTeamId();
+  const setLeagueId = useSetLeagueId();
   const [value, setValue] = useState("");
   const router = useRouter();
   const ctx = api.useUtils();

@@ -1,9 +1,8 @@
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
 import LoadingSpinner from "@/components/loading";
 import TeamUserProfile from "@/components/teamUser/team-user-profile";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { useContext } from "react";
 
 export default function TeamUserPage() {
   return (
@@ -14,7 +13,7 @@ export default function TeamUserPage() {
 }
 
 function PersonalLeaguePlayerCards() {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const { data, isLoading } = api.leagueUser.getAll.useQuery({
     teamId,
   });

@@ -1,5 +1,5 @@
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { useContext, useState } from "react";
+import { useTeamRole } from "@/contexts/teamContext/team-provider";
+import { useState } from "react";
 import ChangeTeamName from "./change-team-name";
 import { userIsAdmin } from "@/utils/role";
 import { Button } from "../ui/button";
@@ -7,7 +7,7 @@ import { PencilLine, X } from "lucide-react";
 import HeaderLabel from "../header-label";
 
 export default function TeamName({ teamName }: { teamName: string }) {
-  const { role } = useContext(TeamContext);
+  const role = useTeamRole();
   const [changeTeamName, setChangeTeamName] = useState(false);
 
   return (

@@ -163,14 +163,21 @@ model LeagueMatch {
     @@index([loserId])
 }
 
+enum MatchStatus {
+    PENDING
+    IN_PROGRESS
+    COMPLETED
+}
+
 model SwissTournament {
-    id           String  @id @default(cuid())
+    id           String      @id @default(cuid())
     name         String
-    description  String? @default("No description")
-    image        String? @default("")
+    description  String?     @default("No description")
+    image        String?     @default("")
     isOpen       Boolean
+    status       MatchStatus @default(PENDING)
     roundLimit   Int
-    currentRound Int     @default(0)
+    currentRound Int         @default(0)
 
     Match    SwissTournamentMatch[]
     userId   String
@@ -203,12 +210,6 @@ model SwissTournamentUser {
     updatedAt DateTime @updatedAt
 
     @@unique([userId, swissTournamentId])
-}
-
-enum MatchStatus {
-    PENDING
-    IN_PROGRESS
-    COMPLETED
 }
 
 model SwissTournamentMatch {

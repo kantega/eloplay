@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loading";
 import { api } from "@/utils/api";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useSetTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function JoinTeamPage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ const RequestStatuses = {
 type RequestStatus = (typeof RequestStatuses)[keyof typeof RequestStatuses];
 
 function JoinTeamByInviteLink({ id }: { id: string }) {
-  const { setTeamId } = useContext(TeamContext);
+  const setTeamId = useSetTeamId();
   const router = useRouter();
   const [sentRequest, setSentRequest] = useState(false);
   const [requestStatus, setRequestStatus] = useState<RequestStatus>(

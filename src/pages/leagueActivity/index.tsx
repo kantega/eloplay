@@ -1,15 +1,14 @@
 import LeagueMatchHistory from "@/components/leagueMatch/league-match-history";
 import { api } from "@/utils/api";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import HeaderLabel from "@/components/header-label";
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function LeagueActivityPage() {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
 
   const { data: leagueData, isLoading: leagueIsLoading } =
     api.league.get.useQuery({ leagueId, teamId });

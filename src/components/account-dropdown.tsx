@@ -19,8 +19,8 @@ import {
 import { signIn, signOut } from "next-auth/react";
 import { TeamSelector } from "@/contexts/teamContext/team-selector";
 import Link from "next/link";
-import { useContext, useState } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useState } from "react";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { toast } from "./ui/use-toast";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
@@ -29,7 +29,7 @@ import { useUserName } from "@/contexts/authContext/auth-provider";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const router = useRouter();
 
   return (
@@ -114,14 +114,14 @@ export function AccountDropdown() {
 }
 
 function ProfileButton() {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
 
   if (teamId === "") return <UserProfileButton />;
   return <TeamUserProfileButton />;
 }
 
 function TeamUserProfileButton() {
-  const { teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
   const { data, isLoading } = api.teamUser.get.useQuery({ teamId });
 
   if (isLoading || !data) return <User className="mr-2 h-6 w-6" />;

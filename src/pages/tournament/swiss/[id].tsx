@@ -1,16 +1,16 @@
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
 import TournamentCard from "@/components/tournaments/tournament-card";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
 import {
+  type SwissTournamentUser,
   type SwissTournament,
   type SwissTournamentMatch,
   type TeamUser,
 } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ShowPickedMembersWithOptions from "../../../components/tournaments/show-selected-members-with-options";
 import { Button } from "@/components/ui/button";
 import { userIsTournamentModerator } from "@/utils/role";
@@ -21,6 +21,9 @@ import {
   States,
   TournamentMenu,
 } from "@/components/tournament-menu";
+import SwissTournamentMatches from "@/components/tournaments/swiss-matches";
+import SwissLeaderboard from "@/components/tournaments/swiss-leaderboard";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 
 export default function SwissTournamentIdPage() {
   const router = useRouter();
@@ -37,8 +40,9 @@ export default function SwissTournamentIdPage() {
 }
 
 function SwissTournamentPage({ id }: { id: string }) {
-  const { teamId, role } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const role = useTeamRole();
+  const leagueId = useLeagueId();
   const userId = useUserId();
 
   const { data, isLoading } = api.swissTournament.get.useQuery({
@@ -73,7 +77,7 @@ function SwissTournamentPage({ id }: { id: string }) {
   if (!data)
     return <MessageBox>We could not find the tournament :( </MessageBox>;
 
-  const { matches, teamUsers, tournament } = data;
+  const { matches, teamUsers, tournament, swissUsers } = data;
 
   const filteredTeamUsers = teamUsers.filter(
     (user): user is TeamUser => user !== null,
@@ -85,6 +89,7 @@ function SwissTournamentPage({ id }: { id: string }) {
       <SwissTournamentLayout
         tournament={tournament}
         teamUsers={filteredTeamUsers}
+        swissUsers={swissUsers}
         matches={matches}
       />
     );
@@ -128,18 +133,16 @@ function SwissTournamentPage({ id }: { id: string }) {
 
 function SwissTournamentLayout({
   tournament,
+  swissUsers,
   teamUsers,
   matches,
 }: {
   tournament: SwissTournament;
+  swissUsers: SwissTournamentUser[];
   teamUsers: TeamUser[];
   matches: SwissTournamentMatch[];
 }) {
   const [state, setState] = useState<State>(States.INFORMATION);
-  const { teamId, role } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
-  const userId = useUserId();
-  const ownerId = tournament.userId;
 
   const renderState = () => {
     switch (state) {
@@ -150,12 +153,22 @@ function SwissTournamentLayout({
             <ShowPickedMembersWithOptions
               teamUsers={teamUsers}
               tournament={tournament}
-              ownerId={ownerId}
+              ownerId={tournament.userId}
             />
           </>
         );
       case States.MATCHES:
-        return <SwissTournamentMatches matches={matches} />;
+        return (
+          <SwissTournamentMatches
+            matches={matches}
+            teamUsers={teamUsers}
+            tournament={tournament}
+          />
+        );
+      case States.LEADERBOARD:
+        return (
+          <SwissLeaderboard swissUsers={swissUsers} teamUsers={teamUsers} />
+        );
     }
   };
 
@@ -164,33 +177,10 @@ function SwissTournamentLayout({
       <TournamentMenu
         currentState={state}
         setState={setState}
-        states={[States.INFORMATION, States.MATCHES]}
+        states={[States.INFORMATION, States.MATCHES, States.LEADERBOARD]}
       />
       {renderState()}
       <p className="p-10"></p>
-    </div>
-  );
-}
-
-function SwissTournamentMatches({
-  matches,
-}: {
-  matches: SwissTournamentMatch[];
-}) {
-  const { role } = useContext(TeamContext);
-  const userId = useUserId();
-
-  console.log(role, userId);
-
-  return (
-    <div>
-      {matches.map((match) => {
-        return (
-          <div key={match.id}>
-            {match.status} {match.id} {match.teamId} {match.leagueId}
-          </div>
-        );
-      })}
     </div>
   );
 }

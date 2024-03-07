@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,13 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LeagueContext } from "./league-provider";
+import { useLeagueId, useSetLeagueId } from "./league-provider";
 import { api } from "@/utils/api";
-import { TeamContext } from "../teamContext/team-provider";
+import { useTeamId } from "../teamContext/team-provider";
 
 export function LeagueSelector() {
-  const { teamId } = useContext(TeamContext);
-  const { setLeagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const setLeagueId = useSetLeagueId();
 
   useEffect(() => {
     if (teamId === "") setLeagueId("");
@@ -29,8 +29,9 @@ export function LeagueSelector() {
 
 export function InnerLeagueSelector() {
   const [isClient, setIsClient] = useState(false);
-  const { teamId } = useContext(TeamContext);
-  const { leagueId, setLeagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
+  const setLeagueId = useSetLeagueId();
   const { data, isLoading } = api.league.getAll.useQuery({ teamId });
 
   useEffect(() => {

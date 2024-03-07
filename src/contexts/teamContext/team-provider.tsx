@@ -87,3 +87,43 @@ export function InnerWrapper({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
+
+export function useTeam() {
+  const context = useContext(TeamContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context;
+}
+
+export function useTeamId() {
+  const context = useContext(TeamContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.teamId;
+}
+
+export function useSetTeamId() {
+  const context = useContext(TeamContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.setTeamId;
+}
+
+export function useTeamRole() {
+  const context = useContext(TeamContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.role;
+}
+
+export function useSetTeamRole() {
+  const context = useContext(TeamContext);
+  if (context === undefined) {
+    throw new Error("useAuthData must be used within a AuthProvider");
+  }
+  return context.setRole;
+}

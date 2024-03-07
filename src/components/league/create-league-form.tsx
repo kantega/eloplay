@@ -14,14 +14,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { userIsModerator } from "@/utils/role";
 import LoadingSpinner from "../loading";
 import { CreateLeague } from "@/server/api/routers/league/league-types";
 
 export default function CreateLeagueForm() {
-  const { role, teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
+  const role = useTeamRole();
   const ctx = api.useUtils();
   const form = useForm<z.infer<typeof CreateLeague>>({
     resolver: zodResolver(CreateLeague),

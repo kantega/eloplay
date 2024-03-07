@@ -1,14 +1,14 @@
 "use client";
 
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 import LoadingSpinner from "../loading";
 import MessageBox from "../message-box";
 import AnimationOnScroll from "./animation-on-scroll";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function LeagueMatchHistory({
   leagueName,
@@ -17,8 +17,8 @@ export default function LeagueMatchHistory({
 }) {
   const [listToShow, setListToShow] = useState<LeagueMatchWithProfiles[]>([]);
   const [page, setPage] = useState(0);
-  const { leagueId } = useContext(LeagueContext);
-  const { teamId } = useContext(TeamContext);
+  const leagueId = useLeagueId();
+  const teamId = useTeamId();
   const { data, isLoading, fetchNextPage } =
     api.leagueMatch.getAllInfinite.useInfiniteQuery(
       {

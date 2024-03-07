@@ -1,6 +1,5 @@
 import { api } from "@/utils/api";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { userIsAdmin } from "@/utils/role";
@@ -39,7 +38,8 @@ export default function ChangeTeamName({
   });
 
   const ctx = api.useUtils();
-  const { role, teamId } = useContext(TeamContext);
+  const teamId = useTeamId();
+  const role = useTeamRole();
   const updateTeamNameMutate = api.team.updateTeamName.useMutation({
     onSuccess: async () => {
       void ctx.team.getById.invalidate({ teamId });

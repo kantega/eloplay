@@ -1,8 +1,8 @@
 import React from "react";
 import { Card } from "../ui/card";
 import MinorHeaderLabel from "../minor-header-label";
-import IsOpenForRegistrationBadge from "./is-open-for-registration-badge";
-import { type SwissTournament } from "@prisma/client";
+import { type MatchStatus, type SwissTournament } from "@prisma/client";
+import TournamentStatusBadge from "./tournament-status-badge";
 
 export default function TournamentCard({
   tournament,
@@ -14,7 +14,10 @@ export default function TournamentCard({
       <MinorHeaderLabel label="SWISS TOURNAMENT" headerText={tournament.name} />
       <p>{tournament.description}</p>
       <p>{tournament.roundLimit}</p>
-      <IsOpenForRegistrationBadge isOpen={tournament.isOpen} />
+      <TournamentStatusBadge
+        status={tournament.status as MatchStatus}
+        isOpen={tournament.isOpen}
+      />
     </Card>
   );
 }

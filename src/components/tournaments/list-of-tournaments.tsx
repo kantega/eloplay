@@ -1,16 +1,15 @@
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
 import { type SwissTournament } from "@prisma/client";
-import { useContext } from "react";
 import Link from "next/link";
 import LoadingSpinner from "../loading";
 import MessageBox from "../message-box";
 import TournamentCard from "./tournament-card";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function ListOfTournaments() {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
 
   const { data, isLoading } = api.swissTournament.getAll.useQuery({
     teamId,

@@ -17,14 +17,13 @@ import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateTeam } from "@/server/api/routers/team/team-types";
 import LoadingSpinner from "../loading";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useSetTeamId } from "@/contexts/teamContext/team-provider";
+import { useSetLeagueId } from "@/contexts/leagueContext/league-provider";
 import { useRouter } from "next/router";
 
 export default function CreateTeamForm() {
-  const { setTeamId } = useContext(TeamContext);
-  const { setLeagueId } = useContext(LeagueContext);
+  const setTeamId = useSetTeamId();
+  const setLeagueId = useSetLeagueId();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof CreateTeam>>({

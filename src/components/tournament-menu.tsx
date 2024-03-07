@@ -9,6 +9,7 @@ import {
 export const States = {
   MATCHES: "MATCHES",
   INFORMATION: "INFORMATION",
+  LEADERBOARD: "LEADERBOARD",
 } as const;
 
 export type State = (typeof States)[keyof typeof States];

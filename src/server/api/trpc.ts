@@ -317,3 +317,76 @@ export const tournamentModeratorProcedure = t.procedure.use(
     });
   },
 );
+
+export const tournamentMatchModeratorProcedure = t.procedure.use(
+  async ({ ctx, rawInput, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const { teamId, tournamentId } = teamIdSchema
+      .extend(z.object({ tournamentId: z.string().min(1) }).shape)
+      .parse(rawInput);
+
+    //! owners should always have tournament moderator rights
+    const tournament = await ctx.db.swissTournament.findUnique({
+      where: {
+        userId: ctx.session.user.id,
+        id: tournamentId,
+      },
+    });
+
+    //! users in match should have tournament match moderator rights
+    const tournamentMatch = await ctx.db.swissTournamentMatch.findUnique({
+      where: {
+        id: tournamentId,
+        OR: [
+          { userId1: ctx.session.user.id },
+          { userId2: ctx.session.user.id },
+        ],
+      },
+    });
+
+    if (!!tournament || !!tournamentMatch)
+      return next({
+        ctx: {
+          // infers the `session` as non-nullable
+          session: { ...ctx.session, user: ctx.session.user },
+        },
+      });
+
+    //! if user is not owner, check if user is a moderator of the team
+    const team = await ctx.db.team.findUnique({
+      where: {
+        id: teamId,
+      },
+    });
+
+    if (!team)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Team not found",
+      });
+
+    const teamUser = await ctx.db.teamUser.findFirst({
+      where: {
+        userId: ctx.session.user.id,
+        teamId: teamId,
+        OR: [{ roleId: team.moderatorRoleId }, { roleId: team.adminRoleId }],
+      },
+    });
+
+    if (!teamUser)
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "TeamUser not found",
+      });
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  },
+);

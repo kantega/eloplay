@@ -1,9 +1,9 @@
 "use client";
 
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { filterMatches } from "./league-match-util";
 import LeagueUserRivals from "../leagueUser/league-user-rivals";
 import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
@@ -21,8 +21,8 @@ export default function LeagueUserMatchHistory({
 }) {
   const [listToShow, setListToShow] = useState<LeagueMatchWithProfiles[]>([]);
   const [, setPage] = useState(0);
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const { data: leagueUserData, isLoading: leagueUserIsLoading } =
     api.leagueUser.getById.useQuery({
       leagueUserId,

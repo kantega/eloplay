@@ -1,18 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { UserPlus } from "lucide-react";
-import { useContext } from "react";
 
 export default function JoinTournamentButton({
   tournamentId,
 }: {
   tournamentId: string;
 }) {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const ctx = api.useUtils();
 
   const mutateAsync = api.swissTournament.join.useMutation({

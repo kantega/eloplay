@@ -1,12 +1,12 @@
 import ShowPickedMembers from "@/components/tournaments/show-picked-members";
 import { toast } from "@/components/ui/use-toast";
 import { useUserId } from "@/contexts/authContext/auth-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { userIsModerator } from "@/utils/role";
 import { type SwissTournament, type TeamUser } from "@prisma/client";
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import JoinTournamentButton from "./join-tournament-button";
 import LeaveTournamentButton from "./leave-tournament-button";
 
@@ -20,8 +20,9 @@ export default function ShowPickedMembersWithOptions({
   tournament: SwissTournament;
 }) {
   const [contenders, setContenders] = useState<string[]>([]);
-  const { teamId, role } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const role = useTeamRole();
+  const leagueId = useLeagueId();
   const ctx = api.useUtils();
   const userId = useUserId();
 

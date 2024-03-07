@@ -1,15 +1,14 @@
 import HeaderLabel from "@/components/header-label";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import AddLeagueMatchForm from "@/components/leagueMatch/add-league-match-form";
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function AddMatchPage() {
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const { data, isLoading } = api.league.get.useQuery({
     teamId,
     leagueId,

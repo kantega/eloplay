@@ -1,4 +1,4 @@
-import { HeartPulse, Medal, PlusCircle } from "lucide-react";
+import { HeartPulse, Medal, NotepadText, PlusCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function NavigationBar() {
@@ -13,6 +13,9 @@ export default function NavigationBar() {
         </Link>
         <Link href={"/leagueActivity"} className="p-4">
           <HeartPulse className="text-primary" size={30} />
+        </Link>
+        <Link href={"/tournament"} className="p-4">
+          <NotepadText className="text-primary" size={30} />
         </Link>
       </div>
     </div>

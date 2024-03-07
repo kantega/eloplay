@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -10,12 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TeamContext } from "./team-provider";
+import { useSetTeamId, useTeamId } from "./team-provider";
 import { api } from "@/utils/api";
 
 export function TeamSelector() {
   const [isClient, setIsClient] = useState(false);
-  const { teamId, setTeamId } = useContext(TeamContext);
+  const teamId = useTeamId();
+  const setTeamId = useSetTeamId();
   const { data, isLoading } = api.team.getAll.useQuery();
 
   useEffect(() => {

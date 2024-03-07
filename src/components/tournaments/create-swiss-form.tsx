@@ -17,18 +17,17 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import LoadingSpinner from "../loading";
-import { useContext } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { CreateSwissTournament } from "@/server/api/routers/swissTournament/swiss-tournament-types";
 import { Switch } from "../ui/switch";
 import ShowPickedMembers from "./show-picked-members";
 import MessageBox from "../message-box";
 import router from "next/router";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 
 export default function CreateSwissForm() {
-  const { leagueId } = useContext(LeagueContext);
-  const { teamId } = useContext(TeamContext);
+  const leagueId = useLeagueId();
+  const teamId = useTeamId();
   const form = useForm<z.infer<typeof CreateSwissTournament>>({
     resolver: zodResolver(CreateSwissTournament),
     defaultValues: {

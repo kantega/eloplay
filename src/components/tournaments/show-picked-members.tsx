@@ -24,8 +24,6 @@ export default function ShowPickedMembers({
     contenders.includes(teamUser.userId),
   );
 
-  console.log(isOpen);
-
   return (
     <div>
       <div className="flex items-center">

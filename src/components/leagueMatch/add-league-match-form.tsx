@@ -11,9 +11,9 @@ import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { CreateLeagueMatch } from "@/server/api/routers/leagueMatch/league-match-types";
-import { useContext, useState } from "react";
-import { TeamContext } from "@/contexts/teamContext/team-provider";
-import { LeagueContext } from "@/contexts/leagueContext/league-provider";
+import { useState } from "react";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 import {
@@ -29,8 +29,8 @@ import MinorHeaderLabel from "../minor-header-label";
 
 export default function AddLeagueMatchForm() {
   const userId = useUserId();
-  const { teamId } = useContext(TeamContext);
-  const { leagueId } = useContext(LeagueContext);
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
   const [showInactivePlayers, setShowInactivePlayers] = useState(
     getLocalStorageShowInactivePlayers(),
   );
@@ -125,7 +125,7 @@ export default function AddLeagueMatchForm() {
         >
           <Button
             type="button"
-            className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
+            className="absolute right-6 top-28 rotate-90 rounded-full bg-primary p-2 text-black"
             onClick={() => {
               const tempValue = form.getValues("winnerId");
               form.setValue("winnerId", form.getValues("loserId"));
@@ -134,7 +134,8 @@ export default function AddLeagueMatchForm() {
           >
             <ArrowLeftRight />
           </Button>
-          <div className="flex w-full items-center justify-center gap-4">
+          <div className="flex w-full flex-col">
+            <Label>Winner</Label>
             <PickOpponent
               teamUsers={filtedLeagueUsers}
               title={"Pick winner"}
@@ -150,7 +151,8 @@ export default function AddLeagueMatchForm() {
               </Button>
             </PickOpponent>
           </div>
-          <div className="flex w-full items-center justify-center gap-4">
+          <div className="flex w-full flex-col">
+            <Label>Loser</Label>
             <PickOpponent
               teamUsers={filtedLeagueUsers}
               title={"Pick winner"}
@@ -268,6 +270,7 @@ import {
   type TeamMemberProps,
   filterTeamUsers,
 } from "@/server/api/routers/leagueMatch/league-match-utils";
+import { Label } from "../ui/label";
 
 function PickOpponent({
   teamUsers,
