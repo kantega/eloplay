@@ -24,6 +24,8 @@ import {
 import SwissTournamentMatches from "@/components/tournaments/swiss-matches";
 import SwissLeaderboard from "@/components/tournaments/swiss-leaderboard";
 import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import SwissDeleteDialog from "@/components/tournaments/swiss-delete-dialog";
+import { Trash2Icon } from "lucide-react";
 
 export default function SwissTournamentIdPage() {
   const router = useRouter();
@@ -146,55 +148,23 @@ function DeleteTournamentButton({
 }: {
   tournament: SwissTournament;
 }) {
-  const teamId = useTeamId();
-  const leagueId = useLeagueId();
   const role = useTeamRole();
   const userId = useUserId();
-  const router = useRouter();
-
-  const deleteTournament = api.swissTournament.delete.useMutation({
-    onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Tournament deleted!",
-        variant: "success",
-      });
-      void router.push("/tournament");
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const { userId: ownerId, id: tournamentId } = tournament;
 
   return (
     <>
       {userIsTournamentModerator({ userRole: role, ownerId, userId }) && (
-        <Button
-          disabled={deleteTournament.isLoading}
-          className="hover:bg-background-tertiary"
-          variant="destructive"
-          size="sm"
-          onClick={() =>
-            deleteTournament.mutate({
-              teamId,
-              leagueId,
-              tournamentId,
-            })
-          }
-        >
-          Delete tournament
-        </Button>
+        <SwissDeleteDialog tournamentId={tournamentId}>
+          <Button
+            className="absolute bottom-0 right-0 w-fit hover:bg-background-tertiary"
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2Icon />
+          </Button>
+        </SwissDeleteDialog>
       )}
     </>
   );
