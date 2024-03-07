@@ -67,6 +67,24 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        loadingBounce: {
+          "0%": { transform: "scale(1, 0.7)" },
+          "40%": { transform: "scale(0.8, 1.2)" },
+          "60%": { transform: "scale(1, 1)" },
+          "100%": { bottom: "140px" },
+        },
+
+        loadingStep: {
+          "0%": {
+            boxShadow:
+              "0 10px 0 rgba(0, 0, 0, 0), 0 10px 0 #f2f2f2, -35px 50px 0 #f2f2f2, -70px 90px 0 #f2f2f2",
+          },
+
+          "100%": {
+            boxShadow:
+              "0 10px 0 #f2f2f2, -35px 50px 0 #f2f2f2, -70px 90px 0 #f2f2f2, -70px 90px 0 rgba(0, 0, 0, 0)",
+          },
+        },
         meteor: {
           "0%": { transform: "rotate(215deg) translateX(0)", opacity: "1" },
           "70%": { opacity: "1" },
@@ -88,6 +106,9 @@ const config = {
         "meteor-effect": "meteor 5s linear infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "loading-bounce-effect":
+          "loadingBounce 0.5s ease-in-out infinite alternate",
+        "loading-step-effect": "loadingStep 1s ease-in-out infinite",
       },
     },
   },
