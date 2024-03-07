@@ -209,6 +209,7 @@ function StartTournamentButton({
   const leagueId = useLeagueId();
   const userId = useUserId();
   const role = useTeamRole();
+  const ctx = api.useUtils();
 
   const startTournament = api.swissTournament.start.useMutation({
     onSuccess: async () => {
@@ -216,6 +217,11 @@ function StartTournamentButton({
         title: "Success",
         description: "Tournament started!",
         variant: "success",
+      });
+      void ctx.swissTournament.get.invalidate({
+        teamId: tournament.teamId,
+        leagueId: tournament.leagueId,
+        tournamentId: tournament.id,
       });
     },
     onError: (e) => {
