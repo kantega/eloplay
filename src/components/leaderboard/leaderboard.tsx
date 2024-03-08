@@ -51,8 +51,19 @@ export default function Leaderboard({
                   await router.push("/leagueUser/" + player.leagueUser.id);
                 }}
               >
-                <div className="flex flex-col items-start">
-                  <p className="text-xl">{player.teamUser.gamerTag}</p>
+                <div className="group flex flex-col items-start">
+                  {/*? EASTER EGG: Losing streak of 10 matches gives the nickname freelo on hover */}
+                  {player.leagueUser.streak <= -10 && (
+                    <>
+                      <p className="text-xl group-hover:hidden">
+                        {player.teamUser.gamerTag}
+                      </p>
+                      <p className="hidden text-xl group-hover:block">FREELO</p>
+                    </>
+                  )}
+                  {player.leagueUser.streak > -10 && (
+                    <p className="text-xl">{player.teamUser.gamerTag}</p>
+                  )}
                   <div className="flex items-center space-x-2">
                     {<MinityrLeagueMatchHistory eloList={eloGainList} />}
                     <p className="text-sm text-gray-500">
