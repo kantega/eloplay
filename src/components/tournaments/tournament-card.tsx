@@ -22,7 +22,8 @@ export default function TournamentCard({
   return (
     <Card className="relative p-2">
       <MinorHeaderLabel label="SWISS TOURNAMENT" headerText={tournament.name} />
-      <p>{tournament.description}</p>
+      <br />
+      {/* <p>{tournament.description}</p> */}
       {tournament.status === "PENDING" && (
         <p>
           Play
