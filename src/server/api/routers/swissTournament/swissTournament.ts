@@ -11,6 +11,7 @@ import {
   GetSwissTournament,
 } from "./swiss-tournament-types";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 export const swissTournamentRouter = createTRPCRouter({
   create: teamModeratorProcedure
@@ -119,14 +120,33 @@ export const swissTournamentRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { teamId, leagueId } = input;
 
-      const swissTournaments = await ctx.db.swissTournament.findMany({
+      const tournaments = await ctx.db.swissTournament.findMany({
         where: {
           teamId,
           leagueId,
         },
       });
 
-      return swissTournaments;
+      const swissProfiles = await ctx.db.swissTournamentUser.findMany({
+        where: {
+          teamId,
+          leagueId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      const teamUser = await ctx.db.teamUser.findUnique({
+        where: {
+          userId_teamId: {
+            teamId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+
+      if (!teamUser) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return { tournaments, swissProfiles, teamUser };
     }),
 
   join: teamMemberProcedure

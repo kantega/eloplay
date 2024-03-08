@@ -1,6 +1,10 @@
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
-import { type SwissTournament } from "@prisma/client";
+import {
+  type TeamUser,
+  type SwissTournament,
+  type SwissTournamentUser,
+} from "@prisma/client";
 import Link from "next/link";
 import LoadingSpinner from "../loading";
 import MessageBox from "../message-box";
@@ -36,8 +40,8 @@ export default function ListOfTournaments() {
 
   useMemo(() => {
     if (!data) return;
-    let newData = data;
-    if (searchQuery !== "") newData = filterTournaments(data, searchQuery);
+    let newData = data.tournaments;
+    if (searchQuery !== "") newData = filterTournaments(newData, searchQuery);
     if (!showCompleted)
       newData = newData.filter((t) => t.status !== "COMPLETED");
     if (!showOpen) newData = newData.filter((t) => !t.isOpen);
@@ -77,18 +81,41 @@ export default function ListOfTournaments() {
       </div>
 
       <ul className="flex flex-col gap-2">
-        {tournaments.map((tournament) => (
-          <TournamentCardLink key={tournament.id} tournament={tournament} />
-        ))}
+        {tournaments.map((tournament) => {
+          const swissUser = data.swissProfiles.find(
+            (s) => s.swissTournamentId === tournament.id,
+          );
+
+          return (
+            <TournamentCardLink
+              key={tournament.id}
+              tournament={tournament}
+              swissUser={swissUser}
+              teamUser={data.teamUser}
+            />
+          );
+        })}
       </ul>
     </>
   );
 }
 
-function TournamentCardLink({ tournament }: { tournament: SwissTournament }) {
+function TournamentCardLink({
+  tournament,
+  swissUser,
+  teamUser,
+}: {
+  tournament: SwissTournament;
+  swissUser?: SwissTournamentUser;
+  teamUser: TeamUser;
+}) {
   return (
     <Link href={`/tournament/swiss/${tournament.id}`}>
-      <TournamentCard tournament={tournament} />
+      <TournamentCard
+        tournament={tournament}
+        swissUser={swissUser}
+        teamUser={teamUser}
+      />
     </Link>
   );
 }
