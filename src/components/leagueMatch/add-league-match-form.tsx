@@ -121,11 +121,11 @@ export default function AddLeagueMatchForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="relative flex h-full w-full flex-col items-center justify-center gap-4 space-y-6"
+          className="relative flex h-full w-full flex-col items-center justify-center space-y-4"
         >
           <Button
             type="button"
-            className="absolute right-6 top-28 rotate-90 rounded-full bg-primary p-2 text-black"
+            className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
             onClick={() => {
               const tempValue = form.getValues("winnerId");
               form.setValue("winnerId", form.getValues("loserId"));

@@ -24,6 +24,8 @@ import {
 import SwissTournamentMatches from "@/components/tournaments/swiss-matches";
 import SwissLeaderboard from "@/components/tournaments/swiss-leaderboard";
 import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import SwissDeleteDialog from "@/components/tournaments/swiss-delete-dialog";
+import { Trash2Icon } from "lucide-react";
 
 export default function SwissTournamentIdPage() {
   const router = useRouter();
@@ -60,18 +62,21 @@ function SwissTournamentPage({ id }: { id: string }) {
   );
 
   const ownerId = tournament.userId;
-  if (!tournament.isOpen)
+  if (tournament.status !== "PENDING")
     return (
-      <SwissTournamentLayout
-        tournament={tournament}
-        teamUsers={filteredTeamUsers}
-        swissUsers={swissUsers}
-        matches={matches}
-      />
+      <>
+        <SwissTournamentLayout
+          tournament={tournament}
+          teamUsers={filteredTeamUsers}
+          swissUsers={swissUsers}
+          matches={matches}
+        />
+        <DeleteTournamentButton tournament={tournament} />
+      </>
     );
 
   return (
-    <div className="container relative flex h-full flex-col justify-center gap-8 px-4 py-4">
+    <div className="relative flex h-full w-full flex-col justify-center gap-8 py-4">
       <TournamentCard tournament={tournament} />
       <ShowPickedMembersWithOptions
         teamUsers={filteredTeamUsers}
@@ -118,6 +123,7 @@ function SwissTournamentLayout({
           <SwissTournamentMatches
             matches={matches}
             teamUsers={teamUsers}
+            swissUsers={swissUsers}
             tournament={tournament}
           />
         );
@@ -129,7 +135,7 @@ function SwissTournamentLayout({
   };
 
   return (
-    <div className="container relative flex h-full flex-col justify-center gap-8 px-4 py-4">
+    <div className="relative flex h-full w-full flex-col justify-center gap-8 py-4">
       <TournamentMenu
         currentState={state}
         setState={setState}
@@ -146,55 +152,23 @@ function DeleteTournamentButton({
 }: {
   tournament: SwissTournament;
 }) {
-  const teamId = useTeamId();
-  const leagueId = useLeagueId();
   const role = useTeamRole();
   const userId = useUserId();
-  const router = useRouter();
-
-  const deleteTournament = api.swissTournament.delete.useMutation({
-    onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Tournament deleted!",
-        variant: "success",
-      });
-      void router.push("/tournament");
-    },
-    onError: (e) => {
-      const errorMessage = e.data?.zodError?.fieldErrors;
-
-      toast({
-        title: "Error",
-        description:
-          errorMessage?.title ??
-          errorMessage?.description ??
-          "Something went wrong.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const { userId: ownerId, id: tournamentId } = tournament;
 
   return (
     <>
       {userIsTournamentModerator({ userRole: role, ownerId, userId }) && (
-        <Button
-          disabled={deleteTournament.isLoading}
-          className="hover:bg-background-tertiary"
-          variant="destructive"
-          size="sm"
-          onClick={() =>
-            deleteTournament.mutate({
-              teamId,
-              leagueId,
-              tournamentId,
-            })
-          }
-        >
-          Delete tournament
-        </Button>
+        <SwissDeleteDialog tournamentId={tournamentId}>
+          <Button
+            className="absolute bottom-0 right-0 w-fit hover:bg-background-tertiary"
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2Icon />
+          </Button>
+        </SwissDeleteDialog>
       )}
     </>
   );
@@ -209,6 +183,7 @@ function StartTournamentButton({
   const leagueId = useLeagueId();
   const userId = useUserId();
   const role = useTeamRole();
+  const ctx = api.useUtils();
 
   const startTournament = api.swissTournament.start.useMutation({
     onSuccess: async () => {
@@ -216,6 +191,11 @@ function StartTournamentButton({
         title: "Success",
         description: "Tournament started!",
         variant: "success",
+      });
+      void ctx.swissTournament.get.invalidate({
+        teamId: tournament.teamId,
+        leagueId: tournament.leagueId,
+        tournamentId: tournament.id,
       });
     },
     onError: (e) => {
@@ -237,7 +217,7 @@ function StartTournamentButton({
   return (
     <>
       {userIsTournamentModerator({ userRole: role, ownerId, userId }) &&
-        tournament.isOpen && (
+        tournament.status === "PENDING" && (
           <Button
             disabled={startTournament.isLoading}
             className="hover:bg-background-tertiary"

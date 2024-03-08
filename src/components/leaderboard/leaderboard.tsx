@@ -1,6 +1,5 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import MinityrLeagueMatchHistory from "../leagueMatch/minityr-league-match-history";
 import MinityrStreakSymbol from "../leagueMatch/minityr-streak-symbol";
@@ -13,6 +12,7 @@ import { PencilLine } from "lucide-react";
 import UpdateEloLeagueUserForm from "./update-elo-league-user-form";
 import TooltipButton from "../ui/text-tooltip";
 import { useUserId } from "@/contexts/authContext/auth-provider";
+import TeamUserImage from "../teamUser/team-user-image";
 
 export default function Leaderboard({
   leagueUsers,
@@ -43,20 +43,7 @@ export default function Leaderboard({
                   await router.push("/leagueUser/" + player.leagueUser.id);
                 }}
               >
-                <div className="relative w-10 overflow-hidden rounded-full">
-                  <p className="absolute top-1 z-30 text-3xl text-primary">
-                    {index + 1}
-                  </p>
-                  <div className="absolute z-20 h-full w-full bg-[#0000004D]" />
-                  <Image
-                    className="rounded-full"
-                    src={player.teamUser.image}
-                    alt="Team user profile image"
-                    width={40}
-                    height={40}
-                    quality={100}
-                  />
-                </div>
+                <TeamUserImage image={player.teamUser.image} index={index} />
               </TableCell>
               <TableCell
                 className="px-0 "
