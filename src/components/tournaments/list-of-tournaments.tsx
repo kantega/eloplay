@@ -91,7 +91,7 @@ export default function ListOfTournaments() {
               key={tournament.id}
               tournament={tournament}
               swissUser={swissUser}
-              teamUser={data.teamUser}
+              teamUser={data.teamUser ?? undefined}
             />
           );
         })}
@@ -107,7 +107,7 @@ function TournamentCardLink({
 }: {
   tournament: SwissTournament;
   swissUser?: SwissTournamentUser;
-  teamUser: TeamUser;
+  teamUser?: TeamUser;
 }) {
   return (
     <Link href={`/tournament/swiss/${tournament.id}`}>

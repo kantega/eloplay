@@ -11,7 +11,6 @@ import {
   GetSwissTournament,
 } from "./swiss-tournament-types";
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 
 export const swissTournamentRouter = createTRPCRouter({
   create: teamModeratorProcedure
@@ -143,8 +142,6 @@ export const swissTournamentRouter = createTRPCRouter({
           },
         },
       });
-
-      if (!teamUser) throw new TRPCError({ code: "NOT_FOUND" });
 
       return { tournaments, swissProfiles, teamUser };
     }),

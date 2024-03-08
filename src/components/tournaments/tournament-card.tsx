@@ -17,7 +17,7 @@ export default function TournamentCard({
 }: {
   tournament: SwissTournament;
   swissUser?: SwissTournamentUser;
-  teamUser: TeamUser;
+  teamUser?: TeamUser;
 }) {
   return (
     <Card className="relative p-2">
@@ -46,7 +46,7 @@ export default function TournamentCard({
         status={tournament.status as MatchStatus}
         isOpen={tournament.isOpen}
       />
-      {swissUser && (
+      {swissUser && teamUser && (
         <div className="absolute bottom-0 right-0 rounded-sm border-2 border-solid border-primary">
           <SwissUserCard teamUser={teamUser} swissUser={swissUser} />
         </div>
