@@ -11,7 +11,7 @@ export default function SwissLeaderboard({
   const sortedSwissUsers = swissUsers.sort((a, b) => b.score - a.score);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-start justify-center">
       {sortedSwissUsers.map((swissUser, index) => {
         const teamUser = teamUsers.find(
           (teamUser) => teamUser.userId === swissUser.userId,

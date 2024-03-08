@@ -20,8 +20,8 @@ export function SwissUserCard({
     <div
       className={
         teamUser.userId === match?.winnerId
-          ? "flex items-center gap-2 rounded border-2 border-primary bg-background-tertiary p-2"
-          : "flex items-center gap-2 rounded p-2"
+          ? "m-auto flex items-center gap-2 rounded border-2 border-primary bg-background-tertiary p-2"
+          : "m-auto flex items-center gap-2 rounded p-2"
       }
     >
       <TeamUserImage image={teamUser.image} index={index} />
