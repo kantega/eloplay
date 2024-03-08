@@ -25,7 +25,7 @@ export default function ListOfTournaments() {
     getLocalStorageToggleValue(keyShowCompleted),
   );
   const [showOpen, setShowOpen] = useState(
-    getLocalStorageToggleValue(keyShowOpen),
+    getLocalStorageToggleValue(keyShowOpen, true),
   );
   const [tournaments, setTournaments] = useState<SwissTournament[]>([]);
 

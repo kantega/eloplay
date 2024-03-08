@@ -28,9 +28,10 @@ export function LocalStorageToggle({
   );
 }
 
-const defaultValue = false;
-
-export const getLocalStorageToggleValue = (key: string) => {
+export const getLocalStorageToggleValue = (
+  key: string,
+  defaultValue = false,
+) => {
   if (typeof window !== "undefined") {
     const value = localStorage.getItem(key);
     if (value === null) return defaultValue;
