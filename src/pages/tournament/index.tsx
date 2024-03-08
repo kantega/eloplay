@@ -14,8 +14,8 @@ export default function TournamentPage() {
       <HeaderLabel label="TOURNAMENT" headerText="Pick Tournament" />
       {userIsModerator(role) && (
         <PickTournamentToCreate>
-          <Button variant="ghost" size="sm" className="absolute right-2 top-2">
-            <PlusCircle className="text-background-tertiary" />
+          <Button variant="ghost" size="sm" className="absolute right-4 top-8">
+            <PlusCircle className=" text-foreground" size={30} />
           </Button>
         </PickTournamentToCreate>
       )}

@@ -5,24 +5,6 @@ import {
   type LeagueMatchWithProfiles,
 } from "../leagueUser/league-user-types";
 
-const localStorageKey = "showInactivePlayers";
-const defaultValue = false;
-
-export const getLocalStorageShowInactivePlayers = () => {
-  if (typeof window !== "undefined") {
-    const value = localStorage.getItem(localStorageKey);
-    if (value === null) return defaultValue;
-    return z.boolean().parse(JSON.parse(value));
-  }
-  return defaultValue;
-};
-
-export const setLocalStorageShowInactivePlayers = (value: boolean) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(localStorageKey, JSON.stringify(value));
-  }
-};
-
 export const getNiceDateString = (date: Date) => {
   return (
     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
