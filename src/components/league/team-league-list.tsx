@@ -16,7 +16,7 @@ export default function TeamLeagueList() {
   if (isLoading || !data) return <LoadingSpinner />;
 
   return (
-    <ul className="flex flex-col justify-center gap-1">
+    <ul className="flex flex-col justify-center gap-2">
       {data.map((league) => (
         <LeagueItem key={league.id} league={league} />
       ))}
@@ -29,20 +29,17 @@ function LeagueItem({ league }: { league: League }) {
   const [changeLeagueName, setChangeLeagueName] = useState(false);
 
   return (
-    <li
-      key={league.id}
-      className=" flex w-full items-center justify-between gap-4"
-    >
+    <li key={league.id} className=" flex w-full">
       <div className="flex w-[100%] justify-between">
         {!changeLeagueName && <h1 className=" text-md">{league.name}</h1>}
-        <span className="flex items-center space-x-2">
-          {changeLeagueName && (
-            <ChangeLeagueName
-              leagueId={league.id}
-              leagueName={league.name}
-              setChangeLeagueName={setChangeLeagueName}
-            />
-          )}
+        {changeLeagueName && (
+          <ChangeLeagueName
+            leagueId={league.id}
+            leagueName={league.name}
+            setChangeLeagueName={setChangeLeagueName}
+          />
+        )}
+        <span className="flex gap-8">
           {userIsModerator(role) && (
             <Button
               className=" aspect-square h-6 w-6"
@@ -53,18 +50,18 @@ function LeagueItem({ league }: { league: League }) {
               {!changeLeagueName ? <PencilLine size={16} /> : <X size={10} />}
             </Button>
           )}
+          {userIsAdmin(role) && !changeLeagueName && (
+            <LeagueDeleteDialog league={league}>
+              <Button
+                className=" aspect-square h-6 w-6"
+                variant="outline"
+                size="icon"
+              >
+                <X size={16} />
+              </Button>
+            </LeagueDeleteDialog>
+          )}
         </span>
-        {userIsAdmin(role) && !changeLeagueName && (
-          <LeagueDeleteDialog league={league}>
-            <Button
-              className=" aspect-square h-6 w-6"
-              variant="outline"
-              size="icon"
-            >
-              <X size={16} />
-            </Button>
-          </LeagueDeleteDialog>
-        )}
       </div>
     </li>
   );

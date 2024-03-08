@@ -76,6 +76,8 @@ function SwissTournamentPage({ id }: { id: string }) {
           teamUsers={filteredTeamUsers}
           swissUsers={swissUsers}
           matches={matches}
+          yourSwissUser={yourSwissUser}
+          yourTeamUser={yourTeamUser}
         />
         <DeleteTournamentButton tournament={tournament} />
       </>
@@ -106,11 +108,15 @@ function SwissTournamentLayout({
   swissUsers,
   teamUsers,
   matches,
+  yourSwissUser,
+  yourTeamUser,
 }: {
   tournament: SwissTournament;
   swissUsers: SwissTournamentUser[];
   teamUsers: TeamUser[];
   matches: SwissTournamentMatch[];
+  yourSwissUser?: SwissTournamentUser;
+  yourTeamUser?: TeamUser;
 }) {
   const [state, setState] = useState<State>(States.INFORMATION);
 
@@ -119,7 +125,11 @@ function SwissTournamentLayout({
       case States.INFORMATION:
         return (
           <>
-            <TournamentCard tournament={tournament} />
+            <TournamentCard
+              tournament={tournament}
+              teamUser={yourTeamUser}
+              swissUser={yourSwissUser}
+            />
             <ShowPickedMembersWithOptions
               teamUsers={teamUsers}
               tournament={tournament}
