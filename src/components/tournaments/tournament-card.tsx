@@ -19,7 +19,6 @@ export default function TournamentCard({
   swissUser?: SwissTournamentUser;
   teamUser?: TeamUser;
 }) {
-  console.log(teamUser, swissUser);
   return (
     <Card className="relative p-2">
       <MinorHeaderLabel label="SWISS TOURNAMENT" headerText={tournament.name} />
