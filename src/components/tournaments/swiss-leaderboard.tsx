@@ -1,5 +1,5 @@
 import { type SwissTournamentUser, type TeamUser } from "@prisma/client";
-import Image from "next/image";
+import TeamUserImage from "../teamUser/team-user-image";
 
 export default function SwissLeaderboard({
   swissUsers,
@@ -20,20 +20,7 @@ export default function SwissLeaderboard({
 
         return (
           <div className="flex gap-4 pl-10" key={swissUser.userId}>
-            <div className="relative w-10 overflow-hidden rounded-full">
-              <p className="absolute top-1 z-30 text-3xl text-primary">
-                {index + 1}
-              </p>
-              <div className="absolute z-20 h-full w-full bg-[#0000004D]" />
-              <Image
-                className="rounded-full"
-                src={teamUser.image}
-                alt="Team user profile image"
-                width={40}
-                height={40}
-                quality={100}
-              />
-            </div>
+            <TeamUserImage image={teamUser.image} index={index} />
             <div className="flex flex-col">
               <p className="text-xl">{teamUser.gamerTag}</p>
               <span className="flex gap-2">
