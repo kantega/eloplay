@@ -3,19 +3,22 @@ import { useState } from "react";
 import Leaderboard from "@/components/leaderboard/leaderboard";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
-import { getLocalStorageShowInactivePlayers } from "@/components/leagueMatch/league-match-util";
 import HeaderLabel from "@/components/header-label";
-import ShowInactivePlayersToggle from "@/components/leagueMatch/show-inactive-players-toggle";
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
+import {
+  LocalStorageToggle,
+  getLocalStorageToggleValue,
+} from "@/components/localstorage-toggle";
 
 export default function LeaderboardPage() {
   const teamId = useTeamId();
   const leagueId = useLeagueId();
+
+  const localKey = leagueId + "showInactivePlayers";
   const [showInactivePlayers, setShowInactivePlayers] = useState(
-    getLocalStorageShowInactivePlayers(),
+    getLocalStorageToggleValue(localKey),
   );
-  // todo: bug cant set value and read value
 
   const { data, isLoading } = api.leagueUser.getAllByLeagueId.useQuery({
     leagueId,
@@ -31,9 +34,11 @@ export default function LeaderboardPage() {
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">
       <HeaderLabel headerText={leagueData.name} label="LEADERBOARD" />
-      <ShowInactivePlayersToggle
-        showInactivePlayers={showInactivePlayers}
-        setShowInactivePlayers={setShowInactivePlayers}
+      <LocalStorageToggle
+        isToggled={showInactivePlayers}
+        setIsToggled={setShowInactivePlayers}
+        localStorageKey={localKey}
+        label="Show inactive players"
       />
       <Leaderboard
         leagueUsers={data.leagueUsersAndTeamUsers}

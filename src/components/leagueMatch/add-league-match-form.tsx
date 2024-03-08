@@ -18,10 +18,8 @@ import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
 import {
   getLocalStorageRecentOpponents,
-  getLocalStorageShowInactivePlayers,
   setLocalStorageRecentOpponents,
 } from "./league-match-util";
-import ShowInactivePlayersToggle from "./show-inactive-players-toggle";
 import LoadingSpinner from "../loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
@@ -31,8 +29,10 @@ export default function AddLeagueMatchForm() {
   const userId = useUserId();
   const teamId = useTeamId();
   const leagueId = useLeagueId();
+
+  const localKey = leagueId + "showInactivePlayers";
   const [showInactivePlayers, setShowInactivePlayers] = useState(
-    getLocalStorageShowInactivePlayers(),
+    getLocalStorageToggleValue(localKey),
   );
   const [recentOpponents, setRecentOpponents] = useState<string[]>(
     getLocalStorageRecentOpponents(leagueId),
@@ -114,9 +114,11 @@ export default function AddLeagueMatchForm() {
 
   return (
     <>
-      <ShowInactivePlayersToggle
-        showInactivePlayers={showInactivePlayers}
-        setShowInactivePlayers={setShowInactivePlayers}
+      <LocalStorageToggle
+        isToggled={showInactivePlayers}
+        setIsToggled={setShowInactivePlayers}
+        localStorageKey={localKey}
+        label="Show inactive players"
       />
       <Form {...form}>
         <form
@@ -271,6 +273,10 @@ import {
   filterTeamUsers,
 } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { Label } from "../ui/label";
+import {
+  LocalStorageToggle,
+  getLocalStorageToggleValue,
+} from "../localstorage-toggle";
 
 function PickOpponent({
   teamUsers,
