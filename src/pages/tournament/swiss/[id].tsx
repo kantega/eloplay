@@ -62,18 +62,21 @@ function SwissTournamentPage({ id }: { id: string }) {
   );
 
   const ownerId = tournament.userId;
-  if (!tournament.isOpen)
+  if (tournament.status !== "PENDING")
     return (
-      <SwissTournamentLayout
-        tournament={tournament}
-        teamUsers={filteredTeamUsers}
-        swissUsers={swissUsers}
-        matches={matches}
-      />
+      <>
+        <SwissTournamentLayout
+          tournament={tournament}
+          teamUsers={filteredTeamUsers}
+          swissUsers={swissUsers}
+          matches={matches}
+        />
+        <DeleteTournamentButton tournament={tournament} />
+      </>
     );
 
   return (
-    <div className="container relative flex h-full flex-col justify-center gap-8 px-4 py-4">
+    <div className="relative flex h-full w-full flex-col justify-center gap-8 py-4">
       <TournamentCard tournament={tournament} />
       <ShowPickedMembersWithOptions
         teamUsers={filteredTeamUsers}
@@ -132,7 +135,7 @@ function SwissTournamentLayout({
   };
 
   return (
-    <div className="container relative flex h-full flex-col justify-center gap-8 px-4 py-4">
+    <div className="relative flex h-full w-full flex-col justify-center gap-8 py-4">
       <TournamentMenu
         currentState={state}
         setState={setState}
@@ -214,7 +217,7 @@ function StartTournamentButton({
   return (
     <>
       {userIsTournamentModerator({ userRole: role, ownerId, userId }) &&
-        tournament.isOpen && (
+        tournament.status === "PENDING" && (
           <Button
             disabled={startTournament.isLoading}
             className="hover:bg-background-tertiary"
