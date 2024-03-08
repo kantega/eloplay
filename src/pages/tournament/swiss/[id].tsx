@@ -42,6 +42,7 @@ export default function SwissTournamentIdPage() {
 }
 
 function SwissTournamentPage({ id }: { id: string }) {
+  const userId = useUserId();
   const teamId = useTeamId();
   const leagueId = useLeagueId();
 
@@ -61,6 +62,11 @@ function SwissTournamentPage({ id }: { id: string }) {
     (user): user is TeamUser => user !== null,
   );
 
+  const yourTeamUser = filteredTeamUsers.find((user) => user.userId === userId);
+  const yourSwissUser = swissUsers.find(
+    (swissUser) => swissUser.userId === userId,
+  );
+
   const ownerId = tournament.userId;
   if (tournament.status !== "PENDING")
     return (
@@ -77,7 +83,11 @@ function SwissTournamentPage({ id }: { id: string }) {
 
   return (
     <div className="relative flex h-full w-full flex-col justify-center gap-8 py-4">
-      <TournamentCard tournament={tournament} />
+      <TournamentCard
+        tournament={tournament}
+        teamUser={yourTeamUser}
+        swissUser={yourSwissUser}
+      />
       <ShowPickedMembersWithOptions
         teamUsers={filteredTeamUsers}
         tournament={tournament}

@@ -119,14 +119,31 @@ export const swissTournamentRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { teamId, leagueId } = input;
 
-      const swissTournaments = await ctx.db.swissTournament.findMany({
+      const tournaments = await ctx.db.swissTournament.findMany({
         where: {
           teamId,
           leagueId,
         },
       });
 
-      return swissTournaments;
+      const swissProfiles = await ctx.db.swissTournamentUser.findMany({
+        where: {
+          teamId,
+          leagueId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      const teamUser = await ctx.db.teamUser.findUnique({
+        where: {
+          userId_teamId: {
+            teamId,
+            userId: ctx.session.user.id,
+          },
+        },
+      });
+
+      return { tournaments, swissProfiles, teamUser };
     }),
 
   join: teamMemberProcedure
