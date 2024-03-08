@@ -1,5 +1,5 @@
 import { type SwissTournamentUser, type TeamUser } from "@prisma/client";
-import TeamUserImage from "../teamUser/team-user-image";
+import { SwissUserCard } from "./swiss-user-card";
 
 export default function SwissLeaderboard({
   swissUsers,
@@ -11,7 +11,7 @@ export default function SwissLeaderboard({
   const sortedSwissUsers = swissUsers.sort((a, b) => b.score - a.score);
 
   return (
-    <>
+    <div className="flex w-full flex-col items-center justify-center">
       {sortedSwissUsers.map((swissUser, index) => {
         const teamUser = teamUsers.find(
           (teamUser) => teamUser.userId === swissUser.userId,
@@ -19,18 +19,14 @@ export default function SwissLeaderboard({
         if (!teamUser) return null;
 
         return (
-          <div className="flex gap-4 pl-10" key={swissUser.userId}>
-            <TeamUserImage image={teamUser.image} index={index} />
-            <div className="flex flex-col">
-              <p className="text-xl">{teamUser.gamerTag}</p>
-              <span className="flex gap-2">
-                <p className="text-gray-600">Points: </p>
-                <p className="text-primary">{swissUser.score}</p>
-              </span>
-            </div>
-          </div>
+          <SwissUserCard
+            key={swissUser.id}
+            teamUser={teamUser}
+            swissUser={swissUser}
+            index={index}
+          />
         );
       })}
-    </>
+    </div>
   );
 }

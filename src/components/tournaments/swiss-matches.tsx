@@ -25,6 +25,7 @@ import { Timer } from "lucide-react";
 import { userIsTournamentModerator } from "@/utils/role";
 import { useTeamRole } from "@/contexts/teamContext/team-provider";
 import RegisterSwissMatchDialog from "./register-swiss-match";
+import { SwissUserCard } from "./swiss-user-card";
 
 export default function SwissTournamentMatches({
   matches,
@@ -226,25 +227,17 @@ export function SwissMatchCard({
     <Card className="relative w-full overflow-hidden">
       <div className="flex w-full flex-col justify-between bg-background-secondary">
         <div className="flex w-full items-center justify-around">
-          <p
-            className={
-              teamUser1.userId === match.winnerId
-                ? "rounded bg-primary p-2"
-                : "rounded p-2"
-            }
-          >
-            {teamUser1.gamerTag + " "}({swissUser1.score})
-          </p>
+          <SwissUserCard
+            teamUser={teamUser1}
+            swissUser={swissUser1}
+            match={match}
+          />
           <p className="text-sm">vs.</p>
-          <p
-            className={
-              teamUser2.userId === match.winnerId
-                ? "rounded bg-primary p-2"
-                : "rounded p-2"
-            }
-          >
-            {teamUser2.gamerTag + " "}({swissUser2.score})
-          </p>
+          <SwissUserCard
+            teamUser={teamUser2}
+            swissUser={swissUser2}
+            match={match}
+          />
         </div>
       </div>
     </Card>
