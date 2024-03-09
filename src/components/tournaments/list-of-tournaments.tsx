@@ -23,6 +23,7 @@ export default function ListOfTournaments() {
   const leagueId = useLeagueId();
   const keyShowCompleted = leagueId + "showCompletedTournaments";
   const keyShowOpen = leagueId + "showOpen";
+  const keyShowYours = leagueId + "showYours";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showCompleted, setShowCompleted] = useState(
@@ -30,6 +31,10 @@ export default function ListOfTournaments() {
   );
   const [showOpen, setShowOpen] = useState(
     getLocalStorageToggleValue(keyShowOpen, true),
+  );
+
+  const [showYours, setShowYours] = useState(
+    getLocalStorageToggleValue(keyShowYours),
   );
   const [tournaments, setTournaments] = useState<SwissTournament[]>([]);
 
@@ -45,9 +50,15 @@ export default function ListOfTournaments() {
     if (!showCompleted)
       newData = newData.filter((t) => t.status !== "COMPLETED");
     if (!showOpen) newData = newData.filter((t) => !t.isOpen);
+    if (showYours)
+      newData = newData.filter(
+        (t) =>
+          data.swissProfiles.find((s) => s.swissTournamentId === t.id) !==
+          undefined,
+      );
 
     setTournaments(newData);
-  }, [data, searchQuery, showCompleted, showOpen]);
+  }, [data, searchQuery, showCompleted, showOpen, showYours]);
 
   if (isLoading) return <LoadingSpinner />;
   if (!data)
@@ -65,7 +76,7 @@ export default function ListOfTournaments() {
           setSearchQuery(value.currentTarget.value);
         }}
       />
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-4">
         <LocalStorageToggle
           isToggled={showOpen}
           setIsToggled={setShowOpen}
@@ -77,6 +88,12 @@ export default function ListOfTournaments() {
           setIsToggled={setShowCompleted}
           localStorageKey={keyShowCompleted}
           label="Completed"
+        />
+        <LocalStorageToggle
+          isToggled={showYours}
+          setIsToggled={setShowYours}
+          localStorageKey={keyShowYours}
+          label="Includes you"
         />
       </div>
 
