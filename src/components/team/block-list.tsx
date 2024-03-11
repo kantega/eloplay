@@ -25,7 +25,7 @@ export default function BlockList({
       <MinorHeaderLabel headerText="Block list" />
       <Input
         className="sticky top-14 z-10"
-        placeholder="search for member..."
+        placeholder="search for blocked users..."
         value={searchQuery}
         onChange={(value) => {
           setSearchQuery(value.currentTarget.value);
