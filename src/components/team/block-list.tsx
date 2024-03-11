@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Separator } from "../ui/separator";
 import { type BlockedUser } from "@prisma/client";
 import UnblockUserButton from "./unblock-user-button";
+import MinorHeaderLabel from "../minor-header-label";
 
 export default function BlockList({
   blockedUsers,
@@ -21,6 +22,7 @@ export default function BlockList({
 
   return (
     <div className="relative w-full space-y-4">
+      <MinorHeaderLabel headerText="Block list" />
       <Input
         className="sticky top-14 z-10"
         placeholder="search for member..."

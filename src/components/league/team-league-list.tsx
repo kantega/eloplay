@@ -8,6 +8,7 @@ import { userIsAdmin, userIsModerator } from "@/utils/role";
 import ChangeLeagueName from "./change-league-name";
 import LeagueDeleteDialog from "./league-delete-dialog";
 import LoadingSpinner from "../loading";
+import MinorHeaderLabel from "../minor-header-label";
 
 export default function TeamLeagueList() {
   const teamId = useTeamId();
@@ -16,11 +17,14 @@ export default function TeamLeagueList() {
   if (isLoading || !data) return <LoadingSpinner />;
 
   return (
-    <ul className="flex flex-col justify-center gap-2">
-      {data.map((league) => (
-        <LeagueItem key={league.id} league={league} />
-      ))}
-    </ul>
+    <>
+      <MinorHeaderLabel headerText="League List" />
+      <ul className="flex flex-col justify-center gap-2">
+        {data.map((league) => (
+          <LeagueItem key={league.id} league={league} />
+        ))}
+      </ul>
+    </>
   );
 }
 

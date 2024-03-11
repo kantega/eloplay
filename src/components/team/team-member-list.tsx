@@ -10,6 +10,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
 import KickUserButton from "./kick-user-button";
+import MinorHeaderLabel from "../minor-header-label";
 
 export default function TeamMemberList({
   teamUsers,
@@ -27,6 +28,7 @@ export default function TeamMemberList({
 
   return (
     <div className="relative w-full space-y-4">
+      <MinorHeaderLabel headerText="Member list" />
       <Input
         className="sticky top-14 z-10"
         placeholder="search for member..."
