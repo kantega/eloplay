@@ -88,6 +88,19 @@ export const teamRouter = createTRPCRouter({
           message: "Team not found",
         });
 
+      const blockedUser = await ctx.db.blockedUser.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+          teamId: team.id,
+        },
+      });
+
+      if (blockedUser)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "You are blocked from this team",
+        });
+
       const userId = ctx.session.user.id;
 
       const userIsMember = await ctx.db.teamUser.findFirst({
