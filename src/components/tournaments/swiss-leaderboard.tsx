@@ -10,6 +10,8 @@ export default function SwissLeaderboard({
 }) {
   const sortedSwissUsers = swissUsers.sort((a, b) => b.score - a.score);
 
+  let previousScore = -1;
+  let previousIndex = 0;
   return (
     <div className="flex w-full flex-col items-start justify-center">
       {sortedSwissUsers.map((swissUser, index) => {
@@ -17,6 +19,15 @@ export default function SwissLeaderboard({
           (teamUser) => teamUser.userId === swissUser.userId,
         );
         if (!teamUser) return null;
+
+        const currentElo = swissUser.score;
+        let currentEloIndex = index;
+
+        if (previousScore === currentElo) {
+          currentEloIndex = previousIndex;
+        }
+        previousIndex = currentEloIndex;
+        previousScore = currentElo;
 
         return (
           <SwissUserCard

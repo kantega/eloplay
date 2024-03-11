@@ -30,11 +30,23 @@ export default function Leaderboard({
     userId,
   );
 
+  let previousElo = -1;
+  let previousIndex = 0;
+
   return (
     <Table className="m-0 w-[min(700px,100%)] p-0">
       <TableBody className="m-0 p-0">
         {filtedLeagueUsers.map((player, index) => {
           const eloGainList = getLatestEloList(player.leagueUser.latestEloGain);
+          const currentElo = player.leagueUser.elo;
+          let currentEloIndex = index;
+
+          if (previousElo === currentElo) {
+            currentEloIndex = previousIndex;
+          }
+          previousIndex = currentEloIndex;
+          previousElo = currentElo;
+
           return (
             <TableRow key={player.leagueUser.id}>
               <TableCell
@@ -43,7 +55,10 @@ export default function Leaderboard({
                   await router.push("/leagueUser/" + player.leagueUser.id);
                 }}
               >
-                <TeamUserImage image={player.teamUser.image} index={index} />
+                <TeamUserImage
+                  image={player.teamUser.image}
+                  index={currentEloIndex}
+                />
               </TableCell>
               <TableCell
                 className="px-0 "
