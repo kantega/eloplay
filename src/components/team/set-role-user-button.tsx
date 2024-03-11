@@ -1,16 +1,17 @@
 import { api } from "@/utils/api";
-import { type RoleText, RoleTexts } from "@/server/types/roleTypes";
+import { RoleTexts } from "@/server/types/roleTypes";
 import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { userIsAdmin } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 import LoadingSpinner from "../loading";
 import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import { type TeamMemberProps } from "@/server/api/routers/leagueMatch/league-match-utils";
 
 export default function SetRoleUserButton({
   member,
 }: {
-  member: { role: RoleText; id: string };
+  member: TeamMemberProps;
 }) {
   const teamId = useTeamId();
   const role = useTeamRole();
@@ -40,34 +41,32 @@ export default function SetRoleUserButton({
     },
   });
 
+  if (member.role === RoleTexts.ADMIN || !userIsAdmin(role)) return null;
+
   return (
-    <>
-      {member.role !== RoleTexts.ADMIN && userIsAdmin(role) && (
-        <Button
-          disabled={isLoading}
-          className="h-8 w-8 items-start p-1"
-          variant="ghost"
-          size="sm"
-          onClick={async () => {
-            await mutateAsync({
-              teamUserId: member.id,
-              newRole:
-                member.role === RoleTexts.MEMBER
-                  ? RoleTexts.MODERATOR
-                  : RoleTexts.MEMBER,
-              teamId,
-            });
-          }}
-        >
-          {isLoading && <LoadingSpinner />}
-          {!isLoading &&
-            (member.role === RoleTexts.MEMBER ? (
-              <ArrowBigUp className="text-primary" />
-            ) : (
-              <ArrowBigDown className="text-red-500" />
-            ))}
-        </Button>
-      )}
-    </>
+    <Button
+      disabled={isLoading}
+      className="h-8 w-8 items-start p-1"
+      variant="ghost"
+      size="sm"
+      onClick={async () => {
+        await mutateAsync({
+          teamUserId: member.id,
+          newRole:
+            member.role === RoleTexts.MEMBER
+              ? RoleTexts.MODERATOR
+              : RoleTexts.MEMBER,
+          teamId,
+        });
+      }}
+    >
+      {isLoading && <LoadingSpinner />}
+      {!isLoading &&
+        (member.role === RoleTexts.MEMBER ? (
+          <ArrowBigUp className="text-primary" />
+        ) : (
+          <ArrowBigDown className="text-red-500" />
+        ))}
+    </Button>
   );
 }

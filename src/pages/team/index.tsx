@@ -17,6 +17,7 @@ import TeamTransferOwnershipDialog from "@/components/team/team-transfer-ownersh
 import TeamDeleteDialog from "@/components/team/team-delete-dialog";
 import TeamLeaveDialog from "@/components/team/team-leave-dialog";
 import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import BlockList from "@/components/team/block-list";
 
 export default function TeamPage() {
   return (
@@ -30,6 +31,10 @@ function TeamInfo() {
   const teamId = useTeamId();
   const role = useTeamRole();
   const { data, isLoading } = api.team.getById.useQuery({
+    teamId,
+  });
+
+  const { data: blockedUsers } = api.team.getAllBlockedUsers.useQuery({
     teamId,
   });
 
@@ -87,6 +92,7 @@ function TeamInfo() {
       )}
 
       <TeamMemberList teamUsers={data.teamUsers} />
+      {blockedUsers && <BlockList blockedUsers={blockedUsers} />}
       <span className="py-10" />
     </div>
   );

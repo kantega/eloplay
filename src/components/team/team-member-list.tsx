@@ -9,6 +9,8 @@ import SetRoleUserButton from "@/components/team/set-role-user-button";
 import { useState } from "react";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
+import KickUserButton from "./kick-user-button";
+import MinorHeaderLabel from "../minor-header-label";
 
 export default function TeamMemberList({
   teamUsers,
@@ -22,8 +24,11 @@ export default function TeamMemberList({
     a.gamerTag.localeCompare(b.gamerTag),
   );
 
+  if (sortedTeamUsers.length === 0) return null;
+
   return (
     <div className="relative w-full space-y-4">
+      <MinorHeaderLabel headerText="Member list" />
       <Input
         className="sticky top-14 z-10"
         placeholder="search for member..."
@@ -51,7 +56,10 @@ export default function TeamMemberList({
                     {teamUser.role}
                   </Badge>
                 </div>
-                <SetRoleUserButton member={teamUser} />
+                <div className="flex gap-4">
+                  <SetRoleUserButton member={teamUser} />
+                  <KickUserButton member={teamUser} />
+                </div>
               </div>
               <div className="relative m-2 w-full">
                 <Separator className=" absolute left-[-3%] top-1/2 w-[100%] bg-background-tertiary" />
