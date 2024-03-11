@@ -1,6 +1,6 @@
 import { latestEloGainSchema } from "@/server/api/routers/leagueMatch/league-match-types";
 import { type RoleText } from "@/server/types/roleTypes";
-import { type TeamUser } from "@prisma/client";
+import { type BlockedUser, type TeamUser } from "@prisma/client";
 
 export interface TeamMemberProps extends TeamUser {
   role: RoleText;
@@ -8,6 +8,32 @@ export interface TeamMemberProps extends TeamUser {
 
 export function filterTeamUsers(
   members: TeamMemberProps[],
+  searchQuery: string,
+) {
+  const letters = searchQuery.split("");
+
+  const filteredTeamUsers = members.filter((member) => {
+    return letters.reduce(
+      (acc, letter) => {
+        if (!acc.state) return { state: acc.state, gamerTag: acc.gamerTag };
+        const includesLetter = acc.gamerTag.includes(letter.toLowerCase());
+        return {
+          state: includesLetter,
+          gamerTag: acc.gamerTag.replace(letter.toLowerCase(), ""),
+        };
+      },
+      {
+        state: true,
+        gamerTag: member.gamerTag?.toLowerCase() ?? "",
+      },
+    ).state;
+  });
+
+  return filteredTeamUsers.reverse();
+}
+
+export function filterBlockedUsers(
+  members: BlockedUser[],
   searchQuery: string,
 ) {
   const letters = searchQuery.split("");

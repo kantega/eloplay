@@ -1,7 +1,7 @@
 import ActivitySVG from "@/assets/ActivitySVG";
 import AddMatchSVG from "@/assets/AddMatchSVG";
 import LeaderboardSVG from "@/assets/LeaderboardSVG";
-import { Medal } from "lucide-react";
+import TournamentSVG from "@/assets/TournamentSVG";
 import Link from "next/link";
 
 export default function NavigationBar() {
@@ -26,7 +26,7 @@ export default function NavigationBar() {
           <ActivitySVG size={30} relativeSize={false} />
         </Link>
         <Link href={"/tournament"} className="p-4">
-          <Medal className="text-primary" size={30} />
+          <TournamentSVG size={30} relativeSize={false} />
         </Link>
       </div>
     </div>

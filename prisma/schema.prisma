@@ -51,6 +51,7 @@ model User {
     User1TournamentMatch SwissTournamentMatch[] @relation("tournament_match_user1_id")
     User2TournamentMatch SwissTournamentMatch[] @relation("tournament_match_user2_id")
     SwissTournamentUser  SwissTournamentUser[]
+    BlockedUser          BlockedUser[]
 }
 
 model VerificationToken {
@@ -91,6 +92,7 @@ model Team {
     SwissTournament      SwissTournament[]
     SwissTournamentUser  SwissTournamentUser[]
     SwissTournamentMatch SwissTournamentMatch[]
+    BlockedUser          BlockedUser[]
 }
 
 model TeamUser {
@@ -238,4 +240,17 @@ model SwissTournamentMatch {
 
     @@index([userId1])
     @@index([userId2])
+}
+
+model BlockedUser {
+    id       String @id @default(cuid())
+    gamerTag String
+
+    userId    String
+    teamId    String
+    team      Team     @relation(fields: [teamId], references: [id])
+    user      User     @relation(fields: [userId], references: [id])
+    createdAt DateTime @default(now())
+
+    @@unique([userId, teamId])
 }

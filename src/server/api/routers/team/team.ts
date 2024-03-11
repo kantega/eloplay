@@ -477,28 +477,107 @@ export const teamRouter = createTRPCRouter({
   leaveTeam: teamMemberProcedure
     .input(teamIdSchema)
     .mutation(async ({ ctx, input }) => {
+      const { teamId } = input;
       const userId = ctx.session.user.id;
 
       // todo: create a message/match history for the other player in the match
       await ctx.db.leagueMatch.deleteMany({
         where: {
-          teamId: input.teamId,
+          teamId,
           OR: [{ winnerId: userId }, { loserId: userId }],
         },
       });
 
       await ctx.db.leagueUser.deleteMany({
         where: {
-          teamId: input.teamId,
+          teamId,
           userId: userId,
         },
       });
 
-      // todo: theres only one teamUser with the same teamId and userId, why is unique annotation not working?
-      await ctx.db.teamUser.deleteMany({
+      await ctx.db.teamUser.delete({
+        where: {
+          userId_teamId: {
+            teamId,
+            userId: userId,
+          },
+        },
+      });
+
+      return true;
+    }),
+
+  kickUser: teamMemberProcedure
+    .input(
+      z
+        .object({
+          userId: z.string(),
+          gamerTag: z.string(),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { userId, teamId, gamerTag } = input;
+
+      await ctx.db.leagueMatch.deleteMany({
+        where: {
+          teamId,
+          OR: [{ winnerId: userId }, { loserId: userId }],
+        },
+      });
+
+      await ctx.db.leagueUser.deleteMany({
+        where: {
+          teamId,
+          userId: userId,
+        },
+      });
+
+      await ctx.db.teamUser.delete({
+        where: {
+          userId_teamId: {
+            teamId,
+            userId: userId,
+          },
+        },
+      });
+
+      await ctx.db.blockedUser.create({
+        data: {
+          gamerTag,
+          userId,
+          teamId,
+        },
+      });
+
+      return true;
+    }),
+  getAllBlockedUsers: teamAdminProcedure
+    .input(teamIdSchema)
+    .query(async ({ ctx, input }) => {
+      const blockedUser = await ctx.db.blockedUser.findMany({
         where: {
           teamId: input.teamId,
-          userId: userId,
+        },
+      });
+
+      return blockedUser;
+    }),
+  unblockUser: teamAdminProcedure
+    .input(
+      z
+        .object({
+          userId: z.string(),
+        })
+        .extend(teamIdSchema.shape),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.blockedUser.delete({
+        where: {
+          userId_teamId: {
+            teamId: input.teamId,
+            userId: input.userId,
+          },
         },
       });
 
