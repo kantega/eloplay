@@ -276,7 +276,7 @@ import { Label } from "../ui/label";
 import {
   LocalStorageToggle,
   getLocalStorageToggleValue,
-} from "../localstorage-toggle";
+} from "../ui-localstorage/localstorage-toggle";
 
 function PickOpponent({
   teamUsers,

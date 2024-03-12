@@ -9,7 +9,7 @@ import MessageBox from "@/components/message-box";
 import {
   LocalStorageToggle,
   getLocalStorageToggleValue,
-} from "@/components/localstorage-toggle";
+} from "@/components/ui-localstorage/localstorage-toggle";
 
 export default function LeaderboardPage() {
   const teamId = useTeamId();
