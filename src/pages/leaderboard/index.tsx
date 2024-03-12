@@ -6,10 +6,8 @@ import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import HeaderLabel from "@/components/header-label";
 import LoadingSpinner from "@/components/loading";
 import MessageBox from "@/components/message-box";
-import {
-  LocalStorageToggle,
-  getLocalStorageToggleValue,
-} from "@/components/ui-localstorage/localstorage-toggle";
+import { LocalStorageToggle } from "@/components/ui-localstorage/localstorage-toggle";
+import { getLocalStorageToggleValue } from "@/components/ui-localstorage/localstorage-utils";
 
 export default function LeaderboardPage() {
   const teamId = useTeamId();
