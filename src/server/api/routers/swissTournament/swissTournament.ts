@@ -11,6 +11,7 @@ import {
   GetSwissTournament,
 } from "./swiss-tournament-types";
 import { z } from "zod";
+import { deleteSwissTournament } from "./swissTournament-service";
 
 export const swissTournamentRouter = createTRPCRouter({
   create: teamModeratorProcedure
@@ -442,30 +443,6 @@ export const swissTournamentRouter = createTRPCRouter({
   delete: tournamentModeratorProcedure
     .input(GetSwissTournament)
     .mutation(async ({ input, ctx }) => {
-      const { teamId, leagueId, tournamentId } = input;
-
-      await ctx.db.swissTournamentUser.deleteMany({
-        where: {
-          swissTournamentId: tournamentId,
-          teamId,
-          leagueId,
-        },
-      });
-
-      await ctx.db.swissTournamentMatch.deleteMany({
-        where: {
-          tournamentId,
-          teamId,
-          leagueId,
-        },
-      });
-
-      await ctx.db.swissTournament.delete({
-        where: {
-          id: tournamentId,
-        },
-      });
-
-      return true;
+      return await deleteSwissTournament({ db: ctx.db, input });
     }),
 });

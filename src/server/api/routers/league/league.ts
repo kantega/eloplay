@@ -8,6 +8,7 @@ import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { CreateLeague } from "./league-types";
+import { deleteAllSwissTournamentsForLeague } from "../swissTournament/swissTournament-service";
 
 export const leagueRouter = createTRPCRouter({
   create: teamModeratorProcedure
@@ -80,6 +81,14 @@ export const leagueRouter = createTRPCRouter({
   delete: teamAdminProcedure
     .input(z.object({ leagueId: z.string().min(1) }).extend(teamIdSchema.shape))
     .mutation(async ({ ctx, input }) => {
+      await deleteAllSwissTournamentsForLeague({
+        db: ctx.db,
+        input: {
+          leagueId: input.leagueId,
+          teamId: input.teamId,
+        },
+      });
+
       await ctx.db.leagueMatch.deleteMany({
         where: { leagueId: input.leagueId, teamId: input.teamId },
       });
