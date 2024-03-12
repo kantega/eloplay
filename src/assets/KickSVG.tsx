@@ -17,7 +17,7 @@ export default function KickSVG({
       width={size}
       height={size}
       viewBox="0 0 256 231"
-      enable-background="new 0 0 256 231"
+      enableBackground="new 0 0 256 231"
       className={className}
     >
       <path
