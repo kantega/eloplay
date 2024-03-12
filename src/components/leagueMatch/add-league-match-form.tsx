@@ -3,9 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { type z } from "zod";
-
 import { ArrowLeftRight, ArrowUpRightFromSquare, XCircle } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
@@ -16,10 +14,7 @@ import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
-import {
-  getLocalStorageRecentOpponents,
-  setLocalStorageRecentOpponents,
-} from "./league-match-util";
+
 import LoadingSpinner from "../loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
@@ -273,10 +268,12 @@ import {
   filterTeamUsers,
 } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { Label } from "../ui/label";
+import { LocalStorageToggle } from "../ui-localstorage/localstorage-toggle";
 import {
-  LocalStorageToggle,
-  getLocalStorageToggleValue,
-} from "../ui-localstorage/localstorage-toggle";
+  getLocalStorageRecentOpponents,
+  setLocalStorageRecentOpponents,
+} from "./league-match-util";
+import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 
 function PickOpponent({
   teamUsers,
