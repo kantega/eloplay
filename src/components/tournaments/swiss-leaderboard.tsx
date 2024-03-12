@@ -12,6 +12,7 @@ export default function SwissLeaderboard({
 
   let previousScore = -1;
   let previousIndex = 0;
+
   return (
     <div className="flex w-full flex-col items-start justify-center">
       {sortedSwissUsers.map((swissUser, index) => {
@@ -34,7 +35,7 @@ export default function SwissLeaderboard({
             key={swissUser.id}
             teamUser={teamUser}
             swissUser={swissUser}
-            index={index}
+            index={currentEloIndex}
           />
         );
       })}

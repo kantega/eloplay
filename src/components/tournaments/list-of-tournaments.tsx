@@ -12,11 +12,10 @@ import TournamentCard from "./tournament-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useMemo, useState } from "react";
 import { Input } from "../ui/input";
-import {
-  LocalStorageToggle,
-  getLocalStorageToggleValue,
-} from "../localstorage-toggle";
 import { filterTournaments } from "./tournament-util";
+import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
+import { LocalStorageCheckbox } from "../ui-localstorage/localstorage-checkbox";
+import MinorHeaderLabel from "../minor-header-label";
 
 export default function ListOfTournaments() {
   const teamId = useTeamId();
@@ -76,20 +75,21 @@ export default function ListOfTournaments() {
           setSearchQuery(value.currentTarget.value);
         }}
       />
+      <MinorHeaderLabel headerText="Filter type of tournament" />
       <div className="flex flex-wrap gap-4">
-        <LocalStorageToggle
+        <LocalStorageCheckbox
           isToggled={showOpen}
           setIsToggled={setShowOpen}
           localStorageKey={keyShowOpen}
           label="Open for registration"
         />
-        <LocalStorageToggle
+        <LocalStorageCheckbox
           isToggled={showCompleted}
           setIsToggled={setShowCompleted}
           localStorageKey={keyShowCompleted}
           label="Completed"
         />
-        <LocalStorageToggle
+        <LocalStorageCheckbox
           isToggled={showYours}
           setIsToggled={setShowYours}
           localStorageKey={keyShowYours}
