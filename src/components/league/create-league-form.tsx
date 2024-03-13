@@ -36,7 +36,7 @@ export default function CreateLeagueForm() {
 
       toast({
         title: "Success",
-        description: `Added new league, ${form.getValues("name")}, to team.`,
+        description: `Added new league to team.`,
         variant: "success",
       });
     },

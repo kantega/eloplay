@@ -36,7 +36,7 @@ export default function TeamTransferOwnershipDialog({
 
       toast({
         title: "Success",
-        description: "League has been deleted.",
+        description: "Team has been transfered.",
         variant: "success",
       });
     },

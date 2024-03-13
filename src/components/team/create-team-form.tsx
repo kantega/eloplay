@@ -37,7 +37,7 @@ export default function CreateTeamForm() {
     onSuccess: async (data) => {
       toast({
         title: "Success",
-        description: `Team ${form.getValues("name")} created.`,
+        description: `Team created.`,
         variant: "success",
       });
 
