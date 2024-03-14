@@ -14,14 +14,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
-import { userIsModerator } from "@/utils/role";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import LoadingSpinner from "../loading";
 import { CreateLeague } from "@/server/api/routers/league/league-types";
+import TeamModerator from "../auhtVisibility/team-moderator";
 
 export default function CreateLeagueForm() {
   const teamId = useTeamId();
-  const role = useTeamRole();
   const ctx = api.useUtils();
   const form = useForm<z.infer<typeof CreateLeague>>({
     resolver: zodResolver(CreateLeague),
@@ -58,30 +57,30 @@ export default function CreateLeagueForm() {
     createLeague.mutate({ ...data, teamId });
   }
 
-  if (!userIsModerator(role)) return null;
-
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex items-start gap-2"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="New league's name..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button disabled={createLeague.isLoading} type="submit">
-          {createLeague.isLoading ? <LoadingSpinner /> : "Create league"}
-        </Button>
-      </form>
-    </Form>
+    <TeamModerator>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex items-start gap-2"
+        >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="New league's name..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button disabled={createLeague.isLoading} type="submit">
+            {createLeague.isLoading ? <LoadingSpinner /> : "Create league"}
+          </Button>
+        </form>
+      </Form>
+    </TeamModerator>
   );
 }

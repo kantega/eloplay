@@ -1,8 +1,7 @@
 import { api } from "@/utils/api";
-import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { userIsAdmin } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingSpinner from "../loading";
+import TeamAdmin from "../auhtVisibility/team-admin";
 
 const ChangeTeamNameType = z.object({
   name: z.string().min(1, {
@@ -41,7 +41,6 @@ export default function ChangeLeagueName({
 
   const ctx = api.useUtils();
   const teamId = useTeamId();
-  const role = useTeamRole();
   const updateTeamNameMutate = api.league.updateName.useMutation({
     onSuccess: async () => {
       void ctx.league.getAll.invalidate({ teamId });
@@ -76,39 +75,39 @@ export default function ChangeLeagueName({
     });
   };
 
-  if (!userIsAdmin(role)) return null;
-
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-2/3 items-center gap-2"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Name..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          disabled={updateTeamNameMutate.isLoading}
-          type="submit"
-          size="icon"
-          className=" aspect-square h-6 w-6"
+    <TeamAdmin>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex w-2/3 items-center gap-2"
         >
-          {updateTeamNameMutate.isLoading ? (
-            <LoadingSpinner />
-          ) : (
-            <Check size={16} />
-          )}
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Name..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            disabled={updateTeamNameMutate.isLoading}
+            type="submit"
+            size="icon"
+            className=" aspect-square h-6 w-6"
+          >
+            {updateTeamNameMutate.isLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <Check size={16} />
+            )}
+          </Button>
+        </form>
+      </Form>
+    </TeamAdmin>
   );
 }

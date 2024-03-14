@@ -4,7 +4,6 @@ import TeamMemberList from "@/components/team/team-member-list";
 import TeamLeagueList from "@/components/league/team-league-list";
 import TeamName from "@/components/team/team-name";
 import CreateLeagueForm from "@/components/league/create-league-form";
-import { userIsAdmin, userIsModerator } from "@/utils/role";
 import { Button } from "@/components/ui/button";
 import {
   ArrowBigRightDash,
@@ -16,8 +15,11 @@ import {
 import TeamTransferOwnershipDialog from "@/components/team/team-transfer-ownership-dialog";
 import TeamDeleteDialog from "@/components/team/team-delete-dialog";
 import TeamLeaveDialog from "@/components/team/team-leave-dialog";
-import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import BlockList from "@/components/team/block-list";
+import TeamAdmin from "@/components/auhtVisibility/team-admin";
+import TeamNotAdmin from "@/components/auhtVisibility/team-not-admin";
+import TeamModerator from "@/components/auhtVisibility/team-moderator";
 
 export default function TeamPage() {
   return (
@@ -29,7 +31,6 @@ export default function TeamPage() {
 
 function TeamInfo() {
   const teamId = useTeamId();
-  const role = useTeamRole();
   const { data, isLoading } = api.team.getById.useQuery({
     teamId,
   });
@@ -46,20 +47,23 @@ function TeamInfo() {
       <div className="flex items-end justify-between">
         <TeamName teamName={data.team.name} />
         <span className="flex gap-4">
-          {userIsAdmin(role) && data.teamUsers.length > 1 && (
-            <TeamTransferOwnershipDialog teamUsers={data.teamUsers}>
-              <Button
-                className="hover:bg-background-tertiary"
-                variant="ghost"
-                size="sm"
-              >
-                <User size={16} />
-                <ArrowBigRightDash size={16} />
-                <Users size={16} />
-              </Button>
-            </TeamTransferOwnershipDialog>
+          {data.teamUsers.length > 1 && (
+            <TeamAdmin>
+              <TeamTransferOwnershipDialog teamUsers={data.teamUsers}>
+                <Button
+                  className="hover:bg-background-tertiary"
+                  variant="ghost"
+                  size="sm"
+                >
+                  <User size={16} />
+                  <ArrowBigRightDash size={16} />
+                  <Users size={16} />
+                </Button>
+              </TeamTransferOwnershipDialog>
+            </TeamAdmin>
           )}
-          {!userIsAdmin(role) && (
+
+          <TeamNotAdmin>
             <TeamLeaveDialog>
               <Button
                 className="gap-2 hover:bg-destructive"
@@ -70,26 +74,26 @@ function TeamInfo() {
                 <LogOutIcon size={16} />
               </Button>
             </TeamLeaveDialog>
-          )}
-          {userIsAdmin(role) && data.teamUsers.length === 1 && (
-            <TeamDeleteDialog>
-              <Button
-                className="hover:bg-destructive"
-                variant="ghost"
-                size="sm"
-              >
-                <Trash2 size={16} />
-              </Button>
-            </TeamDeleteDialog>
+          </TeamNotAdmin>
+          {data.teamUsers.length === 1 && (
+            <TeamAdmin>
+              <TeamDeleteDialog>
+                <Button
+                  className="hover:bg-destructive"
+                  variant="ghost"
+                  size="sm"
+                >
+                  <Trash2 size={16} />
+                </Button>
+              </TeamDeleteDialog>
+            </TeamAdmin>
           )}
         </span>
       </div>
-      {userIsModerator(role) && (
-        <>
-          <CreateLeagueForm />
-          <TeamLeagueList />
-        </>
-      )}
+      <TeamModerator>
+        <CreateLeagueForm />
+        <TeamLeagueList />
+      </TeamModerator>
 
       <TeamMemberList teamUsers={data.teamUsers} />
       {blockedUsers && <BlockList blockedUsers={blockedUsers} />}

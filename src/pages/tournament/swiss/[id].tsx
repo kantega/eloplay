@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import ShowPickedMembersWithOptions from "../../../components/tournaments/show-selected-members-with-options";
 import { Button } from "@/components/ui/button";
-import { userIsTournamentModerator } from "@/utils/role";
 import { useUserId } from "@/contexts/authContext/auth-provider";
 import { toast } from "@/components/ui/use-toast";
 import {
@@ -23,9 +22,10 @@ import {
 } from "@/components/tournament-menu";
 import SwissTournamentMatches from "@/components/tournaments/swiss-matches";
 import SwissLeaderboard from "@/components/tournaments/swiss-leaderboard";
-import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import SwissDeleteDialog from "@/components/tournaments/swiss-delete-dialog";
 import { Trash2Icon } from "lucide-react";
+import TournamentModerator from "@/components/auhtVisibility/tournament-moderator";
 
 export default function SwissTournamentIdPage() {
   const router = useRouter();
@@ -172,25 +172,20 @@ function DeleteTournamentButton({
 }: {
   tournament: SwissTournament;
 }) {
-  const role = useTeamRole();
-  const userId = useUserId();
-
   const { userId: ownerId, id: tournamentId } = tournament;
 
   return (
-    <>
-      {userIsTournamentModerator({ userRole: role, ownerId, userId }) && (
-        <SwissDeleteDialog tournamentId={tournamentId}>
-          <Button
-            className="absolute bottom-0 right-0 w-fit hover:bg-background-tertiary"
-            variant="destructive"
-            size="sm"
-          >
-            <Trash2Icon />
-          </Button>
-        </SwissDeleteDialog>
-      )}
-    </>
+    <TournamentModerator ownerId={ownerId}>
+      <SwissDeleteDialog tournamentId={tournamentId}>
+        <Button
+          className="absolute bottom-0 right-0 w-fit hover:bg-background-tertiary"
+          variant="destructive"
+          size="sm"
+        >
+          <Trash2Icon />
+        </Button>
+      </SwissDeleteDialog>
+    </TournamentModerator>
   );
 }
 
@@ -201,8 +196,6 @@ function StartTournamentButton({
 }) {
   const teamId = useTeamId();
   const leagueId = useLeagueId();
-  const userId = useUserId();
-  const role = useTeamRole();
   const ctx = api.useUtils();
 
   const startTournament = api.swissTournament.start.useMutation({
@@ -235,25 +228,24 @@ function StartTournamentButton({
   const { userId: ownerId, id: tournamentId } = tournament;
 
   return (
-    <>
-      {userIsTournamentModerator({ userRole: role, ownerId, userId }) &&
-        tournament.status === "PENDING" && (
-          <Button
-            disabled={startTournament.isLoading}
-            className="hover:bg-background-tertiary"
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              startTournament.mutate({
-                teamId,
-                leagueId,
-                tournamentId,
-              })
-            }
-          >
-            Start tournament
-          </Button>
-        )}
-    </>
+    <TournamentModerator ownerId={ownerId}>
+      {tournament.status === "PENDING" && (
+        <Button
+          disabled={startTournament.isLoading}
+          className="hover:bg-background-tertiary"
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            startTournament.mutate({
+              teamId,
+              leagueId,
+              tournamentId,
+            })
+          }
+        >
+          Start tournament
+        </Button>
+      )}
+    </TournamentModerator>
   );
 }

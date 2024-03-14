@@ -1,13 +1,11 @@
-import { useTeamRole } from "@/contexts/teamContext/team-provider";
 import { useState } from "react";
 import ChangeTeamName from "./change-team-name";
-import { userIsAdmin } from "@/utils/role";
 import { Button } from "../ui/button";
 import { PencilLine, X } from "lucide-react";
 import HeaderLabel from "../header-label";
+import TeamAdmin from "../auhtVisibility/team-admin";
 
 export default function TeamName({ teamName }: { teamName: string }) {
-  const role = useTeamRole();
   const [changeTeamName, setChangeTeamName] = useState(false);
 
   return (
@@ -21,7 +19,7 @@ export default function TeamName({ teamName }: { teamName: string }) {
           setChangeTeamName={setChangeTeamName}
         />
       )}
-      {userIsAdmin(role) && (
+      <TeamAdmin>
         <Button
           className="h-6 w-6 items-start p-1"
           variant={!changeTeamName ? "ghost" : "destructive"}
@@ -30,7 +28,7 @@ export default function TeamName({ teamName }: { teamName: string }) {
         >
           {!changeTeamName ? <PencilLine size={16} /> : <X size={16} />}
         </Button>
-      )}
+      </TeamAdmin>
     </div>
   );
 }

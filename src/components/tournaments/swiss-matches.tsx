@@ -22,7 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { useMemo, useState } from "react";
 import MessageBox from "../message-box";
 import { Timer } from "lucide-react";
-import { userIsTournamentModerator } from "@/utils/role";
+import { userIsTournamentModerator } from "@/components/auhtVisibility/role";
 import { useTeamRole } from "@/contexts/teamContext/team-provider";
 import RegisterSwissMatchDialog from "./register-swiss-match";
 import { SwissUserCard } from "./swiss-user-card";
