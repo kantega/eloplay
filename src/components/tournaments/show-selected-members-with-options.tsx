@@ -4,7 +4,7 @@ import { useUserId } from "@/contexts/authContext/auth-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { userIsModerator } from "@/utils/role";
+import { userIsTournamentModerator } from "@/components/auhtVisibility/role";
 import { type SwissTournament, type TeamUser } from "@prisma/client";
 import { useMemo, useState } from "react";
 import JoinTournamentButton from "./join-tournament-button";
@@ -105,7 +105,7 @@ export default function ShowPickedMembersWithOptions({
       });
   };
 
-  if (!userIsModerator(role) || userId !== ownerId)
+  if (userIsTournamentModerator({ userId, userRole: role, ownerId }))
     return (
       <div className="relative">
         {tournament.isOpen && (

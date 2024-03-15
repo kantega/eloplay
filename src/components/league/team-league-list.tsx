@@ -1,14 +1,15 @@
-import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { type League } from "@prisma/client";
 import { PencilLine, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { userIsAdmin, userIsModerator } from "@/utils/role";
 import ChangeLeagueName from "./change-league-name";
 import LeagueDeleteDialog from "./league-delete-dialog";
 import LoadingSpinner from "../loading";
 import MinorHeaderLabel from "../minor-header-label";
+import TeamAdmin from "../auhtVisibility/team-admin";
+import TeamModerator from "../auhtVisibility/team-moderator";
 
 export default function TeamLeagueList() {
   const teamId = useTeamId();
@@ -29,7 +30,6 @@ export default function TeamLeagueList() {
 }
 
 function LeagueItem({ league }: { league: League }) {
-  const role = useTeamRole();
   const [changeLeagueName, setChangeLeagueName] = useState(false);
 
   return (
@@ -44,7 +44,7 @@ function LeagueItem({ league }: { league: League }) {
           />
         )}
         <span className="flex gap-8">
-          {userIsModerator(role) && (
+          <TeamModerator>
             <Button
               className=" aspect-square h-6 w-6"
               variant={!changeLeagueName ? "ghost" : "destructive"}
@@ -53,17 +53,19 @@ function LeagueItem({ league }: { league: League }) {
             >
               {!changeLeagueName ? <PencilLine size={16} /> : <X size={10} />}
             </Button>
-          )}
-          {userIsAdmin(role) && !changeLeagueName && (
-            <LeagueDeleteDialog league={league}>
-              <Button
-                className=" aspect-square h-6 w-6"
-                variant="outline"
-                size="icon"
-              >
-                <X size={16} />
-              </Button>
-            </LeagueDeleteDialog>
+          </TeamModerator>
+          {!changeLeagueName && (
+            <TeamAdmin>
+              <LeagueDeleteDialog league={league}>
+                <Button
+                  className=" aspect-square h-6 w-6"
+                  variant="outline"
+                  size="icon"
+                >
+                  <X size={16} />
+                </Button>
+              </LeagueDeleteDialog>
+            </TeamAdmin>
           )}
         </span>
       </div>

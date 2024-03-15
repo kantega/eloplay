@@ -2,11 +2,11 @@ import { api } from "@/utils/api";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
-import { userIsAdmin } from "@/utils/role";
 import { toast } from "@/components/ui/use-toast";
 import LoadingSpinner from "../loading";
-import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
+import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { type TeamMemberProps } from "@/server/api/routers/leagueMatch/league-match-utils";
+import TeamAdmin from "../auhtVisibility/team-admin";
 
 export default function SetRoleUserButton({
   member,
@@ -14,7 +14,6 @@ export default function SetRoleUserButton({
   member: TeamMemberProps;
 }) {
   const teamId = useTeamId();
-  const role = useTeamRole();
   const ctx = api.useUtils();
   const { mutateAsync, isLoading } = api.team.updateRoleForMember.useMutation({
     onSuccess: async () => {
@@ -41,32 +40,34 @@ export default function SetRoleUserButton({
     },
   });
 
-  if (member.role === RoleTexts.ADMIN || !userIsAdmin(role)) return null;
+  if (member.role === RoleTexts.ADMIN) return null;
 
   return (
-    <Button
-      disabled={isLoading}
-      className="h-8 w-8 items-start p-1"
-      variant="ghost"
-      size="sm"
-      onClick={async () => {
-        await mutateAsync({
-          teamUserId: member.id,
-          newRole:
-            member.role === RoleTexts.MEMBER
-              ? RoleTexts.MODERATOR
-              : RoleTexts.MEMBER,
-          teamId,
-        });
-      }}
-    >
-      {isLoading && <LoadingSpinner />}
-      {!isLoading &&
-        (member.role === RoleTexts.MEMBER ? (
-          <ArrowBigUp className="text-primary" />
-        ) : (
-          <ArrowBigDown className="text-red-500" />
-        ))}
-    </Button>
+    <TeamAdmin>
+      <Button
+        disabled={isLoading}
+        className="h-8 w-8 items-start p-1"
+        variant="ghost"
+        size="sm"
+        onClick={async () => {
+          await mutateAsync({
+            teamUserId: member.id,
+            newRole:
+              member.role === RoleTexts.MEMBER
+                ? RoleTexts.MODERATOR
+                : RoleTexts.MEMBER,
+            teamId,
+          });
+        }}
+      >
+        {isLoading && <LoadingSpinner />}
+        {!isLoading &&
+          (member.role === RoleTexts.MEMBER ? (
+            <ArrowBigUp className="text-primary" />
+          ) : (
+            <ArrowBigDown className="text-red-500" />
+          ))}
+      </Button>
+    </TeamAdmin>
   );
 }
