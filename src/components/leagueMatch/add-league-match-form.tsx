@@ -96,10 +96,27 @@ export default function AddLeagueMatchForm() {
 
   const setWinnerId = (id: string) => {
     if (id === loserIdState) setLoserIdState("");
-    setWinnerIdState(id);
+    if (loserIdState === "" && winnerIdState !== "" && id !== loserIdState) {
+      setLoserIdState(winnerIdState);
+      setWinnerIdState(id);
+    }
+    if (winnerIdState !== "" && loserIdState !== "" && id === loserIdState) {
+      setLoserIdState(winnerIdState);
+      setWinnerIdState(id);
+    } else setWinnerIdState(id);
   };
 
-  const setLoserId = (id: string) => setLoserIdState(id);
+  const setLoserId = (id: string) => {
+    if (id === winnerIdState) setWinnerIdState("");
+    if (winnerIdState === "" && loserIdState !== "" && id !== winnerIdState) {
+      setWinnerIdState(loserIdState);
+      setLoserIdState(id);
+    }
+    if (winnerIdState !== "" && loserIdState !== "" && id === winnerIdState) {
+      setWinnerIdState(loserIdState);
+      setLoserIdState(id);
+    } else setLoserIdState(id);
+  };
 
   const createMatch = async () => {
     createMatchMutate.mutate({
