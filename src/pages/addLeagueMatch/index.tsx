@@ -18,7 +18,7 @@ export default function AddMatchPage() {
   if (!data) return <MessageBox>No league was found.</MessageBox>;
 
   return (
-    <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4">
+    <div className="container flex h-full flex-col justify-center gap-4 px-4 py-4">
       <HeaderLabel headerText={data.name} label="ADD LEAGUE MATCH" />
       <AddLeagueMatchForm />
     </div>
