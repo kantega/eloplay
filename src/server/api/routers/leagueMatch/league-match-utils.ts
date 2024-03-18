@@ -1,3 +1,4 @@
+import { type LeagueUserAndTeamUser } from "@/components/leagueUser/league-user-types";
 import { latestEloGainSchema } from "@/server/api/routers/leagueMatch/league-match-types";
 import { type RoleText } from "@/server/types/roleTypes";
 import { type BlockedUser, type TeamUser } from "@prisma/client";
@@ -25,6 +26,32 @@ export function filterTeamUsers(
       {
         state: true,
         gamerTag: member.gamerTag?.toLowerCase() ?? "",
+      },
+    ).state;
+  });
+
+  return filteredTeamUsers.reverse();
+}
+
+export function filterUsers(
+  members: LeagueUserAndTeamUser[],
+  searchQuery: string,
+) {
+  const letters = searchQuery.split("");
+
+  const filteredTeamUsers = members.filter((member) => {
+    return letters.reduce(
+      (acc, letter) => {
+        if (!acc.state) return { state: acc.state, gamerTag: acc.gamerTag };
+        const includesLetter = acc.gamerTag.includes(letter.toLowerCase());
+        return {
+          state: includesLetter,
+          gamerTag: acc.gamerTag.replace(letter.toLowerCase(), ""),
+        };
+      },
+      {
+        state: true,
+        gamerTag: member.teamUser.gamerTag?.toLowerCase() ?? "",
       },
     ).state;
   });

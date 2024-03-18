@@ -24,7 +24,7 @@ import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { toast } from "./ui/use-toast";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { getProperFormForName } from "./teamUser/team-user-utils";
+import { getNameOrInitials } from "./teamUser/team-user-utils";
 import { useUserName } from "@/contexts/authContext/auth-provider";
 
 export function AccountDropdown() {
@@ -128,7 +128,7 @@ function TeamUserProfileButton() {
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" /> {getProperFormForName(data.gamerTag)}
+      <User className="mr-2 h-6 w-6" /> {getNameOrInitials(data.gamerTag)}
     </>
   );
 }
@@ -138,7 +138,7 @@ function UserProfileButton() {
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" /> {getProperFormForName(userName)}
+      <User className="mr-2 h-6 w-6" /> {getNameOrInitials(userName)}
     </>
   );
 }

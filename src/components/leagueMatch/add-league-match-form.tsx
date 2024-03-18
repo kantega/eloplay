@@ -1,29 +1,34 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { type z } from "zod";
-import { ArrowLeftRight, ArrowUpRightFromSquare, XCircle } from "lucide-react";
+import { type LeagueMatch, type TeamUser } from "@prisma/client";
+import { ArrowLeftRight, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { CreateLeagueMatch } from "@/server/api/routers/leagueMatch/league-match-types";
 import { useState } from "react";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
-
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import LoadingSpinner from "../loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
-import MinorHeaderLabel from "../minor-header-label";
+// import MinorHeaderLabel from "../minor-header-label";
 
 export default function AddLeagueMatchForm() {
+  const [isOpen, setIsOpen] = useState(true);
   const userId = useUserId();
   const teamId = useTeamId();
   const leagueId = useLeagueId();
+  const [winnerIdState, setWinnerIdState] = useState(userId);
+  const [loserIdState, setLoserIdState] = useState(userId);
 
   const localKey = leagueId + "showInactivePlayers";
   const [showInactivePlayers, setShowInactivePlayers] = useState(
@@ -38,17 +43,10 @@ export default function AddLeagueMatchForm() {
     leagueId,
   });
 
-  const form = useForm<z.infer<typeof CreateLeagueMatch>>({
-    resolver: zodResolver(CreateLeagueMatch),
-    defaultValues: {
-      winnerId: userId,
-      loserId: userId,
-    },
-  });
   const createMatchMutate = api.leagueMatch.create.useMutation({
     onSuccess: async () => {
-      const winner = form.getValues("winnerId");
-      const loser = form.getValues("loserId");
+      const winner = winnerIdState;
+      const loser = loserIdState;
 
       if (winner !== userId) recentOpponents.unshift(winner);
       if (loser !== userId) recentOpponents.unshift(loser);
@@ -56,7 +54,10 @@ export default function AddLeagueMatchForm() {
       setLocalStorageRecentOpponents(recentOpponents, leagueId);
       setRecentOpponents(getLocalStorageRecentOpponents(leagueId));
 
-      form.reset();
+      setIsOpen(true);
+      setWinnerIdState(userId);
+      setLoserIdState(userId);
+
       toast({
         title: "Success",
         description: `New match registered.`,
@@ -77,10 +78,6 @@ export default function AddLeagueMatchForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof CreateLeagueMatch>) {
-    createMatchMutate.mutate({ ...data, teamId, leagueId });
-  }
-
   if (!data || isLoading) return <LoadingSpinner />;
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
@@ -90,22 +87,45 @@ export default function AddLeagueMatchForm() {
   );
 
   const winnerPlayer = filtedLeagueUsers.find(
-    (player) => player.teamUser.userId === form.getValues("winnerId"),
+    (player) => player.teamUser.userId === winnerIdState,
   );
 
   const loserPlayer = filtedLeagueUsers.find(
-    (player) => player.teamUser.userId === form.getValues("loserId"),
+    (player) => player.teamUser.userId === loserIdState,
   );
 
-  const watchLoserId = form.watch("loserId");
-  const watchWinnerId = form.watch("winnerId");
-
   const setWinnerId = (id: string) => {
-    if (id === form.getValues("loserId")) form.setValue("loserId", "");
-    form.setValue("winnerId", id);
+    if (id === loserIdState) setLoserIdState("");
+    if (loserIdState === "" && winnerIdState !== "" && id !== loserIdState) {
+      setLoserIdState(winnerIdState);
+      setWinnerIdState(id);
+    }
+    if (winnerIdState !== "" && loserIdState !== "" && id === loserIdState) {
+      setLoserIdState(winnerIdState);
+      setWinnerIdState(id);
+    } else setWinnerIdState(id);
   };
 
-  const setLoserId = (id: string) => form.setValue("loserId", id);
+  const setLoserId = (id: string) => {
+    if (id === winnerIdState) setWinnerIdState("");
+    if (winnerIdState === "" && loserIdState !== "" && id !== winnerIdState) {
+      setWinnerIdState(loserIdState);
+      setLoserIdState(id);
+    }
+    if (winnerIdState !== "" && loserIdState !== "" && id === winnerIdState) {
+      setWinnerIdState(loserIdState);
+      setLoserIdState(id);
+    } else setLoserIdState(id);
+  };
+
+  const createMatch = async () => {
+    createMatchMutate.mutate({
+      winnerId: winnerIdState,
+      loserId: loserIdState,
+      leagueId,
+      teamId,
+    });
+  };
 
   return (
     <>
@@ -115,158 +135,56 @@ export default function AddLeagueMatchForm() {
         localStorageKey={localKey}
         label="Show inactive players"
       />
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="relative flex h-full w-full flex-col items-center justify-center space-y-4"
+      <div className="relative flex h-full w-full flex-row items-center justify-center space-y-4">
+        <Button
+          type="button"
+          className="absolute right-[calc(50%-16px)] top-6 h-8 w-8 rounded-full bg-primary p-2 text-black"
+          onClick={() => {
+            const tempValue = winnerIdState;
+            setWinnerIdState(loserIdState);
+            setLoserIdState(tempValue);
+          }}
         >
-          <Button
-            type="button"
-            className="absolute right-6 top-24 rotate-90 rounded-full bg-primary p-2 text-black"
-            onClick={() => {
-              const tempValue = form.getValues("winnerId");
-              form.setValue("winnerId", form.getValues("loserId"));
-              form.setValue("loserId", tempValue);
-            }}
-          >
-            <ArrowLeftRight />
-          </Button>
-          <div className="flex w-full flex-col">
-            <Label>Winner</Label>
-            <PickOpponent
-              teamUsers={filtedLeagueUsers}
-              title={"Pick winner"}
-              setPlayerId={setWinnerId}
-            >
-              <Button
-                variant="outline"
-                className="flex w-full justify-between"
-                type="button"
-              >
-                <p>{winnerPlayer?.teamUser.gamerTag ?? "Pick winner"}</p>
-                <ArrowUpRightFromSquare className="text-gray-700" />
-              </Button>
-            </PickOpponent>
-          </div>
-          <div className="flex w-full flex-col">
-            <Label>Loser</Label>
-            <PickOpponent
-              teamUsers={filtedLeagueUsers}
-              title={"Pick winner"}
-              setPlayerId={setLoserId}
-            >
-              <Button
-                type="button"
-                variant="outline"
-                className="flex w-full justify-between"
-              >
-                <p>{loserPlayer?.teamUser.gamerTag ?? "Pick loser"}</p>
-                <ArrowUpRightFromSquare className="text-gray-700" />
-              </Button>
-            </PickOpponent>
-          </div>
-          {watchLoserId !== watchWinnerId &&
-            watchLoserId !== "" &&
-            watchWinnerId !== "" && (
-              <Button
-                disabled={createMatchMutate.isLoading}
-                type="submit"
-                className="m-auto w-full justify-center text-black"
-              >
-                {createMatchMutate.isLoading ? <LoadingSpinner /> : "Add match"}
-              </Button>
-            )}
-          {!!winnerPlayer &&
-            !!loserPlayer &&
-            watchLoserId !== watchWinnerId && (
-              <LeagueMatchCard
-                winnerTeamUser={winnerPlayer.teamUser}
-                loserTeamUser={loserPlayer.teamUser}
-                match={{
-                  preWinnerElo: winnerPlayer.leagueUser.elo,
-                  preLoserElo: loserPlayer.leagueUser.elo,
-                }}
-                includeSeparator={false}
-              />
-            )}
-        </form>
-      </Form>
-      {(!loserPlayer || !winnerPlayer || loserPlayer === winnerPlayer) && (
-        <PickFromRecentOpponents
-          users={filtedLeagueUsers}
-          recentOpponents={recentOpponents}
-          setWinnerId={setWinnerId}
-          setLoserId={setLoserId}
+          <ArrowLeftRight />
+        </Button>
+        <div className="flex w-full flex-col gap-1">
+          <Label>Winner</Label>
+          <p>{winnerPlayer?.teamUser.gamerTag ?? "Pick winner"}</p>
+        </div>
+        <div className="flex w-full flex-col text-end">
+          <Label>Loser</Label>
+          <p>{loserPlayer?.teamUser.gamerTag ?? "Pick loser"}</p>
+        </div>
+      </div>
+      <NewPickOpponent
+        teamUsers={filtedLeagueUsers}
+        winnerId={winnerIdState}
+        loserId={loserIdState}
+        setWinnerId={setWinnerId}
+        setLoserId={setLoserId}
+      />
+      {!!winnerPlayer && !!loserPlayer && loserIdState !== winnerIdState && (
+        <AddMatchDrawer
+          winnerTeamUser={winnerPlayer.teamUser}
+          loserTeamUser={loserPlayer.teamUser}
+          match={{
+            preWinnerElo: winnerPlayer.leagueUser.elo,
+            preLoserElo: loserPlayer.leagueUser.elo,
+          }}
+          includeSeparator={false}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          isLoading={createMatchMutate.isLoading}
+          createMatch={createMatch}
         />
       )}
+      <p className="m-10"></p>
     </>
   );
 }
 
-function PickFromRecentOpponents({
-  users,
-  recentOpponents,
-  setWinnerId,
-  setLoserId,
-}: {
-  users: LeagueUserAndTeamUser[];
-  recentOpponents: string[];
-  setWinnerId: (id: string) => void;
-  setLoserId: (id: string) => void;
-}) {
-  const recentOpponentsFiltered = users.filter((user) =>
-    recentOpponents.includes(user.teamUser.userId),
-  );
-
-  if (recentOpponentsFiltered.length === 0) return null;
-
-  return (
-    <div className="flex flex-col gap-4">
-      <MinorHeaderLabel headerText="Have you played more matches?" />
-      <div className="flex w-full items-center justify-between">
-        <p>Pick as winner</p>
-        <p>Pick as loser</p>
-      </div>
-      {recentOpponentsFiltered.reverse().map((user) => (
-        <div
-          key={user.teamUser.userId}
-          className="relative flex h-10 w-full items-center justify-center"
-        >
-          <Button
-            className="absolute left-0 m-0 h-full w-2/5 bg-primary p-0 hover:bg-transparent"
-            variant="ghost"
-            onClick={() => setWinnerId(user.teamUser.userId)}
-          >
-            {user.teamUser.gamerTag}
-          </Button>
-          <h1 className="z-20 text-5xl">|</h1>
-          <Button
-            className="absolute right-0 m-0 h-full w-2/5 bg-red-500 p-0 hover:bg-transparent"
-            variant="ghost"
-            onClick={() => setLoserId(user.teamUser.userId)}
-          >
-            {user.teamUser.gamerTag}
-          </Button>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
 import { Input } from "@/components/ui/input";
-import {
-  type TeamMemberProps,
-  filterTeamUsers,
-} from "@/server/api/routers/leagueMatch/league-match-utils";
+import { filterUsers } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { Label } from "../ui/label";
 import { LocalStorageToggle } from "../ui-localstorage/localstorage-toggle";
 import {
@@ -274,90 +192,176 @@ import {
   setLocalStorageRecentOpponents,
 } from "./league-match-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
+import TeamUserCard from "../teamUser/team-user-card";
+import { Separator } from "../ui/separator";
 
-function PickOpponent({
+function NewPickOpponent({
   teamUsers,
-  children,
-  title,
-  setPlayerId,
+  winnerId,
+  loserId,
+  setWinnerId,
+  setLoserId,
 }: {
   teamUsers: LeagueUserAndTeamUser[];
-  children: React.ReactNode;
-  title: string;
-  setPlayerId: (id: string) => void;
+  winnerId: string;
+  loserId: string;
+  setWinnerId: (id: string) => void;
+  setLoserId: (id: string) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const membersList: TeamMemberProps[] = teamUsers.map((teamUser) => ({
-    ...teamUser.teamUser,
-    role: "MEMBER",
-  }));
-
-  const filteredMembers = filterTeamUsers(membersList, searchQuery);
+  const filteredMembers = filterUsers(teamUsers, searchQuery);
 
   const sortedMembers = filteredMembers.sort((a, b) =>
-    a.gamerTag.localeCompare(b.gamerTag),
+    a.teamUser.gamerTag.localeCompare(b.teamUser.gamerTag),
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="my-4" asChild>
-        {children}
-      </DialogTrigger>
-      <DialogContent className="max-w-[95%] rounded-sm sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl text-primary">{title}</DialogTitle>
-        </DialogHeader>
-        <div className="relative">
-          <Input
-            tabIndex={-1}
-            autoFocus={false}
-            className="sticky top-16 z-10"
-            placeholder="search for opponent..."
-            value={searchQuery}
-            onChange={(value) => {
-              setSearchQuery(value.currentTarget.value);
-            }}
+    <>
+      <div className="relative w-full">
+        <Input
+          tabIndex={-1}
+          autoFocus={false}
+          className="sticky top-16 z-10"
+          placeholder="search for opponent..."
+          value={searchQuery}
+          onChange={(value) => {
+            setSearchQuery(value.currentTarget.value);
+          }}
+        />
+        <Button
+          className="absolute right-0 top-0 z-20"
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setSearchQuery("");
+          }}
+        >
+          <XCircle className="text-red-500" />
+        </Button>
+      </div>
+      <div className="flex h-[40dvh] w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
+        {sortedMembers.map((member) => (
+          <>
+            <PickWinnerOrLoser
+              key={member.teamUser.userId}
+              user={member}
+              winnerId={winnerId}
+              loserId={loserId}
+              setWinnerId={setWinnerId}
+              setLoserId={setLoserId}
+            />
+            <Separator />
+          </>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function PickWinnerOrLoser({
+  user,
+  winnerId,
+  loserId,
+  setWinnerId,
+  setLoserId,
+}: {
+  user: LeagueUserAndTeamUser;
+  winnerId: string;
+  loserId: string;
+  setWinnerId: (id: string) => void;
+  setLoserId: (id: string) => void;
+}) {
+  return (
+    <div className="flex h-10 w-full items-center justify-between">
+      <TeamUserCard player={user} />
+      <div className="flex gap-2">
+        <Button
+          type="button"
+          className={
+            winnerId === user.teamUser.userId
+              ? "border-2 border-solid border-primary bg-primary p-0 px-4 hover:bg-primary"
+              : "border-2 border-solid border-primary"
+          }
+          variant="ghost"
+          onClick={() => setWinnerId(user.teamUser.userId)}
+        >
+          W
+        </Button>
+        <Button
+          type="button"
+          className={
+            loserId === user.teamUser.userId
+              ? "border-2 border-solid border-red-500 bg-red-500 p-0 px-4 hover:bg-red-500"
+              : "border-2 border-solid border-red-500"
+          }
+          variant="ghost"
+          onClick={() => setLoserId(user.teamUser.userId)}
+        >
+          L
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function AddMatchDrawer({
+  winnerTeamUser,
+  loserTeamUser,
+  match,
+  includeSeparator,
+  isOpen,
+  setIsOpen,
+  isLoading,
+  createMatch,
+}: {
+  winnerTeamUser: TeamUser;
+  loserTeamUser: TeamUser;
+  match: LeagueMatch | { preWinnerElo: number; preLoserElo: number };
+  includeSeparator?: boolean;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  isLoading: boolean;
+  createMatch: () => void;
+}) {
+  return (
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <DrawerTrigger asChild>
+        <Button className="m-auto w-full justify-center text-black">
+          Add match
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mx-auto my-10 w-full max-w-sm">
+          <DrawerHeader>
+            <DrawerTitle className="text-4xl text-primary">
+              Register match
+            </DrawerTitle>
+          </DrawerHeader>
+          <LeagueMatchCard
+            winnerTeamUser={winnerTeamUser}
+            loserTeamUser={loserTeamUser}
+            match={match}
+            includeSeparator={includeSeparator}
           />
-          <Button
-            className="absolute right-0 top-0 z-20"
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => {
-              setSearchQuery("");
-            }}
-          >
-            <XCircle className="text-red-500" />
-          </Button>
-        </div>
-        <MinorHeaderLabel headerText="Members" />
-        <div className="flex h-[55dvh] w-full flex-col gap-1 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
-          {sortedMembers.map((member) => (
+          <DrawerFooter>
             <Button
-              variant="outline"
-              key={member.gamerTag}
-              onClick={() => {
-                setPlayerId(member.userId);
-                setIsOpen(!isOpen);
-              }}
+              disabled={isLoading}
+              type="submit"
+              className="m-auto w-full justify-center text-black"
+              onClick={createMatch}
             >
-              {member.gamerTag}
+              {isLoading ? <LoadingSpinner /> : "Add match"}
             </Button>
-          ))}
+            <DrawerClose asChild>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
         </div>
-        <DialogFooter>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              setIsOpen(!isOpen);
-            }}
-          >
-            Cancel
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 }
