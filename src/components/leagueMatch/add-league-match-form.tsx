@@ -1,5 +1,5 @@
 import { type LeagueMatch, type TeamUser } from "@prisma/client";
-import { ArrowLeftRight, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
@@ -20,7 +20,16 @@ import {
 import LoadingSpinner from "../loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
-// import MinorHeaderLabel from "../minor-header-label";
+import { Input } from "@/components/ui/input";
+import { filterUsers } from "@/server/api/routers/leagueMatch/league-match-utils";
+import { LocalStorageToggle } from "../ui-localstorage/localstorage-toggle";
+import {
+  getLocalStorageRecentOpponents,
+  setLocalStorageRecentOpponents,
+} from "./league-match-util";
+import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
+import TeamUserCard from "../teamUser/team-user-card";
+import { Separator } from "../ui/separator";
 
 export default function AddLeagueMatchForm() {
   const [isOpen, setIsOpen] = useState(true);
@@ -28,7 +37,7 @@ export default function AddLeagueMatchForm() {
   const teamId = useTeamId();
   const leagueId = useLeagueId();
   const [winnerIdState, setWinnerIdState] = useState(userId);
-  const [loserIdState, setLoserIdState] = useState(userId);
+  const [loserIdState, setLoserIdState] = useState("");
 
   const localKey = leagueId + "showInactivePlayers";
   const [showInactivePlayers, setShowInactivePlayers] = useState(
@@ -128,34 +137,13 @@ export default function AddLeagueMatchForm() {
   };
 
   return (
-    <>
+    <div className="relative flex flex-col gap-2">
       <LocalStorageToggle
         isToggled={showInactivePlayers}
         setIsToggled={setShowInactivePlayers}
         localStorageKey={localKey}
         label="Show inactive players"
       />
-      <div className="relative flex h-full w-full flex-row items-center justify-center space-y-4">
-        <Button
-          type="button"
-          className="absolute right-[calc(50%-16px)] top-6 h-8 w-8 rounded-full bg-primary p-2 text-black"
-          onClick={() => {
-            const tempValue = winnerIdState;
-            setWinnerIdState(loserIdState);
-            setLoserIdState(tempValue);
-          }}
-        >
-          <ArrowLeftRight />
-        </Button>
-        <div className="flex w-full flex-col gap-1">
-          <Label>Winner</Label>
-          <p>{winnerPlayer?.teamUser.gamerTag ?? "Pick winner"}</p>
-        </div>
-        <div className="flex w-full flex-col text-end">
-          <Label>Loser</Label>
-          <p>{loserPlayer?.teamUser.gamerTag ?? "Pick loser"}</p>
-        </div>
-      </div>
       <NewPickOpponent
         teamUsers={filtedLeagueUsers}
         winnerId={winnerIdState}
@@ -179,21 +167,9 @@ export default function AddLeagueMatchForm() {
         />
       )}
       <p className="m-10"></p>
-    </>
+    </div>
   );
 }
-
-import { Input } from "@/components/ui/input";
-import { filterUsers } from "@/server/api/routers/leagueMatch/league-match-utils";
-import { Label } from "../ui/label";
-import { LocalStorageToggle } from "../ui-localstorage/localstorage-toggle";
-import {
-  getLocalStorageRecentOpponents,
-  setLocalStorageRecentOpponents,
-} from "./league-match-util";
-import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
-import TeamUserCard from "../teamUser/team-user-card";
-import { Separator } from "../ui/separator";
 
 function NewPickOpponent({
   teamUsers,
@@ -218,11 +194,10 @@ function NewPickOpponent({
 
   return (
     <>
-      <div className="relative w-full">
+      <div className="sticky top-16 z-10 w-full">
         <Input
           tabIndex={-1}
           autoFocus={false}
-          className="sticky top-16 z-10"
           placeholder="search for opponent..."
           value={searchQuery}
           onChange={(value) => {
@@ -241,7 +216,7 @@ function NewPickOpponent({
           <XCircle className="text-red-500" />
         </Button>
       </div>
-      <div className="flex h-[40dvh] w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
+      <div className="flex min-h-[70dvh] w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
         {sortedMembers.map((member) => (
           <>
             <PickWinnerOrLoser
@@ -281,25 +256,25 @@ function PickWinnerOrLoser({
           type="button"
           className={
             winnerId === user.teamUser.userId
-              ? "border-2 border-solid border-primary bg-primary p-0 px-4 hover:bg-primary"
-              : "border-2 border-solid border-primary"
+              ? "w-20 border-2 border-solid border-primary bg-primary p-0 px-4  transition-all hover:bg-primary"
+              : "w-2 border-2 border-solid border-primary  transition-all"
           }
           variant="ghost"
           onClick={() => setWinnerId(user.teamUser.userId)}
         >
-          W
+          {winnerId === user.teamUser.userId ? "Winner" : "W"}
         </Button>
         <Button
           type="button"
           className={
             loserId === user.teamUser.userId
-              ? "border-2 border-solid border-red-500 bg-red-500 p-0 px-4 hover:bg-red-500"
-              : "border-2 border-solid border-red-500"
+              ? "w-20 border-2 border-solid border-red-500 bg-red-500 p-0 px-4 transition-all hover:bg-red-500"
+              : "w-2 border-2 border-solid border-red-500  transition-all"
           }
           variant="ghost"
           onClick={() => setLoserId(user.teamUser.userId)}
         >
-          L
+          {loserId === user.teamUser.userId ? "Loser" : "L"}
         </Button>
       </div>
     </div>
@@ -328,7 +303,7 @@ export function AddMatchDrawer({
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <Button className="m-auto w-full justify-center text-black">
+        <Button className="sticky bottom-20 m-auto w-full justify-center text-black">
           Add match
         </Button>
       </DrawerTrigger>
