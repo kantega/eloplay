@@ -303,7 +303,7 @@ export function AddMatchDrawer({
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <Button className="sticky bottom-20 m-auto w-full justify-center text-black">
+        <Button className="sticky bottom-20 z-30 m-auto w-full justify-center text-black">
           Add match
         </Button>
       </DrawerTrigger>
