@@ -3,32 +3,50 @@ import AddMatchSVG from "@/assets/AddMatchSVG";
 import LeaderboardSVG from "@/assets/LeaderboardSVG";
 import TournamentSVG from "@/assets/TournamentSVG";
 import Link from "next/link";
+import { Label } from "./ui/label";
 
 export default function NavigationBar() {
   return (
     <div className="fixed bottom-0 right-0 z-50 flex w-full justify-center bg-background-secondary">
       <div className="flex w-[min(700px,100%)] justify-around bg-background-secondary">
-        <Link href={"/leaderboard"} className="p-4">
+        <NavButton href="/leaderboard" label="Leaderboard">
           <LeaderboardSVG
             className="text-primary"
             size={30}
             relativeSize={false}
           />
-        </Link>
-        <Link href={"/addLeagueMatch"} className="p-4">
+        </NavButton>
+        <NavButton href="/addLeagueMatch" label="Add match">
           <AddMatchSVG
             className="text-primary"
             size={30}
             relativeSize={false}
           />
-        </Link>
-        <Link href={"/leagueActivity"} className="p-4">
+        </NavButton>
+        <NavButton href="/leagueActivity" label="Activity">
           <ActivitySVG size={30} relativeSize={false} />
-        </Link>
-        <Link href={"/tournament"} className="p-4">
+        </NavButton>
+        <NavButton href="/tournament" label="Tournament">
           <TournamentSVG size={30} relativeSize={false} />
-        </Link>
+        </NavButton>
       </div>
     </div>
+  );
+}
+
+function NavButton({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link href={href} className="flex flex-col items-center gap-2 p-2">
+      {children}
+      <Label className=" text-center text-[10px]">{label}</Label>
+    </Link>
   );
 }
