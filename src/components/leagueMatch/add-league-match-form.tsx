@@ -65,7 +65,7 @@ export default function AddLeagueMatchForm() {
 
       setIsOpen(true);
       setWinnerIdState(userId);
-      setLoserIdState(userId);
+      setLoserIdState("");
 
       toast({
         title: "Success",
