@@ -1,7 +1,6 @@
 import Head from "next/head";
 import NavigationBar from "../components/navigation-bar";
 import { Toaster } from "@/components/ui/toaster";
-import SettingsBar from "@/components/settings-bar";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -19,9 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <Toaster />
       <main
-        className={`relative m-auto flex min-h-screen max-w-[700px] flex-col items-center bg-background ${inter.variable} font-inter`}
+        className={`relative m-auto flex min-h-screen max-w-[700px] flex-col items-center bg-background ${inter.variable} pt-2 font-inter`}
       >
-        <SettingsBar />
         {children}
         <NavigationBar />
       </main>
