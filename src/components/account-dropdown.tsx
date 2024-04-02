@@ -27,6 +27,7 @@ import { useRouter } from "next/router";
 import { getNameOrInitials } from "./teamUser/team-user-utils";
 import { useUserName } from "@/contexts/authContext/auth-provider";
 import { LeagueSelector } from "@/contexts/leagueContext/league-selector";
+import TeamMember from "./auhtVisibility/team-member";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
@@ -56,11 +57,14 @@ export function AccountDropdown() {
           {/* Somehow this is bugged */}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex flex-col items-start gap-2">
-          <p>League picker</p>
-          <LeagueSelector />
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <TeamMember>
+          <DropdownMenuItem className="flex flex-col items-start gap-2">
+            <p>League picker</p>
+
+            <LeagueSelector />
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+        </TeamMember>
         {router.pathname !== "/" && teamId !== "" && (
           <>
             <DropdownMenuGroup>
@@ -158,7 +162,7 @@ function UserProfileButton() {
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" /> {getNameOrInitials(userName)}
+      <User className="text-primary" /> {getNameOrInitials(userName)}
     </>
   );
 }
