@@ -29,7 +29,6 @@ import {
 } from "./league-match-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import TeamUserCard from "../teamUser/team-user-card";
-import { Separator } from "../ui/separator";
 
 export default function AddLeagueMatchForm() {
   const [isOpen, setIsOpen] = useState(true);
@@ -216,19 +215,16 @@ function NewPickOpponent({
           <XCircle className="text-red-500" />
         </Button>
       </div>
-      <div className="flex min-h-[70dvh] w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
+      <div className="min-h-[70dvh flex w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
         {sortedMembers.map((member) => (
-          <>
-            <PickWinnerOrLoser
-              key={member.teamUser.userId}
-              user={member}
-              winnerId={winnerId}
-              loserId={loserId}
-              setWinnerId={setWinnerId}
-              setLoserId={setLoserId}
-            />
-            <Separator />
-          </>
+          <PickWinnerOrLoser
+            key={member.teamUser.userId + "-pick"}
+            user={member}
+            winnerId={winnerId}
+            loserId={loserId}
+            setWinnerId={setWinnerId}
+            setLoserId={setLoserId}
+          />
         ))}
       </div>
     </>

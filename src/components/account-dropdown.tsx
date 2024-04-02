@@ -139,7 +139,12 @@ function TeamUserProfileButton() {
   const teamId = useTeamId();
   const { data, isLoading } = api.teamUser.get.useQuery({ teamId });
 
-  if (isLoading || !data) return <User className="mr-2 h-6 w-6" />;
+  if (isLoading || !data)
+    return (
+      <>
+        <User className="text-primary" /> {"..."}
+      </>
+    );
 
   return (
     <>
