@@ -50,15 +50,16 @@ function LeagueProvider({ children }: { children: React.ReactNode }) {
     setLocalStorageLeague(id, teamId);
   };
 
+  const sortedData = data?.sort((a, b) => a.name.localeCompare(b.name));
   // you have no league selected, but there are leagues, select the first league
   if (
     leagueId === "" &&
     !isLoading &&
-    !!data &&
-    data.length !== 0 &&
-    !!data[0]
+    !!sortedData &&
+    sortedData.length !== 0 &&
+    !!sortedData[0]
   ) {
-    setLeagueId(data[0].id);
+    setLeagueId(sortedData[0].id);
   }
 
   return (
