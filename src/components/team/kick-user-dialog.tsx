@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "../ui/use-toast";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import KickSVG from "@/assets/KickSVG";
 

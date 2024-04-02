@@ -13,7 +13,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 const ChangeTeamNameType = z.object({
   name: z

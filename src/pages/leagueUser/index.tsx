@@ -1,6 +1,6 @@
 import LeagueUserMatchHistory from "@/components/leagueMatch/league-user-match-history";
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import { Input } from "@/components/ui/input";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { useTeamId } from "@/contexts/teamContext/team-provider";

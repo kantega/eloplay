@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { CreateSwissTournament } from "@/server/api/routers/swissTournament/swiss-tournament-types";
 import { Switch } from "../ui/switch";

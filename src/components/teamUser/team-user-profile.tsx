@@ -7,7 +7,7 @@ import { PencilLine, X } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { RoleTexts } from "@/server/types/roleTypes";
 import HeaderLabel from "../header-label";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 export default function TeamUserProfile() {
   const role = useTeamRole();

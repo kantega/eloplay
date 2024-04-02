@@ -16,7 +16,7 @@ import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { Input } from "../ui/input";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { Check, X } from "lucide-react";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 export const UpdateElo = z.object({
   elo: z.number().min(1).max(9999),

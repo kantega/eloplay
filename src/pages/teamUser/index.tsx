@@ -1,5 +1,5 @@
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import TeamUserProfile from "@/components/teamUser/team-user-profile";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import ChangeLeagueName from "./change-league-name";
 import LeagueDeleteDialog from "./league-delete-dialog";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import MinorHeaderLabel from "../minor-header-label";
 import TeamAdmin from "../auhtVisibility/team-admin";
 import TeamModerator from "../auhtVisibility/team-moderator";

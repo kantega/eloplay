@@ -1,7 +1,7 @@
 "use client";
 
 import Homepage from "@/components/home-page";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";

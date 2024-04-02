@@ -8,7 +8,7 @@ import { filterMatches } from "./league-match-util";
 import LeagueUserRivals from "../leagueUser/league-user-rivals";
 import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import AnimationOnScroll from "./animation-on-scroll";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 

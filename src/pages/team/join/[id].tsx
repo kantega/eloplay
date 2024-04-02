@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import { api } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";

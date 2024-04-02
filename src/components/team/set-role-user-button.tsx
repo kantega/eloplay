@@ -3,7 +3,7 @@ import { RoleTexts } from "@/server/types/roleTypes";
 import { Button } from "@/components/ui/button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { type TeamMemberProps } from "@/server/api/routers/leagueMatch/league-match-utils";
 import TeamAdmin from "../auhtVisibility/team-admin";

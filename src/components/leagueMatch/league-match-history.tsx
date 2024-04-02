@@ -4,7 +4,7 @@ import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
 import { useState } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import MessageBox from "../message-box";
 import AnimationOnScroll from "./animation-on-scroll";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";

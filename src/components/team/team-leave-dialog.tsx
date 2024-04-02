@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "../ui/use-toast";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import { useRouter } from "next/router";
 import { useSetLeagueId } from "@/contexts/leagueContext/league-provider";
 import { useSetTeamId, useTeamId } from "@/contexts/teamContext/team-provider";

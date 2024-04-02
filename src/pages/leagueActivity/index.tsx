@@ -2,7 +2,7 @@ import LeagueMatchHistory from "@/components/leagueMatch/league-match-history";
 import { api } from "@/utils/api";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import HeaderLabel from "@/components/header-label";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import MessageBox from "@/components/message-box";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 

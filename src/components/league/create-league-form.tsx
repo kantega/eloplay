@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import { CreateLeague } from "@/server/api/routers/league/league-types";
 import TeamModerator from "../auhtVisibility/team-moderator";
 

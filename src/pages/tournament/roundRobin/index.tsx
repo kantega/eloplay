@@ -1,5 +1,5 @@
 import HeaderLabel from "@/components/header-label";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import MessageBox from "@/components/message-box";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

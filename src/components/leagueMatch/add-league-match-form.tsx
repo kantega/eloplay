@@ -17,7 +17,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
 import { Input } from "@/components/ui/input";
