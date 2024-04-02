@@ -177,6 +177,7 @@ function AllMatches({
           if (isModerator)
             return (
               <RegisterSwissMatchDialog
+                key={match.id}
                 match={match}
                 teamUser1={teamUser1}
                 teamUser2={teamUser2}
