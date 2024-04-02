@@ -2,7 +2,7 @@ import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { getLatestEloList } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { Tooltip, YAxis, AreaChart, Area, ResponsiveContainer } from "recharts";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 interface Props {
   leagueUserId: string;

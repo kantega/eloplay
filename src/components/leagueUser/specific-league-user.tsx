@@ -1,7 +1,7 @@
 import LeagueUserCard from "@/components/leagueUser/league-user-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 export default function SpecificLeagueUser({
   leagueUserId,

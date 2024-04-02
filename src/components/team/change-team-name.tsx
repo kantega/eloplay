@@ -14,7 +14,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import TeamAdmin from "../auhtVisibility/team-admin";
 
 const ChangeTeamNameType = z.object({

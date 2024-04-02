@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { type LeagueMatch } from "@prisma/client";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 export default function DeleteLeagueMatchDialog({
   children,

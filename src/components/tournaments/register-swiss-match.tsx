@@ -14,7 +14,7 @@ import {
   type SwissTournamentMatch,
   type SwissTournamentUser,
 } from "@prisma/client";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import MinorHeaderLabel from "../minor-header-label";
 import { SwissMatchCard } from "./swiss-matches";
 

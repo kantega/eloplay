@@ -4,17 +4,13 @@ import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
 import { useState } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import MessageBox from "../message-box";
 import AnimationOnScroll from "./animation-on-scroll";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 
-export default function LeagueMatchHistory({
-  leagueName,
-}: {
-  leagueName: string;
-}) {
+export default function LeagueMatchHistory() {
   const [listToShow, setListToShow] = useState<LeagueMatchWithProfiles[]>([]);
   const [page, setPage] = useState(0);
   const leagueId = useLeagueId();
@@ -60,7 +56,7 @@ export default function LeagueMatchHistory({
         !isLoading &&
         page > 0 && (
           <MessageBox>
-            No matches found for {leagueName}.
+            No matches found.
             <br />
             Maybe you should play some games?
           </MessageBox>

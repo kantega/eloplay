@@ -26,6 +26,7 @@ import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import { getNameOrInitials } from "./teamUser/team-user-utils";
 import { useUserName } from "@/contexts/authContext/auth-provider";
+import { LeagueSelector } from "@/contexts/leagueContext/league-selector";
 
 export function AccountDropdown() {
   const [isOpened, setIsOpened] = useState(false);
@@ -35,22 +36,36 @@ export function AccountDropdown() {
   return (
     <DropdownMenu open={isOpened} onOpenChange={() => setIsOpened(!isOpened)}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className=" bg-background-tertiary">
+        <Button
+          variant="ghost"
+          className=" m-0 flex h-full flex-col items-center justify-center gap-3 text-[10px]"
+        >
           <ProfileButton />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
+        <DropdownMenuItem
+          onClick={() => setIsOpened(!isOpened)}
+          className="flex justify-between gap-2"
+        >
           <Link href="/user" className="flex">
             <User className="mr-2 h-4 w-4" />
             <span>My Profile</span>
           </Link>
+          {/* <ModeToggle /> */}
+          {/* Somehow this is bugged */}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="flex flex-col items-start gap-2">
+          <p>League picker</p>
+          <LeagueSelector />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {router.pathname !== "/" && teamId !== "" && (
           <>
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="flex flex-col items-start gap-2">
+                <p>Team picker</p>
                 <TeamSelector />
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setIsOpened(!isOpened)}>
@@ -124,11 +139,16 @@ function TeamUserProfileButton() {
   const teamId = useTeamId();
   const { data, isLoading } = api.teamUser.get.useQuery({ teamId });
 
-  if (isLoading || !data) return <User className="mr-2 h-6 w-6" />;
+  if (isLoading || !data)
+    return (
+      <>
+        <User className="text-primary" /> {"..."}
+      </>
+    );
 
   return (
     <>
-      <User className="mr-2 h-6 w-6" /> {getNameOrInitials(data.gamerTag)}
+      <User className="text-primary" /> {getNameOrInitials(data.gamerTag)}
     </>
   );
 }

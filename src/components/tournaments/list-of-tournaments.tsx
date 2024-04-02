@@ -6,7 +6,7 @@ import {
   type SwissTournamentUser,
 } from "@prisma/client";
 import Link from "next/link";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 import MessageBox from "../message-box";
 import TournamentCard from "./tournament-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";

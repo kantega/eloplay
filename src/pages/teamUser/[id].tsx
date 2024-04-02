@@ -1,6 +1,6 @@
 import HeaderLabel from "@/components/header-label";
 import LeagueUserCards from "@/components/leagueUser/league-user-cards";
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";

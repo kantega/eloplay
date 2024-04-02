@@ -1,4 +1,4 @@
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import MessageBox from "@/components/message-box";
 import TeamAndTeamUserProfile from "@/components/teamUser/team-and-team-user-profile";
 import { api } from "@/utils/api";

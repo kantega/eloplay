@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
 import { teamIdSchema } from "@/server/api/routers/team/team-types";
-import LoadingSpinner from "../loading";
+import LoadingSpinner from "../loader/loading";
 
 export default function JoinTeamForm() {
   const form = useForm<z.infer<typeof teamIdSchema>>({

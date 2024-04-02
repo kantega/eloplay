@@ -1,7 +1,7 @@
 "use client";
 
 import Homepage from "@/components/home-page";
-import LoadingSpinner from "@/components/loading";
+import FullPageLoader from "@/components/loader/FullPageLoader";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [sessionData]);
 
   // wait for session to load
-  if (status === "loading") return <LoadingSpinner />;
+  if (status === "loading") return <FullPageLoader />;
   if (!sessionData && router.pathname !== "/") return void signIn();
   if (!sessionData) return <Homepage />;
 

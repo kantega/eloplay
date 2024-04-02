@@ -1,4 +1,4 @@
-import LoadingSpinner from "@/components/loading";
+import LoadingSpinner from "@/components/loader/loading";
 import MessageBox from "@/components/message-box";
 import TournamentCard from "@/components/tournaments/tournament-card";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
