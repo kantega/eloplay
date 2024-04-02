@@ -61,8 +61,6 @@ function LeagueProvider({ children }: { children: React.ReactNode }) {
     setLeagueId(data[0].id);
   }
 
-  if (leagueId === "" || teamId === "") return null;
-
   return (
     <LeagueContext.Provider
       value={{
