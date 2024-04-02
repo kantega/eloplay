@@ -61,6 +61,9 @@ export function InnerWrapper({ children }: { children: React.ReactNode }) {
 
   if (isLoading) return <FullPageLoader />;
 
+  console.log("teamId", teamId);
+  console.log("data", data);
+
   // you have no team selected, but there are teams, select the first team
   if (teamId === "" && !isLoading && !!data && data.length !== 0 && !!data[0])
     setTeamId(data[0].id);

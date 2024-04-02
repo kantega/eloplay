@@ -29,15 +29,17 @@ function LeagueProvider({ children }: { children: React.ReactNode }) {
   const [leagueId, setLeagueIdState] = useState<string>(
     getLocalStorageLeague(teamId),
   );
-  const { data } = api.team.getRoleByUserId.useQuery({
+  const { data: roleData } = api.team.getRoleByUserId.useQuery({
     id: teamId,
   });
+
+  const { data, isLoading } = api.league.getAll.useQuery({ teamId });
 
   const [role, setRole] = useState<RoleText>(RoleTexts.MEMBER);
 
   useEffect(() => {
-    setRole(!!data ? data : RoleTexts.MEMBER);
-  }, [data]);
+    setRole(!!roleData ? roleData : RoleTexts.MEMBER);
+  }, [roleData]);
 
   useEffect(() => {
     setLeagueIdState(getLocalStorageLeague(teamId));
@@ -47,6 +49,17 @@ function LeagueProvider({ children }: { children: React.ReactNode }) {
     setLeagueIdState(id);
     setLocalStorageLeague(id, teamId);
   };
+
+  // you have no league selected, but there are leagues, select the first league
+  if (
+    leagueId === "" &&
+    !isLoading &&
+    !!data &&
+    data.length !== 0 &&
+    !!data[0]
+  ) {
+    setLeagueId(data[0].id);
+  }
 
   return (
     <LeagueContext.Provider

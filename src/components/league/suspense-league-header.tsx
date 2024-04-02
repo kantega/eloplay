@@ -6,6 +6,7 @@ import HeaderLabel from "../header-label";
 export function SuspenseLeagueHeader({ label }: { label: string }) {
   const teamId = useTeamId();
   const leagueId = useLeagueId();
+  if (leagueId === "") return;
 
   const [data] = api.league.get.useSuspenseQuery({ leagueId, teamId });
 
