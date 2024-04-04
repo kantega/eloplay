@@ -4,7 +4,6 @@ import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { api } from "@/utils/api";
 import { Suspense, useState } from "react";
 import LeagueMatchHistoryByDate from "./league-match-history-by-date";
-import LoadingSpinner from "../loader/loading";
 import MessageBox from "../message-box";
 import AnimationOnScroll from "./animation-on-scroll";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
@@ -12,14 +11,8 @@ import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { Skeleton } from "../ui/skeleton";
 
 export default function LeagueMatchHistory() {
-  const numberOfPlaceholders = 5;
-
   return (
-    <Suspense
-      fallback={new Array<number>(numberOfPlaceholders).fill(0).map((index) => (
-        <Skeleton className="h-[10vh] w-full" key={index} />
-      ))}
-    >
+    <Suspense fallback={<SuspenseFallbackMatchHistory />}>
       <LeagueMatchHistoryContent />
     </Suspense>
   );
@@ -74,12 +67,26 @@ function LeagueMatchHistoryContent() {
         sortedLeagueMatchesWithProfiles={sortedLeagueMatchesWithProfiles}
       />
       <AnimationOnScroll
-        classNameInView={"p-2 flex justify-center items-center"}
-        classNameNotInView={"p-2 flex justify-center items-center"}
+        classNameInView={"p-2 flex flex-col justify-center items-center"}
+        classNameNotInView={"p-2 flex flex-col justify-center items-center"}
         functionToCall={handleFetchNextPage}
       >
-        <LoadingSpinner />
+        {page > 1 && <SuspenseFallbackMatchHistory numberOfMatches={1} />}
       </AnimationOnScroll>
+    </>
+  );
+}
+
+export function SuspenseFallbackMatchHistory({
+  numberOfMatches = 5,
+}: {
+  numberOfMatches?: number;
+}) {
+  return (
+    <>
+      {new Array<number>(numberOfMatches).fill(0).map((index) => (
+        <Skeleton className="h-[10vh] w-full" key={index} />
+      ))}
     </>
   );
 }
