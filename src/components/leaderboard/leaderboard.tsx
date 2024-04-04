@@ -1,24 +1,45 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useRouter } from "next/router";
 import MinityrStreakSymbol from "../leagueMatch/minityr-streak-symbol";
-import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { sortAndFilterForInactivePlayers } from "../leagueUser/league-user-utils";
-import { useState } from "react";
-import { useTeamRole } from "@/contexts/teamContext/team-provider";
+import { Suspense, useState } from "react";
+import { useTeamId, useTeamRole } from "@/contexts/teamContext/team-provider";
 import { RoleTexts } from "@/server/types/roleTypes";
 import { PencilLine } from "lucide-react";
 import UpdateEloLeagueUserForm from "./update-elo-league-user-form";
 import TooltipButton from "../ui/text-tooltip";
 import { useUserId } from "@/contexts/authContext/auth-provider";
 import TeamUserCard from "../teamUser/team-user-card";
+import { api } from "@/utils/api";
+import { useLeagueId } from "@/contexts/leagueContext/league-provider";
+import { Skeleton } from "../ui/skeleton";
 
 export default function Leaderboard({
-  leagueUsers,
   showInactivePlayers,
 }: {
-  leagueUsers: LeagueUserAndTeamUser[];
   showInactivePlayers: boolean;
 }) {
+  return (
+    <Suspense fallback={<Skeleton className=" h-[70vh] w-full" />}>
+      <InnerLeaderboard showInactivePlayers={showInactivePlayers} />
+    </Suspense>
+  );
+}
+
+function InnerLeaderboard({
+  showInactivePlayers,
+}: {
+  showInactivePlayers: boolean;
+}) {
+  const teamId = useTeamId();
+  const leagueId = useLeagueId();
+
+  const [data] = api.leagueUser.getAllByLeagueId.useSuspenseQuery({
+    leagueId,
+    teamId,
+  });
+
+  const leagueUsers = data.leagueUsersAndTeamUsers;
   const router = useRouter();
   const userId = useUserId();
 
