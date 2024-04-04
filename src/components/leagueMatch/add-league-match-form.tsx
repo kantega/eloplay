@@ -110,7 +110,10 @@ function AddLeagueMatchFormContent() {
   );
 
   const setWinnerId = (id: string) => {
-    if (id === winnerIdState) return;
+    if (id === winnerIdState) {
+      setWinnerIdState("");
+      return;
+    }
     if (id === loserIdState) setLoserIdState("");
     if (loserIdState === "" && winnerIdState !== "" && id !== loserIdState) {
       setLoserIdState(winnerIdState);
@@ -123,7 +126,10 @@ function AddLeagueMatchFormContent() {
   };
 
   const setLoserId = (id: string) => {
-    if (id === loserIdState) return;
+    if (id === loserIdState) {
+      setLoserIdState("");
+      return;
+    }
     if (id === winnerIdState) setWinnerIdState("");
     if (winnerIdState === "" && loserIdState !== "" && id !== winnerIdState) {
       setWinnerIdState(loserIdState);

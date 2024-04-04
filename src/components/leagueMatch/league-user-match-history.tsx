@@ -3,7 +3,7 @@
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { api } from "@/utils/api";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { filterMatches } from "./league-match-util";
 import LeagueUserRivals from "../leagueUser/league-user-rivals";
 import LeagueUserRadarGraph from "../leagueUser/league-user-radar-graph";
@@ -11,8 +11,26 @@ import LeagueMatchHistoryByDate from "./league-match-history-by-date";
 import LoadingSpinner from "../loader/loading";
 import AnimationOnScroll from "./animation-on-scroll";
 import { type LeagueMatchWithProfiles } from "../leagueUser/league-user-types";
+import { SuspenseFallbackMatchHistory } from "./league-match-history";
 
 export default function LeagueUserMatchHistory({
+  leagueUserId,
+  searchQuery,
+}: {
+  leagueUserId: string;
+  searchQuery: string;
+}) {
+  return (
+    <Suspense fallback={<SuspenseFallbackMatchHistory />}>
+      <LeagueUserMatchHistoryContent
+        leagueUserId={leagueUserId}
+        searchQuery={searchQuery}
+      />
+    </Suspense>
+  );
+}
+
+function LeagueUserMatchHistoryContent({
   leagueUserId,
   searchQuery,
 }: {
@@ -23,13 +41,12 @@ export default function LeagueUserMatchHistory({
   const [, setPage] = useState(0);
   const teamId = useTeamId();
   const leagueId = useLeagueId();
-  const { data: leagueUserData, isLoading: leagueUserIsLoading } =
-    api.leagueUser.getById.useQuery({
-      leagueUserId,
-      teamId,
-    });
-  const { data, isLoading, fetchNextPage } =
-    api.leagueMatch.getAllInfiniteByLeagueUserId.useInfiniteQuery(
+  const [leagueUserData] = api.leagueUser.getById.useSuspenseQuery({
+    leagueUserId,
+    teamId,
+  });
+  const [data, query] =
+    api.leagueMatch.getAllInfiniteByLeagueUserId.useSuspenseInfiniteQuery(
       {
         limit: 10,
         leagueUserId,
@@ -39,7 +56,8 @@ export default function LeagueUserMatchHistory({
       { getNextPageParam: (lastPage) => lastPage.nextCursor },
     );
 
-  if (isLoading || leagueUserIsLoading) return <LoadingSpinner />;
+  const { fetchNextPage } = query;
+
   if (!data || !leagueUserData) return null;
 
   const handleFetchNextPage = async () => {

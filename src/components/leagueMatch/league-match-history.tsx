@@ -83,10 +83,10 @@ export function SuspenseFallbackMatchHistory({
   numberOfMatches?: number;
 }) {
   return (
-    <>
+    <div className="mt-2 w-full space-y-2">
       {new Array<number>(numberOfMatches).fill(0).map((index) => (
         <Skeleton className="h-[10vh] w-full" key={index} />
       ))}
-    </>
+    </div>
   );
 }
