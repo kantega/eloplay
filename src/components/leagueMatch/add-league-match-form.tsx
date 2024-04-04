@@ -3,7 +3,7 @@ import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
@@ -29,8 +29,17 @@ import {
 } from "./league-match-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import TeamUserCard from "../teamUser/team-user-card";
+import { Skeleton } from "../ui/skeleton";
 
 export default function AddLeagueMatchForm() {
+  return (
+    <Suspense fallback={<Skeleton className="h-[60vh] w-full " />}>
+      <AddLeagueMatchFormContent />
+    </Suspense>
+  );
+}
+
+function AddLeagueMatchFormContent() {
   const [isOpen, setIsOpen] = useState(true);
   const userId = useUserId();
   const teamId = useTeamId();
@@ -46,7 +55,7 @@ export default function AddLeagueMatchForm() {
     getLocalStorageRecentOpponents(leagueId),
   );
 
-  const { data, isLoading } = api.leagueUser.getAllByLeagueId.useQuery({
+  const [data] = api.leagueUser.getAllByLeagueId.useSuspenseQuery({
     teamId,
     leagueId,
   });
@@ -85,8 +94,6 @@ export default function AddLeagueMatchForm() {
       });
     },
   });
-
-  if (!data || isLoading) return <LoadingSpinner />;
 
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,

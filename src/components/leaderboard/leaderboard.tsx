@@ -20,7 +20,7 @@ export default function Leaderboard({
   showInactivePlayers: boolean;
 }) {
   return (
-    <Suspense fallback={<Skeleton className=" h-[70vh] w-full" />}>
+    <Suspense fallback={<Skeleton className=" h-[60vh] w-full" />}>
       <InnerLeaderboard showInactivePlayers={showInactivePlayers} />
     </Suspense>
   );
