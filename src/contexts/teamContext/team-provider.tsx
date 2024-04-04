@@ -72,7 +72,7 @@ export function InnerWrapper({ children }: { children: React.ReactNode }) {
   }
 
   if (teamId !== "" && router.pathname === "/") {
-    void router.push("/leaderboard");
+    void router.push("/addLeagueMatch");
     return <FullPageLoader />;
   }
 
