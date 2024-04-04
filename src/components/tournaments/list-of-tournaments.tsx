@@ -6,18 +6,28 @@ import {
   type SwissTournamentUser,
 } from "@prisma/client";
 import Link from "next/link";
-import LoadingSpinner from "../loader/loading";
 import MessageBox from "../message-box";
 import TournamentCard from "./tournament-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { filterTournaments } from "./tournament-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import { LocalStorageCheckbox } from "../ui-localstorage/localstorage-checkbox";
 import MinorHeaderLabel from "../minor-header-label";
+import { Skeleton } from "../ui/skeleton";
 
 export default function ListOfTournaments() {
+  const skeleton = <TournamentSkeleton />;
+
+  return (
+    <Suspense fallback={skeleton}>
+      <ListOfTournamentsContent />
+    </Suspense>
+  );
+}
+
+function ListOfTournamentsContent() {
   const teamId = useTeamId();
   const leagueId = useLeagueId();
   const keyShowCompleted = leagueId + "showCompletedTournaments";
@@ -37,7 +47,7 @@ export default function ListOfTournaments() {
   );
   const [tournaments, setTournaments] = useState<SwissTournament[]>([]);
 
-  const { data, isLoading } = api.swissTournament.getAll.useQuery({
+  const [data] = api.swissTournament.getAll.useSuspenseQuery({
     teamId,
     leagueId,
   });
@@ -59,7 +69,6 @@ export default function ListOfTournaments() {
     setTournaments(newData);
   }, [data, searchQuery, showCompleted, showOpen, showYours]);
 
-  if (isLoading) return <LoadingSpinner />;
   if (!data)
     return <MessageBox>Theres no tournament for your league :(</MessageBox>;
 
@@ -134,5 +143,21 @@ function TournamentCardLink({
         teamUser={teamUser}
       />
     </Link>
+  );
+}
+
+function TournamentSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      <Skeleton className="h-12 w-full" />
+      <div className="flex gap-2">
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-4 w-1/3" />
+      </div>
+      <Skeleton className="h-20 w-full" />
+      <Skeleton className="h-20 w-full delay-150" />
+      <Skeleton className="h-20 w-full delay-300" />
+    </div>
   );
 }
