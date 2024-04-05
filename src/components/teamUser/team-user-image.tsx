@@ -12,7 +12,7 @@ export default function TeamUserImage({
       {index !== undefined && (
         <p className="absolute top-0 z-30 text-3xl text-primary">{index + 1}</p>
       )}
-      <div className="absolute z-20 h-full w-full bg-[#0000004D]" />
+      <div className="absolute z-20 h-full w-full bg-[#0000002D]" />
       <Image
         className="rounded-full"
         src={image}
