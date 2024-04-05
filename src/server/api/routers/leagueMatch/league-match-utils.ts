@@ -65,9 +65,10 @@ export function filterUsers(
 }
 
 export function filterBlockedUsers(
-  members: BlockedUser[],
   searchQuery: string,
+  members?: BlockedUser[],
 ) {
+  if (!members) return [];
   const letters = searchQuery.split("");
 
   const filteredTeamUsers = members.filter((member) => {

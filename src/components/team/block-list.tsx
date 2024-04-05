@@ -9,10 +9,10 @@ import SearchBar from "../search-bar";
 export default function BlockList({
   blockedUsers,
 }: {
-  blockedUsers: BlockedUser[];
+  blockedUsers?: BlockedUser[];
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredBlockedUsers = filterBlockedUsers(blockedUsers, searchQuery);
+  const filteredBlockedUsers = filterBlockedUsers(searchQuery, blockedUsers);
 
   const sortedBlockedUsers = filteredBlockedUsers.sort((a, b) =>
     a.gamerTag.localeCompare(b.gamerTag),
