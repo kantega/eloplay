@@ -1,5 +1,4 @@
 import { type LeagueMatch, type TeamUser } from "@prisma/client";
-import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
@@ -20,7 +19,6 @@ import {
 import LoadingSpinner from "../loader/loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
-import { Input } from "@/components/ui/input";
 import { filterUsers } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { LocalStorageToggle } from "../ui-localstorage/localstorage-toggle";
 import {
@@ -30,6 +28,7 @@ import {
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import TeamUserCard from "../teamUser/team-user-card";
 import { Skeleton } from "../ui/skeleton";
+import SearchBar from "../search-bar";
 
 export default function AddLeagueMatchForm() {
   return (
@@ -208,28 +207,11 @@ function NewPickOpponent({
 
   return (
     <>
-      <div className="sticky top-16 z-10 w-full">
-        <Input
-          tabIndex={-1}
-          autoFocus={false}
-          placeholder="search for opponent..."
-          value={searchQuery}
-          onChange={(value) => {
-            setSearchQuery(value.currentTarget.value);
-          }}
-        />
-        <Button
-          className="absolute right-0 top-0 z-20"
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            setSearchQuery("");
-          }}
-        >
-          <XCircle className="text-red-500" />
-        </Button>
-      </div>
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for opponent..."}
+      />
       <div className="min-h-[70dvh flex w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
         {sortedMembers.map((member) => (
           <PickWinnerOrLoser
