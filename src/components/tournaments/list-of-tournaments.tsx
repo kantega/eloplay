@@ -10,12 +10,12 @@ import MessageBox from "../message-box";
 import TournamentCard from "./tournament-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { Suspense, useMemo, useState } from "react";
-import { Input } from "../ui/input";
 import { filterTournaments } from "./tournament-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import { LocalStorageCheckbox } from "../ui-localstorage/localstorage-checkbox";
 import MinorHeaderLabel from "../minor-header-label";
 import { Skeleton } from "../ui/skeleton";
+import SearchBar from "../search-bar";
 
 export default function ListOfTournaments() {
   const skeleton = <TournamentSkeleton />;
@@ -74,15 +74,10 @@ function ListOfTournamentsContent() {
 
   return (
     <>
-      <Input
-        tabIndex={-1}
-        autoFocus={false}
-        className="sticky top-16 z-10"
-        placeholder="search for tournament..."
-        value={searchQuery}
-        onChange={(value) => {
-          setSearchQuery(value.currentTarget.value);
-        }}
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for tournament..."}
       />
       <MinorHeaderLabel headerText="Filter type of tournament" />
       <div className="flex flex-wrap gap-4">

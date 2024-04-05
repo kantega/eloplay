@@ -4,13 +4,13 @@ import {
   type TeamMemberProps,
   filterTeamUsers,
 } from "@/server/api/routers/leagueMatch/league-match-utils";
-import { Input } from "@/components/ui/input";
 import SetRoleUserButton from "@/components/team/set-role-user-button";
 import { useState } from "react";
 import Link from "next/link";
 import { Separator } from "../ui/separator";
 import KickUserButton from "./kick-user-button";
 import MinorHeaderLabel from "../minor-header-label";
+import SearchBar from "../search-bar";
 
 export default function TeamMemberList({
   teamUsers,
@@ -29,13 +29,10 @@ export default function TeamMemberList({
   return (
     <div className="relative w-full space-y-4">
       <MinorHeaderLabel headerText="Member list" />
-      <Input
-        className="sticky top-14 z-10"
-        placeholder="search for member..."
-        value={searchQuery}
-        onChange={(value) => {
-          setSearchQuery(value.currentTarget.value);
-        }}
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for member..."}
       />
 
       <ul className="flex flex-col justify-center gap-1">
