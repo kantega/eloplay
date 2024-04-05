@@ -28,9 +28,14 @@ export default function MinityrLeagueMatchHistory({
 function MinityrMatchSymbol({ eloGain }: { eloGain: number }) {
   return (
     <li
-      className={`flex h-4 w-4 items-center justify-center rounded ${
-        eloGain > 0 ? "bg-primary" : "bg-red-500"
-      }`}
+      data-before=""
+      className={`relative flex h-4 w-4 items-center justify-center rounded 
+          last:before:absolute last:before:-bottom-1 last:before:h-[0.15rem] last:before:w-[70%] last:before:rounded-sm
+          last:before:content-[attr(before)]  ${
+            eloGain > 0
+              ? "bg-primary last:before:bg-primary"
+              : "bg-red-500 last:before:bg-red-500"
+          }`}
     >
       <p className="text-xs font-semibold text-black">
         {eloGain > 0 ? "W" : "L"}
