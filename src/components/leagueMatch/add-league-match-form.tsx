@@ -122,6 +122,9 @@ function AddLeagueMatchFormContent() {
       setLoserIdState(winnerIdState);
       setWinnerIdState(id);
     } else setWinnerIdState(id);
+
+    if (winnerIdState !== "" && loserIdState !== "")
+      scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const setLoserId = (id: string) => {
@@ -138,6 +141,9 @@ function AddLeagueMatchFormContent() {
       setWinnerIdState(loserIdState);
       setLoserIdState(id);
     } else setLoserIdState(id);
+
+    if (winnerIdState !== "" && loserIdState !== "")
+      scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const createMatch = async () => {
@@ -205,15 +211,38 @@ function NewPickOpponent({
     a.teamUser.gamerTag.localeCompare(b.teamUser.gamerTag),
   );
 
+  const winnerOrLoser = sortedMembers.filter(
+    (member) =>
+      member.teamUser.userId === winnerId || member.teamUser.userId === loserId,
+  );
+
+  const sortedMembersWithoutWinnerAndLoser = sortedMembers.filter(
+    (member) =>
+      member.teamUser.userId !== winnerId && member.teamUser.userId !== loserId,
+  );
+
   return (
     <>
+      <div className="flex w-full flex-col gap-4 overflow-scroll rounded-md p-2">
+        {winnerOrLoser.map((member) => (
+          <PickWinnerOrLoser
+            key={member.teamUser.userId + "-pick"}
+            user={member}
+            winnerId={winnerId}
+            loserId={loserId}
+            setWinnerId={setWinnerId}
+            setLoserId={setLoserId}
+          />
+        ))}
+      </div>
       <SearchBar
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         placeholder={"Search for opponent..."}
       />
-      <div className="min-h-[70dvh flex w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
-        {sortedMembers.map((member) => (
+
+      <div className="flex min-h-[70dvh] w-full flex-col gap-4 overflow-scroll rounded-md p-2">
+        {sortedMembersWithoutWinnerAndLoser.map((member) => (
           <PickWinnerOrLoser
             key={member.teamUser.userId + "-pick"}
             user={member}

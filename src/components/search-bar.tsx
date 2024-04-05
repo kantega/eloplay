@@ -14,7 +14,7 @@ export default function SearchBar({
   placeholder,
 }: Props) {
   return (
-    <div className="sticky top-16 z-10 w-full">
+    <div className="sticky top-2 z-10 w-full">
       <Input
         tabIndex={-1}
         autoFocus={false}
