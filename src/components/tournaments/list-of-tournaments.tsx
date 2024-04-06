@@ -136,6 +136,7 @@ function TournamentCardLink({
         tournament={tournament}
         swissUser={swissUser}
         teamUser={teamUser}
+        showDelete={false}
       />
     </Link>
   );
