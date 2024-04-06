@@ -22,7 +22,7 @@ export function TabMenu<T extends Key>({
   return (
     <div
       className={cn(
-        "bg-background-input fixed left-0 top-0 w-full overflow-auto rounded-sm p-2",
+        "bg-background-input fixed left-0 top-0 z-50 w-full overflow-auto rounded-sm p-2",
         className,
       )}
     >
