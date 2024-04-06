@@ -12,7 +12,7 @@ import { useUserId } from "@/contexts/authContext/auth-provider";
 import TeamUserCard from "../teamUser/team-user-card";
 import { api } from "@/utils/api";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
-import { Skeleton } from "../ui/skeleton";
+import LeaderboardSkeleton from "../skeletons/leaderboard-skeleton";
 
 export default function Leaderboard({
   showInactivePlayers,
@@ -20,7 +20,7 @@ export default function Leaderboard({
   showInactivePlayers: boolean;
 }) {
   return (
-    <Suspense fallback={<Skeleton className=" h-[60vh] w-full" />}>
+    <Suspense fallback={<LeaderboardSkeleton />}>
       <InnerLeaderboard showInactivePlayers={showInactivePlayers} />
     </Suspense>
   );

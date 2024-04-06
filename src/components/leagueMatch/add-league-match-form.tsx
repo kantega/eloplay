@@ -27,12 +27,12 @@ import {
 } from "./league-match-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import TeamUserCard from "../teamUser/team-user-card";
-import { Skeleton } from "../ui/skeleton";
 import SearchBar from "../search-bar";
+import AddMatchUserListSkeleton from "../skeletons/add-match-user-list-skeleton";
 
 export default function AddLeagueMatchForm() {
   return (
-    <Suspense fallback={<Skeleton className="h-[60vh] w-full " />}>
+    <Suspense fallback={<AddMatchUserListSkeleton />}>
       <AddLeagueMatchFormContent />
     </Suspense>
   );
