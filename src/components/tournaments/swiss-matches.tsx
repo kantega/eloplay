@@ -243,7 +243,7 @@ export function SwissMatchCard({
 
   return (
     <Card className={cn("relative h-32 w-full overflow-hidden", rightSide)}>
-      <div className={cn("absolute h-32 w-32", leftSide)}></div>
+      <div className={cn("absolute h-32 w-1/2", leftSide)}></div>
       <SwissUserCard
         teamUser={teamUser1}
         swissUser={swissUser1}
@@ -298,7 +298,7 @@ function SwissRoundPagination({
   const indexes = new Array(5).fill(0);
 
   return (
-    <Pagination className="fixed bottom-16 left-0 z-50 bg-background-secondary py-2">
+    <Pagination className="fixed bottom-28 left-0 z-50 bg-background-secondary py-2">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious onClick={setPrevious} />

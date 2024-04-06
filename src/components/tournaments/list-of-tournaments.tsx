@@ -85,7 +85,7 @@ function ListOfTournamentsContent() {
           isToggled={showOpen}
           setIsToggled={setShowOpen}
           localStorageKey={keyShowOpen}
-          label="Open for registration"
+          label="Registration"
         />
         <LocalStorageCheckbox
           isToggled={showCompleted}

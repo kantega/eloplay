@@ -34,7 +34,7 @@ export default function SwissTournamentIdPage() {
   if (typeof id !== "string") return null;
 
   return (
-    <div className="container flex h-full flex-col items-center gap-8 px-4 py-10 ">
+    <div className="container flex h-full flex-col items-center gap-8 px-4 py-4 ">
       <SwissTournamentPage id={id} />
       <span className="py-6" />
     </div>
@@ -157,7 +157,6 @@ function SwissTournamentLayout({
   return (
     <div className="relative flex h-full w-full flex-col justify-center gap-8 py-4">
       <TournamentMenu
-        className="right-0 top-0"
         currentState={state}
         setState={setState}
         states={[States.INFORMATION, States.MATCHES, States.LEADERBOARD]}

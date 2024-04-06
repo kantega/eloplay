@@ -69,7 +69,6 @@ function TeamInfo() {
         currentState={state}
         states={[TeamStates.LEAGUES, TeamStates.MEMBERS, TeamStates.BLOCKLIST]}
         setState={setState}
-        className="bg-background-input absolute left-0 top-20 z-10 w-full"
       />
       <div className="flex w-full flex-col gap-8">
         <div className="flex items-end justify-between">
@@ -118,7 +117,6 @@ function TeamInfo() {
             )}
           </span>
         </div>
-        <span className="py-4" />
         {getStateComponent(state)}
         <span className="py-10" />
       </div>
