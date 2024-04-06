@@ -9,6 +9,7 @@ import {
 } from "@prisma/client";
 import TournamentStatusBadge from "./tournament-status-badge";
 import { SwissUserCard } from "./swiss-user-card";
+import { DeleteTournamentButton } from "./delete-swiss-button";
 
 export default function TournamentCard({
   tournament,
@@ -48,10 +49,11 @@ export default function TournamentCard({
         isOpen={tournament.isOpen}
       />
       {!!swissUser && !!teamUser && (
-        <div className="absolute bottom-0 right-0 rounded-sm border-2 border-solid border-primary">
+        <div className="absolute bottom-0 right-24 rounded-sm">
           <SwissUserCard teamUser={teamUser} swissUser={swissUser} />
         </div>
       )}
+      <DeleteTournamentButton tournament={tournament} />
     </Card>
   );
 }
