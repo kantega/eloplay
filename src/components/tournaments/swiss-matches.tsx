@@ -26,6 +26,8 @@ import { userIsTournamentModerator } from "@/components/auhtVisibility/role";
 import { useTeamRole } from "@/contexts/teamContext/team-provider";
 import RegisterSwissMatchDialog from "./register-swiss-match";
 import { SwissUserCard } from "./swiss-user-card";
+import VersusSVG from "@/assets/versusSVG";
+import { cn } from "@/lib/utils";
 
 export default function SwissTournamentMatches({
   matches,
@@ -50,26 +52,28 @@ export default function SwissTournamentMatches({
   }, [matches, round]);
 
   return (
-    <div className="flex h-full flex-col gap-4">
-      <YourMatch
-        matches={filteredMatches}
-        teamUsers={teamUsers}
-        swissUsers={swissUsers}
-      />
-      <AllMatches
-        matches={filteredMatches}
-        teamUsers={teamUsers}
-        swissUsers={swissUsers}
-        ownerId={tournament.userId}
-      />
-      <SwissRoundPagination
-        round={round}
-        setRound={setRound}
-        currentRound={tournament.currentRound}
-        maxRounds={tournament.roundLimit}
-        status={tournament.status as MatchStatus}
-      />
-    </div>
+    <>
+      <div className="flex h-full flex-col gap-4">
+        <YourMatch
+          matches={filteredMatches}
+          teamUsers={teamUsers}
+          swissUsers={swissUsers}
+        />
+        <AllMatches
+          matches={filteredMatches}
+          teamUsers={teamUsers}
+          swissUsers={swissUsers}
+          ownerId={tournament.userId}
+        />
+        <SwissRoundPagination
+          round={round}
+          setRound={setRound}
+          currentRound={tournament.currentRound}
+          maxRounds={tournament.roundLimit}
+          status={tournament.status as MatchStatus}
+        />
+      </div>
+    </>
   );
 }
 
@@ -148,7 +152,7 @@ function AllMatches({
 
   return (
     <>
-      <div>
+      <div className="space-y-2">
         <MinorHeaderLabel headerText="All matches for this round" />
         {matches.map((match) => {
           const teamUser1 = teamUsers.find(
@@ -224,23 +228,44 @@ export function SwissMatchCard({
   swissUser1: SwissTournamentUser;
   swissUser2: SwissTournamentUser;
 }) {
+  const winner1 = match.winnerId === match.userId1;
+  const winner2 = match.winnerId === match.userId2;
+  const leftSide = winner1
+    ? "bg-green-500 border-t-green-500 border-l-green-500"
+    : winner2
+      ? "bg-red-500 border-t-red-500 border-l-red-500"
+      : "bg-background-tertiary border-t-background-tertiary border-l-background-tertiary";
+  const rightSide = winner2
+    ? "bg-green-500 border-b-green-500 border-r-green-500"
+    : winner1
+      ? "bg-red-500 border-b-red-500 border-r-red-500"
+      : "bg-background-secondary border-b-background-secondary border-r-background-secondary";
+
   return (
-    <Card className="relative w-full overflow-hidden">
-      <div className="flex w-full flex-col justify-between bg-background-secondary">
-        <div className="flex w-full items-center justify-around">
-          <SwissUserCard
-            teamUser={teamUser1}
-            swissUser={swissUser1}
-            match={match}
-          />
-          <p className="text-sm">vs.</p>
-          <SwissUserCard
-            teamUser={teamUser2}
-            swissUser={swissUser2}
-            match={match}
-          />
-        </div>
-      </div>
+    <Card className={cn("relative h-32 w-full overflow-hidden", rightSide)}>
+      <div className={cn("absolute h-32 w-1/2", leftSide)}></div>
+      <SwissUserCard
+        teamUser={teamUser1}
+        swissUser={swissUser1}
+        className="absolute left-0  z-30 bg-transparent"
+      />
+      <div
+        className={cn(
+          "absolute left-[calc(50%-4rem)] top-0 flex h-32 w-32 items-center justify-center border-b-[4rem] border-l-[4rem] border-r-[4rem] border-t-[4rem] border-b-background-secondary border-l-background-tertiary border-r-background-secondary border-t-background-tertiary text-center",
+          rightSide,
+          leftSide,
+        )}
+      />
+      <VersusSVG
+        size={60}
+        relativeSize={false}
+        className="absolute left-[calc(50%-30px)] top-[calc(50%-35px)]"
+      />
+      <SwissUserCard
+        teamUser={teamUser2}
+        swissUser={swissUser2}
+        className="absolute bottom-0 right-0 z-30 bg-transparent"
+      />
     </Card>
   );
 }
@@ -273,7 +298,7 @@ function SwissRoundPagination({
   const indexes = new Array(5).fill(0);
 
   return (
-    <Pagination className="fixed bottom-20 left-0">
+    <Pagination className="fixed bottom-28 left-0 z-50 bg-background-secondary py-2">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious onClick={setPrevious} />

@@ -1,6 +1,7 @@
 import {
   GitBranchPlus,
   LogOut,
+  Menu,
   Plus,
   User,
   UserPlus,
@@ -22,10 +23,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { toast } from "./ui/use-toast";
-import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { getNameOrInitials } from "./teamUser/team-user-utils";
-import { useUserName } from "@/contexts/authContext/auth-provider";
 import { LeagueSelector } from "@/contexts/leagueContext/league-selector";
 import TeamMember from "./auhtVisibility/team-member";
 
@@ -39,9 +37,9 @@ export function AccountDropdown() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className=" m-0 flex h-full flex-col items-center justify-center gap-3 text-[10px]"
+          className=" m-0 flex h-full flex-col items-center justify-center gap-3 text-[10px] hover:bg-transparent"
         >
-          <ProfileButton />
+          <TriggerButton />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -132,37 +130,10 @@ export function AccountDropdown() {
   );
 }
 
-function ProfileButton() {
-  const teamId = useTeamId();
-
-  if (teamId === "") return <UserProfileButton />;
-  return <TeamUserProfileButton />;
-}
-
-function TeamUserProfileButton() {
-  const teamId = useTeamId();
-  const { data, isLoading } = api.teamUser.get.useQuery({ teamId });
-
-  if (isLoading || !data)
-    return (
-      <>
-        <User className="text-primary" /> {"..."}
-      </>
-    );
-
+function TriggerButton() {
   return (
     <>
-      <User className="text-primary" /> {getNameOrInitials(data.gamerTag)}
-    </>
-  );
-}
-
-function UserProfileButton() {
-  const userName = useUserName();
-
-  return (
-    <>
-      <User className="text-primary" /> {getNameOrInitials(userName)}
+      <Menu className="text-primary" /> More
     </>
   );
 }

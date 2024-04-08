@@ -1,12 +1,9 @@
-import { api } from "@/utils/api";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import Leaderboard from "@/components/leaderboard/leaderboard";
-import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
-import LoadingSpinner from "@/components/loader/loading";
 import { LocalStorageToggle } from "@/components/ui-localstorage/localstorage-toggle";
 import { getLocalStorageToggleValue } from "@/components/ui-localstorage/localstorage-utils";
-import { SuspenseLeagueHeader } from "@/components/league/suspense-league-header";
+import { LeagueHeader } from "@/components/league/league-header";
 
 export default function LeaderboardPage() {
   const leagueId = useLeagueId();
@@ -18,39 +15,14 @@ export default function LeaderboardPage() {
 
   return (
     <div className="container flex h-full flex-col justify-center gap-8 px-4 py-4 ">
-      <Suspense fallback={<LoadingSpinner />}>
-        <SuspenseLeagueHeader label={"LEADERBOARD"} />
-      </Suspense>
+      <LeagueHeader label={"LEADERBOARD"} />
       <LocalStorageToggle
         isToggled={showInactivePlayers}
         setIsToggled={setShowInactivePlayers}
         localStorageKey={localKey}
         label="Show inactive players"
       />
-      <Suspense fallback={<LoadingSpinner />}>
-        <SuspenseLeaderboard showInactivePlayers={showInactivePlayers} />
-      </Suspense>
+      <Leaderboard showInactivePlayers={showInactivePlayers} />
     </div>
-  );
-}
-
-function SuspenseLeaderboard({
-  showInactivePlayers,
-}: {
-  showInactivePlayers: boolean;
-}) {
-  const teamId = useTeamId();
-  const leagueId = useLeagueId();
-
-  const [data] = api.leagueUser.getAllByLeagueId.useSuspenseQuery({
-    leagueId,
-    teamId,
-  });
-
-  return (
-    <Leaderboard
-      leagueUsers={data.leagueUsersAndTeamUsers}
-      showInactivePlayers={showInactivePlayers}
-    />
   );
 }

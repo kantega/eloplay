@@ -4,11 +4,11 @@ import {
   type TeamMemberProps,
   filterTeamUsers,
 } from "@/server/api/routers/leagueMatch/league-match-utils";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { useUserId } from "@/contexts/authContext/auth-provider";
+import SearchBar from "../search-bar";
 
 export default function TeamTransferList({
   teamUsers,
@@ -32,23 +32,12 @@ export default function TeamTransferList({
     (teamUser) => teamUser.userId !== userId,
   );
 
-  if (removeCurrentUser.length === 0) {
-    return (
-      <h1 className="rounded-sm bg-background-tertiary p-2">
-        No other members found
-      </h1>
-    );
-  }
-
   return (
     <div className="relative w-full space-y-4">
-      <Input
-        className="sticky top-14 z-10"
-        placeholder="search for member..."
-        value={searchQuery}
-        onChange={(value) => {
-          setSearchQuery(value.currentTarget.value);
-        }}
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for members..."}
       />
 
       <ul className="flex flex-col justify-center gap-1">

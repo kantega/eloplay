@@ -7,6 +7,8 @@ import { teamIdSchema } from "@/server/api/routers/team/team-types";
 import { updateEloRating } from "@/utils/elo";
 import {
   addEloToLatestEloList,
+  getNewEloList,
+  getStreak,
   newLeagueUserStreak,
 } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { TRPCError } from "@trpc/server";
@@ -187,6 +189,27 @@ export const leagueMatchRouter = createTRPCRouter({
       const winnerEloGain = matchNewElos[0] - leagueMatch.preWinnerElo;
       const loserEloGain = matchNewElos[1] - leagueMatch.preLoserElo;
 
+      //!
+      //!
+      //!
+
+      const winnerMatches = await ctx.db.leagueMatch.findMany({
+        where: {
+          OR: [
+            { winnerId: leagueMatch.winnerId },
+            { loserId: leagueMatch.winnerId },
+          ],
+          leagueId: leagueMatch.leagueId,
+          teamId: input.teamId,
+        },
+        orderBy: {
+          id: "asc",
+        },
+        take: 20,
+      });
+
+      const newWinnerStreak = getStreak(winnerMatches, leagueMatch.winnerId);
+
       // update stats on league users and league
       await ctx.db.leagueUser.update({
         where: {
@@ -196,10 +219,27 @@ export const leagueMatchRouter = createTRPCRouter({
         data: {
           elo: leagueWinner.elo - winnerEloGain,
           matchCount: leagueWinner.matchCount - 1,
-          // todo: fix streak
-          // todo: fix latestEloGain
+          streak: newWinnerStreak,
+          latestEloGain: getNewEloList(winnerMatches, leagueMatch.winnerId),
         },
       });
+
+      const loserMatches = await ctx.db.leagueMatch.findMany({
+        where: {
+          OR: [
+            { winnerId: leagueMatch.winnerId },
+            { loserId: leagueMatch.winnerId },
+          ],
+          leagueId: leagueMatch.leagueId,
+          teamId: input.teamId,
+        },
+        orderBy: {
+          id: "asc",
+        },
+        take: 20,
+      });
+
+      const newLoserStreak = getStreak(loserMatches, leagueMatch.winnerId);
 
       await ctx.db.leagueUser.update({
         where: {
@@ -210,8 +250,8 @@ export const leagueMatchRouter = createTRPCRouter({
           elo: leagueLoser.elo - loserEloGain,
           matchLossCount: leagueLoser.matchLossCount - 1,
           matchCount: leagueLoser.matchCount - 1,
-          // todo: fix streak
-          // todo: fix latestEloGain
+          streak: newLoserStreak,
+          latestEloGain: getNewEloList(loserMatches, leagueMatch.loserId),
         },
       });
 

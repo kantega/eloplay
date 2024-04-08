@@ -1,9 +1,8 @@
 import { type LeagueMatch, type TeamUser } from "@prisma/client";
-import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { api } from "@/utils/api";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { useLeagueId } from "@/contexts/leagueContext/league-provider";
 import LeagueMatchCard from "@/components/leagueMatch/league-match-card";
@@ -20,7 +19,6 @@ import {
 import LoadingSpinner from "../loader/loading";
 import { type LeagueUserAndTeamUser } from "../leagueUser/league-user-types";
 import { useUserId } from "@/contexts/authContext/auth-provider";
-import { Input } from "@/components/ui/input";
 import { filterUsers } from "@/server/api/routers/leagueMatch/league-match-utils";
 import { LocalStorageToggle } from "../ui-localstorage/localstorage-toggle";
 import {
@@ -29,8 +27,18 @@ import {
 } from "./league-match-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import TeamUserCard from "../teamUser/team-user-card";
+import SearchBar from "../search-bar";
+import AddMatchUserListSkeleton from "../skeletons/add-match-user-list-skeleton";
 
 export default function AddLeagueMatchForm() {
+  return (
+    <Suspense fallback={<AddMatchUserListSkeleton />}>
+      <AddLeagueMatchFormContent />
+    </Suspense>
+  );
+}
+
+function AddLeagueMatchFormContent() {
   const [isOpen, setIsOpen] = useState(true);
   const userId = useUserId();
   const teamId = useTeamId();
@@ -46,7 +54,7 @@ export default function AddLeagueMatchForm() {
     getLocalStorageRecentOpponents(leagueId),
   );
 
-  const { data, isLoading } = api.leagueUser.getAllByLeagueId.useQuery({
+  const [data] = api.leagueUser.getAllByLeagueId.useSuspenseQuery({
     teamId,
     leagueId,
   });
@@ -86,8 +94,6 @@ export default function AddLeagueMatchForm() {
     },
   });
 
-  if (!data || isLoading) return <LoadingSpinner />;
-
   const filtedLeagueUsers = sortAndFilterForInactivePlayers(
     data.leagueUsersAndTeamUsers,
     showInactivePlayers,
@@ -103,6 +109,10 @@ export default function AddLeagueMatchForm() {
   );
 
   const setWinnerId = (id: string) => {
+    if (id === winnerIdState) {
+      setWinnerIdState("");
+      return;
+    }
     if (id === loserIdState) setLoserIdState("");
     if (loserIdState === "" && winnerIdState !== "" && id !== loserIdState) {
       setLoserIdState(winnerIdState);
@@ -112,9 +122,16 @@ export default function AddLeagueMatchForm() {
       setLoserIdState(winnerIdState);
       setWinnerIdState(id);
     } else setWinnerIdState(id);
+
+    if (winnerIdState !== "" && loserIdState !== "")
+      scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const setLoserId = (id: string) => {
+    if (id === loserIdState) {
+      setLoserIdState("");
+      return;
+    }
     if (id === winnerIdState) setWinnerIdState("");
     if (winnerIdState === "" && loserIdState !== "" && id !== winnerIdState) {
       setWinnerIdState(loserIdState);
@@ -124,6 +141,9 @@ export default function AddLeagueMatchForm() {
       setWinnerIdState(loserIdState);
       setLoserIdState(id);
     } else setLoserIdState(id);
+
+    if (winnerIdState !== "" && loserIdState !== "")
+      scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
 
   const createMatch = async () => {
@@ -191,32 +211,38 @@ function NewPickOpponent({
     a.teamUser.gamerTag.localeCompare(b.teamUser.gamerTag),
   );
 
+  const winnerOrLoser = sortedMembers.filter(
+    (member) =>
+      member.teamUser.userId === winnerId || member.teamUser.userId === loserId,
+  );
+
+  const sortedMembersWithoutWinnerAndLoser = sortedMembers.filter(
+    (member) =>
+      member.teamUser.userId !== winnerId && member.teamUser.userId !== loserId,
+  );
+
   return (
     <>
-      <div className="sticky top-16 z-10 w-full">
-        <Input
-          tabIndex={-1}
-          autoFocus={false}
-          placeholder="search for opponent..."
-          value={searchQuery}
-          onChange={(value) => {
-            setSearchQuery(value.currentTarget.value);
-          }}
-        />
-        <Button
-          className="absolute right-0 top-0 z-20"
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={() => {
-            setSearchQuery("");
-          }}
-        >
-          <XCircle className="text-red-500" />
-        </Button>
+      <div className="flex w-full flex-col gap-4 overflow-scroll rounded-md p-2">
+        {winnerOrLoser.map((member) => (
+          <PickWinnerOrLoser
+            key={member.teamUser.userId + "-pick"}
+            user={member}
+            winnerId={winnerId}
+            loserId={loserId}
+            setWinnerId={setWinnerId}
+            setLoserId={setLoserId}
+          />
+        ))}
       </div>
-      <div className="min-h-[70dvh flex w-full flex-col gap-4 overflow-scroll rounded-md border-2 border-solid border-background-secondary p-2">
-        {sortedMembers.map((member) => (
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for opponent..."}
+      />
+
+      <div className="flex min-h-[70dvh] w-full flex-col gap-4 overflow-scroll rounded-md p-2">
+        {sortedMembersWithoutWinnerAndLoser.map((member) => (
           <PickWinnerOrLoser
             key={member.teamUser.userId + "-pick"}
             user={member}

@@ -1,7 +1,12 @@
 import { type LeagueUserAndTeamUser } from "@/components/leagueUser/league-user-types";
 import { latestEloGainSchema } from "@/server/api/routers/leagueMatch/league-match-types";
 import { type RoleText } from "@/server/types/roleTypes";
-import { type BlockedUser, type TeamUser } from "@prisma/client";
+import { updateEloRating } from "@/utils/elo";
+import {
+  type LeagueMatch,
+  type BlockedUser,
+  type TeamUser,
+} from "@prisma/client";
 
 export interface TeamMemberProps extends TeamUser {
   role: RoleText;
@@ -60,9 +65,10 @@ export function filterUsers(
 }
 
 export function filterBlockedUsers(
-  members: BlockedUser[],
   searchQuery: string,
+  members?: BlockedUser[],
 ) {
+  if (!members) return [];
   const letters = searchQuery.split("");
 
   const filteredTeamUsers = members.filter((member) => {
@@ -106,7 +112,7 @@ export const addEloToLatestEloList = (eloList: string, eloGain: number) => {
   const eloNumberList = latestEloGainSchema.parse(JSON.parse(eloList));
 
   eloNumberList.unshift(eloGain);
-  if (eloNumberList.length > 30) eloNumberList.pop();
+  if (eloNumberList.length > 20) eloNumberList.pop();
 
   return JSON.stringify(eloNumberList);
 };
@@ -124,4 +130,29 @@ export const newLeagueUserStreak = ({
   if (streak > 0 && add > 0) return streak + add;
   if (streak < 0 && add < 0) return streak + add;
   return add;
+};
+
+export const getStreak = (leagueMatches: LeagueMatch[], userId: string) => {
+  let streak = 0;
+  for (const match of leagueMatches) {
+    if (match.winnerId === userId) streak++;
+    else break;
+  }
+
+  return streak;
+};
+
+export const getNewEloList = (leagueMatches: LeagueMatch[], userId: string) => {
+  let eloGainList = "[]";
+
+  leagueMatches.forEach((match) => {
+    const matchNewElos = updateEloRating(match.preWinnerElo, match.preLoserElo);
+    const eloGain =
+      userId === match.winnerId
+        ? matchNewElos[0] - match.preWinnerElo
+        : matchNewElos[1] - match.preLoserElo;
+    eloGainList = addEloToLatestEloList(eloGainList, eloGain);
+  });
+
+  return eloGainList;
 };

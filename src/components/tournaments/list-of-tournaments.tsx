@@ -6,18 +6,26 @@ import {
   type SwissTournamentUser,
 } from "@prisma/client";
 import Link from "next/link";
-import LoadingSpinner from "../loader/loading";
 import MessageBox from "../message-box";
 import TournamentCard from "./tournament-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
-import { useMemo, useState } from "react";
-import { Input } from "../ui/input";
+import { Suspense, useMemo, useState } from "react";
 import { filterTournaments } from "./tournament-util";
 import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
 import { LocalStorageCheckbox } from "../ui-localstorage/localstorage-checkbox";
 import MinorHeaderLabel from "../minor-header-label";
+import SearchBar from "../search-bar";
+import TournamentSkeleton from "../skeletons/tournament-skeleton";
 
 export default function ListOfTournaments() {
+  return (
+    <Suspense fallback={<TournamentSkeleton />}>
+      <ListOfTournamentsContent />
+    </Suspense>
+  );
+}
+
+function ListOfTournamentsContent() {
   const teamId = useTeamId();
   const leagueId = useLeagueId();
   const keyShowCompleted = leagueId + "showCompletedTournaments";
@@ -37,7 +45,7 @@ export default function ListOfTournaments() {
   );
   const [tournaments, setTournaments] = useState<SwissTournament[]>([]);
 
-  const { data, isLoading } = api.swissTournament.getAll.useQuery({
+  const [data] = api.swissTournament.getAll.useSuspenseQuery({
     teamId,
     leagueId,
   });
@@ -59,21 +67,15 @@ export default function ListOfTournaments() {
     setTournaments(newData);
   }, [data, searchQuery, showCompleted, showOpen, showYours]);
 
-  if (isLoading) return <LoadingSpinner />;
   if (!data)
     return <MessageBox>Theres no tournament for your league :(</MessageBox>;
 
   return (
     <>
-      <Input
-        tabIndex={-1}
-        autoFocus={false}
-        className="sticky top-16 z-10"
-        placeholder="search for tournament..."
-        value={searchQuery}
-        onChange={(value) => {
-          setSearchQuery(value.currentTarget.value);
-        }}
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for tournament..."}
       />
       <MinorHeaderLabel headerText="Filter type of tournament" />
       <div className="flex flex-wrap gap-4">
@@ -81,7 +83,7 @@ export default function ListOfTournaments() {
           isToggled={showOpen}
           setIsToggled={setShowOpen}
           localStorageKey={keyShowOpen}
-          label="Open for registration"
+          label="Registration"
         />
         <LocalStorageCheckbox
           isToggled={showCompleted}
@@ -132,6 +134,7 @@ function TournamentCardLink({
         tournament={tournament}
         swissUser={swissUser}
         teamUser={teamUser}
+        showDelete={false}
       />
     </Link>
   );

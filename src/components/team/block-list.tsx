@@ -1,35 +1,30 @@
 import { filterBlockedUsers } from "@/server/api/routers/leagueMatch/league-match-utils";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Separator } from "../ui/separator";
 import { type BlockedUser } from "@prisma/client";
 import UnblockUserButton from "./unblock-user-button";
 import MinorHeaderLabel from "../minor-header-label";
+import SearchBar from "../search-bar";
 
 export default function BlockList({
   blockedUsers,
 }: {
-  blockedUsers: BlockedUser[];
+  blockedUsers?: BlockedUser[];
 }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredBlockedUsers = filterBlockedUsers(blockedUsers, searchQuery);
+  const filteredBlockedUsers = filterBlockedUsers(searchQuery, blockedUsers);
 
   const sortedBlockedUsers = filteredBlockedUsers.sort((a, b) =>
     a.gamerTag.localeCompare(b.gamerTag),
   );
 
-  if (sortedBlockedUsers.length === 0) return null;
-
   return (
     <div className="relative w-full space-y-4">
       <MinorHeaderLabel headerText="Block list" />
-      <Input
-        className="sticky top-14 z-10"
-        placeholder="search for blocked users..."
-        value={searchQuery}
-        onChange={(value) => {
-          setSearchQuery(value.currentTarget.value);
-        }}
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={"Search for blocked users..."}
       />
 
       <ul className="flex flex-col justify-center gap-1">
