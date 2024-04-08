@@ -25,7 +25,7 @@ import { useState } from "react";
 
 export default function TeamPage() {
   return (
-    <div className="container flex h-full flex-col items-center gap-8 ">
+    <div className="container flex h-full w-full flex-col items-center gap-8 p-4">
       <TeamInfo />
     </div>
   );
