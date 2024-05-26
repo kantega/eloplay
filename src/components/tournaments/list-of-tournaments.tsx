@@ -11,7 +11,7 @@ import TournamentCard from "./tournament-card";
 import { useTeamId } from "@/contexts/teamContext/team-provider";
 import { Suspense, useMemo, useState } from "react";
 import { filterTournaments } from "./tournament-util";
-import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
+import { useLocalBoolean } from "../ui-localstorage/localstorage-utils";
 import { LocalStorageCheckbox } from "../ui-localstorage/localstorage-checkbox";
 import MinorHeaderLabel from "../minor-header-label";
 import SearchBar from "../search-bar";
@@ -33,16 +33,9 @@ function ListOfTournamentsContent() {
   const keyShowYours = leagueId + "showYours";
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [showCompleted, setShowCompleted] = useState(
-    getLocalStorageToggleValue(keyShowCompleted),
-  );
-  const [showOpen, setShowOpen] = useState(
-    getLocalStorageToggleValue(keyShowOpen, true),
-  );
-
-  const [showYours, setShowYours] = useState(
-    getLocalStorageToggleValue(keyShowYours),
-  );
+  const [showCompleted, setShowCompleted] = useLocalBoolean(keyShowCompleted);
+  const [showOpen, setShowOpen] = useLocalBoolean(keyShowOpen, true);
+  const [showYours, setShowYours] = useLocalBoolean(keyShowYours);
   const [tournaments, setTournaments] = useState<SwissTournament[]>([]);
 
   const [data] = api.swissTournament.getAll.useSuspenseQuery({

@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/.vscode/settings.json
 /.pnp
 .pnp.js
 
@@ -42,4 +43,3 @@ yarn-error.log*
 *.tsbuildinfo
 
 data/postgres
-

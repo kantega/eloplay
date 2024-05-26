@@ -25,7 +25,7 @@ import {
   getLocalStorageRecentOpponents,
   setLocalStorageRecentOpponents,
 } from "./league-match-util";
-import { getLocalStorageToggleValue } from "../ui-localstorage/localstorage-utils";
+import { useLocalBoolean } from "../ui-localstorage/localstorage-utils";
 import TeamUserCard from "../teamUser/team-user-card";
 import SearchBar from "../search-bar";
 import AddMatchUserListSkeleton from "../skeletons/add-match-user-list-skeleton";
@@ -47,9 +47,8 @@ function AddLeagueMatchFormContent() {
   const [loserIdState, setLoserIdState] = useState("");
 
   const localKey = leagueId + "showInactivePlayers";
-  const [showInactivePlayers, setShowInactivePlayers] = useState(
-    getLocalStorageToggleValue(localKey),
-  );
+  const [showInactivePlayers, setShowInactivePlayers] =
+    useLocalBoolean(localKey);
   const [recentOpponents, setRecentOpponents] = useState<string[]>(
     getLocalStorageRecentOpponents(leagueId),
   );
